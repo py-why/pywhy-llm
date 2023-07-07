@@ -6,31 +6,40 @@ import re
 
 class IdentifierSuggestor(IdentifierProtocol):
 
-    def suggest_backdoor(self, variable_relationships: Dict[Tuple[str, str], str], confounders: Set[Tuple[str, str]], treatment: str, outcome: str, llm: guidance.llm) -> Set[str]:
+    def suggest_backdoor(self, variable_relationships: List[Tuple[str, str]], treatment: str, outcome: str, llm: guidance.llm, confounders: Set[Tuple[str, str]] = None) -> Set[str]:
         
-        program = self.backdoor_program()
+        program = self.backdoor_program(has_graph=True)
 
-        output = program(treatment=treatment, outcome=outcome, edges=variable_relationships.keys(), llm=llm)
+        success = False
+        while not success: 
+            try:
+                output = program(treatment=treatment, outcome=outcome, edges=variable_relationships, llm=llm)
 
-        backdoor_set = re.findall(r'<variable>(.*?)</variable>', output['backdoor_set'])
+                backdoor_set = re.findall(r'<variable>(.*?)</variable>', output['backdoor_set'])
+
+                success = True
+
+            except KeyError:
+                success = False
+                continue 
 
         return set(backdoor_set)
     
-    def suggest_frontdoor(self, variable_relationships: Dict[Tuple[str, str], str], confounders: Set[Tuple[str, str]], treatment: str, outcome: str, llm: guidance.llm) -> Set[str]:
+    def suggest_frontdoor(self, variable_relationships: List[Tuple[str,str]], treatment: str, outcome: str, llm: guidance.llm, confounders: Set[Tuple[str, str]] = None) -> Set[str]:
          
-        program = self.frontdoor_program()
+        program = self.frontdoor_program(has_graph=True)
 
-        output = program(treatment=treatment, outcome=outcome, edges=variable_relationships.keys(), llm=llm)
+        output = program(treatment=treatment, outcome=outcome, edges=variable_relationships, llm=llm)
 
         frontdoor_set = re.findall(r'<variable>(.*?)</variable>', output['frontdoor_set'])
 
         return set(frontdoor_set)
     
-    def suggest_iv(self, variable_relationships: Dict[Tuple[str, str], str], confounders: Set[Tuple[str, str]], treatment: str, outcome: str, llm: guidance.llm) -> Set[str]:
+    def suggest_iv(self, variable_relationships: List[Tuple[str, str]], treatment: str, outcome: str, llm: guidance.llm, confounders: Set[Tuple[str, str]] = None) -> Set[str]:
          
-        program = self.iv_program()
+        program = self.iv_program(has_graph=True)
 
-        output = program(treatment=treatment, outcome=outcome, edges=variable_relationships.keys(), llm=llm)
+        output = program(treatment=treatment, outcome=outcome, edges=variable_relationships, llm=llm)
 
         iv_set = re.findall(r'<variable>(.*?)</variable>', output['iv_set'])
 
