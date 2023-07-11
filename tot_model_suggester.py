@@ -2,7 +2,7 @@
 from model_suggester import ModelSuggester
 import guidance
 
-class ModifiedModelSuggester(ModelSuggester):       
+class ToTModelSuggester(ModelSuggester):       
 
     def pairwise_relationship_program(self):
         
