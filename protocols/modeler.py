@@ -1,43 +1,11 @@
-from typing import List, Dict, Set, Tuple, Protocol
+
+
+from typing import List, Protocol
 import guidance
 
 class ModelerProtocol(Protocol):
-    def suggest_dataset_description(self, variable_names: List[str], llm: guidance.llms) -> str:
-        """
-        Suggest a description for the dataset.
 
-        Args:
-            variable_names: List[str]
-                List of variable names.
-
-            llm: guidance.llms
-                User provided llm access.
-
-        Returns:
-            dataset_description: str
-                A description of the dataset.
-        """
-        pass
-
-
-    def suggest_variable_descriptions(self, variable_names: List[str], llm: guidance.llms) -> Dict[str, str]:
-        """
-        Suggest the descriptions for each variable.
-
-        Args:
-            variable_names: List[str]
-                List of variable names.
-
-            llm: guidance.llms
-                User provided llm access.
-
-        Returns:
-            variable_descriptions: Dict[str, str]
-                A dictionary mapping variable names to their descriptions.
-        """
-        pass
-
-    def suggest_variable_relationships(self, variable_descriptions: Dict[str, str], llm: guidance.llms) -> Dict[Tuple[str, str], str]:
+    def suggest_variable_relationships(self, variables: List[str], llm: guidance.llms):
         """
         Suggest the relationships between variables.
 
@@ -54,7 +22,7 @@ class ModelerProtocol(Protocol):
         """
         pass
 
-    def suggest_confounders(self, variable_descriptions: Dict[str, str], variable_relationships: Dict[Tuple[str, str], str], llm: guidance.llms) -> Set[Tuple[str, str]]:
+    def suggest_confounders(self, variables: List[str], llm: guidance.llms, treatment: str, outcome: str):
         """
         Suggest confounders
 
@@ -73,3 +41,13 @@ class ModelerProtocol(Protocol):
                 Set of confounders along with a reasoning or explanation for how the confounding occurs.
         """
         pass
+
+
+
+
+
+
+
+
+
+
