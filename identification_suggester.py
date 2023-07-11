@@ -5,9 +5,9 @@ from dowhy.causal_identifier.identified_estimand import IdentifiedEstimand
 import guidance
 import re
 
-class IdentificationSuggestor(IdentifierProtocol):
+class IdentificationSuggester(IdentifierProtocol):
 
-    def suggest_identification(self, variables: List[str], treatment: str, outcome: str, llm: guidance.llm, backdoor: Set[str] = None, frontdoor: Set[str] = None, iv: Set[str] = None) -> IdentifiedEstimand:
+    def suggest_estimand(self, variables: List[str], treatment: str, outcome: str, llm: guidance.llm, backdoor: Set[str] = None, frontdoor: Set[str] = None, iv: Set[str] = None):
 
         estimands_dict = {}
         
@@ -44,7 +44,7 @@ class IdentificationSuggestor(IdentifierProtocol):
         )
         return estimand
 
-    def suggest_backdoor(self, variables: List[str], treatment: str, outcome: str, llm: guidance.llm) -> Set[str]:
+    def suggest_backdoor(self, variables: List[str], treatment: str, outcome: str, llm: guidance.llm):
         
         program = self.backdoor_program()
         
@@ -74,7 +74,7 @@ class IdentificationSuggestor(IdentifierProtocol):
 
         return backdoor_set
     
-    def suggest_frontdoor(self, variables: List[str], treatment: str, outcome: str, llm: guidance.llm) -> Set[str]:
+    def suggest_frontdoor(self, variables: List[str], treatment: str, outcome: str, llm: guidance.llm):
          
         program = self.frontdoor_program()
 
@@ -104,7 +104,7 @@ class IdentificationSuggestor(IdentifierProtocol):
 
         return frontdoor_set
     
-    def suggest_iv(self, variables: List[str], treatment: str, outcome: str, llm: guidance.llm) -> Set[str]:
+    def suggest_iv(self, variables: List[str], treatment: str, outcome: str, llm: guidance.llm):
          
         program = self.iv_program()
         
@@ -135,7 +135,7 @@ class IdentificationSuggestor(IdentifierProtocol):
 
         return iv_set
     
-    def backdoor_program(self) -> guidance._program.Program:
+    def backdoor_program(self):
             
         return guidance(    
             '''
@@ -155,7 +155,7 @@ class IdentificationSuggestor(IdentifierProtocol):
             {{~/assistant}}
             ''')          
 
-    def frontdoor_program(self) -> guidance._program.Program:
+    def frontdoor_program(self):
         
         return guidance( 
         '''
@@ -175,7 +175,7 @@ class IdentificationSuggestor(IdentifierProtocol):
         {{~/assistant}}
         ''') 
 
-    def iv_program(self) -> guidance._program.Program:
+    def iv_program(self):
         
         return guidance(    
         '''

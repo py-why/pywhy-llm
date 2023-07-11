@@ -1,20 +1,24 @@
 from typing import List, Tuple, Dict
 from protocols import IdentifierProtocol    
+import networkx as nx   
 import guidance
+import copy
 import re
 
+class ValidationSuggester(IdentifierProtocol):
 
-
-class ValidationSuggestor(IdentifierProtocol):
-
-    def critique_graph(self, edges: List[Tuple[str, str]], llm: guidance.llms) ->  Tuple[Dict[Tuple[str, str], str], Tuple[str, str]]:
+    def critique_graph(self, graph: nx.DiGraph, llm: guidance.llms):
         
         generator = self.critique_graph_program()
         discriminator = self.critique_program()
 
         critiqued_edges : Dict[Tuple[Tuple[str, str], Tuple[str, str]], str] = {}
 
-        for (x, y) in edges: 
+        critiqued_graph = copy.deepcopy(graph)
+
+        for edge in list(critiqued_graph.edges): 
+            x = edge[0]
+            y = edge[1]
             success = False
             while not success: 
                 try:
@@ -37,13 +41,13 @@ class ValidationSuggestor(IdentifierProtocol):
                     elif answer_2[0] == 'B':
                         key = ((x, y), (y, x))
                         critiqued_edges[key] = explanation_2
-                        edges.remove((x, y))
-                        edges.append((y, x))
+                        graph.remove_edge(x, y)
+                        graph.add_edge(y, x)
 
                     elif answer_2[0] == 'C':
                         key = ((x, y), ("Deleted", "Deleted"))
                         critiqued_edges[key] = explanation_2
-                        edges.remove((x, y)) 
+                        graph.remove_edge(x, y) 
 
                     success = True
 
@@ -54,10 +58,10 @@ class ValidationSuggestor(IdentifierProtocol):
                 except IndexError:
                     success = False
                     continue
-        
-        return (critiqued_edges, edges)
 
-    def critique_graph_program(self) -> guidance._program.Program:
+        return (critiqued_edges, critiqued_graph)
+
+    def critique_graph_program(self):
         
         return guidance('''
         {{#system~}}
@@ -77,7 +81,8 @@ class ValidationSuggestor(IdentifierProtocol):
         {{~/assistant}}                     
         ''')
 
-    def critique_program(self) -> str:
+    def critique_program(self):
+
         return guidance('''
         {{#system~}}
         You are a helpful assistant on causal reasoning. Your goal is to factually and concisely answer questions about cause and effect relationships using your domain knowledge on artic sea ice and atmosphere sciences.
@@ -102,19 +107,9 @@ class ValidationSuggestor(IdentifierProtocol):
         {{#assistant~}}
         {{gen 'relationship' temperature=0.3}}
         {{~/assistant}}                     
-        ''')    
+        ''')   
 
-
-
-
-
-
-
-
-
-
-
-    def suggest_latent_confounders(self, variables_and_descriptions: Dict[str, str], llm: guidance.llms, treatment: str, outcome: str) ->  Dict[str, str]:
+    def suggest_latent_confounders(self, variables_and_descriptions: Dict[str, str], llm: guidance.llms, treatment: str, outcome: str):
 
         generate_latent_confounders = self.latent_confounder_program()
         
@@ -133,8 +128,8 @@ class ValidationSuggestor(IdentifierProtocol):
 
         return latent_confounders
     
-    
-    def latent_confounder_program(self) -> guidance._program.Program:
+    def latent_confounder_program(self):
+
         generate_latent_confounders = guidance('''
         {{#system~}}
         "You are a helpful assistant on causal reasoning. Your goal is to answer questions factually and concisely about cause and effect in {{field}}"
