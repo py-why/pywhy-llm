@@ -109,7 +109,7 @@ class ValidationSuggester(IdentifierProtocol):
         {{~/assistant}}                     
         ''')   
 
-    def suggest_latent_confounders(self, variables_and_descriptions: Dict[str, str], llm: guidance.llms, treatment: str, outcome: str):
+    def suggest_latent_confounders(self, llm: guidance.llms, treatment: str, outcome: str):
 
         generate_latent_confounders = self.latent_confounder_program()
         
@@ -128,7 +128,7 @@ class ValidationSuggester(IdentifierProtocol):
     
     def latent_confounder_program(self):
 
-        generate_latent_confounders = guidance('''
+        return guidance('''
         {{#system~}}
         You are a helpful assistant on causal reasoning. Your goal is to answer questions about cause and effect in arctic sea ice and atmosphere sciences in a factual and concise way.
         {{~/system}}
