@@ -109,52 +109,33 @@ class ValidationSuggester(IdentifierProtocol):
         {{~/assistant}}                     
         ''')   
 
-    def suggest_latent_confounders(self, variables_and_descriptions: Dict[str, str], llm: guidance.llms, treatment: str, outcome: str):
+    def suggest_latent_confounders(self, llm: guidance.llms, treatment: str, outcome: str):
 
         generate_latent_confounders = self.latent_confounder_program()
         
         output = generate_latent_confounders(
         treatment=treatment, 
-        outcome=outcome, 
-        variables_and_descriptions=variables_and_descriptions,
+        outcome=outcome,
         llm=llm)
 
         # Find all occurrences of confounders, explanations, and categories
         confounders = re.findall(r'<latent_confounder>(.*?)</latent_confounder>', output['latent_confounders'])
-        explanations = re.findall(r'<explanation>(.*?)</explanation>', output['latent_confounders'])
 
         # Combine confounders and explanations into a dictionary
-        latent_confounders = dict(zip(confounders, explanations))    
+        latent_confounders = list(confounders)    
 
         return latent_confounders
     
     def latent_confounder_program(self):
 
-        generate_latent_confounders = guidance('''
+        return guidance('''
         {{#system~}}
-        "You are a helpful assistant on causal reasoning. Your goal is to answer questions factually and concisely about cause and effect in {{field}}"
+        You are a helpful assistant on causal reasoning. Your goal is to answer questions about cause and effect in arctic sea ice and atmosphere sciences in a factual and concise way.
         {{~/system}}
 
         {{#user~}}
-        Is it true that changing {{variable_a}} can directly change {{variable_b}}? 
-        A. Yes
-        B. No
-        Let's think step-by-step to make sure that we have the right answer. Provide your final answer within the tags, <answer>A/B</answer>, and explanations within the tags, <explanation>...</explanation>.
-        {{~/user}}
-        
-        {{#system~}}
-        You are a helpful assistant with expertise in causal inference. You will be given a causal relationship and a list of variables. Your task is to identify any confounding variables present in the list. Your task is to suggest confounding variables that are not in the list. Your task is to identify missing confounders, i.e.variables that when changed, directly change both the treatment and outcome variables. 
-        Wrap confounders with a <confounder> tag and explanations with an <explanation> tag.
-        {{~/system}}
-
-        {{#user~}}
-        Treatment: {{treatment}}
-        Outcome: {{outcome}}
-
-        Dataset schema with descriptions
-        {{variables_and_descriptions}}
-
-        What confounders are missing from this list?
+        In a causal observational study of arctic sea ice and atmosphere science where we wish to measure the causal effect of {{outcome}} on {{treatment}}, we are trying to add unobserved common causes. To help validate our analysis, what are some examples of specific latent confounders that we may bias our results if we do not account for them? Be specific about the confounders you mention.
+        Let's think step-by-step to make sure that we have the right answer. Explanations should not excede one sentence, otherwise you lose points. For each latent confounder, provide your explanation within the tags, <explanation>...</explanation> and the confounder within the tags, <latent_confounder>...</latent_confounder>
         {{~/user}}
 
         {{#assistant~}}
@@ -162,4 +143,61 @@ class ValidationSuggester(IdentifierProtocol):
         {{~/assistant}} 
         ''')
 
-        return generate_latent_confounders
+    def suggest_negative_controls(self, variables: List[str], llm: guidance.llms, treatment: str, outcome: str):
+
+        suggest_negative_controls = self.suggest_negative_controls_program()
+        
+        negative_controls = []
+        not_controls = []
+
+        for variable in variables:
+
+            if variable is not treatment and variable is not outcome:
+                success = False
+                while not success: 
+                    try:
+                        output = suggest_negative_controls(
+                        treatment=treatment, 
+                        outcome=outcome, 
+                        variable=variable,
+                        llm=llm)
+                        # Find all occurrences of confounders, explanations, and categories
+                        negative_control = re.findall(r'<answer>(.*?)</answer>', output['negative_control'])
+
+                        if negative_control == 'A' or negative_control == 'A. Yes':
+                            negative_controls.append(variable)
+                        else:
+                            not_controls.append(variable)
+                        
+
+                        success = True
+
+                    except KeyError:
+                        success = False
+                        continue 
+
+                    except IndexError:
+                        success = False
+                        continue
+
+        return (negative_controls, not_controls)
+
+
+    def suggest_negative_controls_program(self): 
+        
+        return guidance('''
+        {{#system~}}
+        You are a helpful assistant on causal reasoning. Your goal is to answer questions about cause and effect in arctic sea ice and atmosphere sciences in a factual and concise way.
+        {{~/system}}
+
+        {{#user~}}
+        In a causal observational study of arctic sea ice and atmosphere science where we wish to measure the causal effect of {{treatment}} on {{outcome}}, we want to identify whether {{variable}} is a negative control where we might expect to see zero treatment effect. Is {{variable}} a likely negative control?
+        A. Yes
+        B. No
+        Let's think step-by-step to make sure that we have the right answer. Provide your explanations within the tags, <explanation>...</explanation> and confounders within the tags, <answer>A/B</answer>. Explanations should be specific and not excede one sentence, otherwise you lose points. 
+        {{~/user}}
+
+        {{#assistant~}}
+        {{gen 'negative_control' temperature=0.3}}
+        {{~/assistant}} 
+        ''')

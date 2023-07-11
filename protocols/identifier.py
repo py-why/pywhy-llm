@@ -5,7 +5,7 @@ import guidance
 
 class IdentifierProtocol(Protocol):
 
-    def suggest_backdoor(self, variables: List[str], treatment: str, outcome: str, llm: guidance.llm):
+    def suggest_backdoor(self, confounders: List[str], treatment: str, outcome: str, llm: guidance.llm):
         """
         Suggest variables that satisfy the backdoor criterion
 
@@ -25,7 +25,7 @@ class IdentifierProtocol(Protocol):
         """
         pass
 
-    def suggest_frontdoor(self, variables: List[str], treatment: str, outcome: str, llm: guidance.llm):
+    def suggest_frontdoor(self, confounders: List[str], treatment: str, outcome: str, llm: guidance.llm):
         """
          Suggest variables that satisfy the frontdoor criterion
 
@@ -45,7 +45,7 @@ class IdentifierProtocol(Protocol):
         """
         pass
 
-    def suggest_iv(self, variables: List[str], treatment: str, outcome: str, llm: guidance.llm):
+    def suggest_iv(self, confounders: List[str], treatment: str, outcome: str, llm: guidance.llm):
         """
         Suggest instrumental variables
 
@@ -65,7 +65,7 @@ class IdentifierProtocol(Protocol):
         """
         pass
 
-    def suggest_estimand(self, variables: List[str], treatment: str, outcome: str, llm: guidance.llm, backdoor: Set[str] = None, frontdoor: Set[str] = None, iv: Set[str] = None):
+    def suggest_estimand(self, confounders: List[str], treatment: str, outcome: str, llm: guidance.llm, backdoor: Set[str] = None, frontdoor: Set[str] = None, iv: Set[str] = None):
         """
         Suggest the estiamnds based off the suggested backdoor, frontdoor, and instrumental variables
 
