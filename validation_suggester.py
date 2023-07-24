@@ -9,8 +9,8 @@ class ValidationSuggester(IdentifierProtocol):
 
     def critique_graph(self, graph: nx.DiGraph, llm: guidance.llms):
         
-        generator = self.critique_graph_program()
-        discriminator = self.critique_program()
+        generator = self._critique_graph_program()
+        discriminator = self._critique_program()
 
         critiqued_edges : Dict[Tuple[Tuple[str, str], Tuple[str, str]], str] = {}
 
@@ -61,7 +61,7 @@ class ValidationSuggester(IdentifierProtocol):
 
         return (critiqued_edges, critiqued_graph)
 
-    def critique_graph_program(self):
+    def _critique_graph_program(self):
         
         return guidance('''
         {{#system~}}
@@ -81,7 +81,7 @@ class ValidationSuggester(IdentifierProtocol):
         {{~/assistant}}                     
         ''')
 
-    def critique_program(self):
+    def _critique_program(self):
 
         return guidance('''
         {{#system~}}
@@ -111,7 +111,7 @@ class ValidationSuggester(IdentifierProtocol):
 
     def suggest_latent_confounders(self, llm: guidance.llms, treatment: str, outcome: str):
 
-        generate_latent_confounders = self.latent_confounder_program()
+        generate_latent_confounders = self._latent_confounder_program()
         
         output = generate_latent_confounders(
         treatment=treatment, 
@@ -126,7 +126,7 @@ class ValidationSuggester(IdentifierProtocol):
 
         return latent_confounders
     
-    def latent_confounder_program(self):
+    def _latent_confounder_program(self):
 
         return guidance('''
         {{#system~}}
@@ -145,7 +145,7 @@ class ValidationSuggester(IdentifierProtocol):
 
     def suggest_negative_controls(self, variables: List[str], llm: guidance.llms, treatment: str, outcome: str):
 
-        suggest_negative_controls = self.suggest_negative_controls_program()
+        suggest_negative_controls = self._suggest_negative_controls_program()
         
         negative_controls = []
         not_controls = []
@@ -182,8 +182,7 @@ class ValidationSuggester(IdentifierProtocol):
 
         return (negative_controls, not_controls)
 
-
-    def suggest_negative_controls_program(self): 
+    def _suggest_negative_controls_program(self): 
         
         return guidance('''
         {{#system~}}
