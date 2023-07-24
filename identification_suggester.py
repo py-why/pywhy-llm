@@ -46,7 +46,7 @@ class IdentificationSuggester(IdentifierProtocol):
 
     def suggest_backdoor(self, confounders: List[str], treatment: str, outcome: str, llm: guidance.llm):
         
-        program = self.backdoor_program()
+        program = self._backdoor_program()
         
         backdoor_set : Set[str] = []
 
@@ -76,7 +76,7 @@ class IdentificationSuggester(IdentifierProtocol):
     
     def suggest_frontdoor(self, confounders: List[str], treatment: str, outcome: str, llm: guidance.llm):
          
-        program = self.frontdoor_program()
+        program = self._frontdoor_program()
 
         frontdoor_set : Set[str] = []
 
@@ -106,7 +106,7 @@ class IdentificationSuggester(IdentifierProtocol):
     
     def suggest_iv(self, confounders: List[str], treatment: str, outcome: str, llm: guidance.llm):
          
-        program = self.iv_program()
+        program = self._iv_program()
         
         iv_set : set[str] = []
 
@@ -135,7 +135,7 @@ class IdentificationSuggester(IdentifierProtocol):
 
         return iv_set
     
-    def backdoor_program(self):
+    def _backdoor_program(self):
             
         return guidance(    
             '''
@@ -155,7 +155,7 @@ class IdentificationSuggester(IdentifierProtocol):
             {{~/assistant}}
             ''')          
 
-    def frontdoor_program(self):
+    def _frontdoor_program(self):
         
         return guidance( 
         '''
@@ -175,7 +175,7 @@ class IdentificationSuggester(IdentifierProtocol):
         {{~/assistant}}
         ''') 
 
-    def iv_program(self):
+    def _iv_program(self):
         
         return guidance(    
         '''
