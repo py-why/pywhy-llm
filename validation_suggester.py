@@ -9,8 +9,13 @@ class ValidationSuggester(IdentifierProtocol):
 
     def critique_graph(self, graph: nx.DiGraph, llm: guidance.llms):
         
+<<<<<<< HEAD
         generator = self.critique_graph_program()
         discriminator = self.critique_program()
+=======
+        generator = self._critique_graph_program()
+        discriminator = self._critique_program()
+>>>>>>> validator
 
         critiqued_edges : Dict[Tuple[Tuple[str, str], Tuple[str, str]], str] = {}
 
@@ -61,7 +66,11 @@ class ValidationSuggester(IdentifierProtocol):
 
         return (critiqued_edges, critiqued_graph)
 
+<<<<<<< HEAD
     def critique_graph_program(self):
+=======
+    def _critique_graph_program(self):
+>>>>>>> validator
         
         return guidance('''
         {{#system~}}
@@ -81,7 +90,11 @@ class ValidationSuggester(IdentifierProtocol):
         {{~/assistant}}                     
         ''')
 
+<<<<<<< HEAD
     def critique_program(self):
+=======
+    def _critique_program(self):
+>>>>>>> validator
 
         return guidance('''
         {{#system~}}
@@ -111,7 +124,11 @@ class ValidationSuggester(IdentifierProtocol):
 
     def suggest_latent_confounders(self, llm: guidance.llms, treatment: str, outcome: str):
 
+<<<<<<< HEAD
         generate_latent_confounders = self.latent_confounder_program()
+=======
+        generate_latent_confounders = self._latent_confounder_program()
+>>>>>>> validator
         
         output = generate_latent_confounders(
         treatment=treatment, 
@@ -126,7 +143,11 @@ class ValidationSuggester(IdentifierProtocol):
 
         return latent_confounders
     
+<<<<<<< HEAD
     def latent_confounder_program(self):
+=======
+    def _latent_confounder_program(self):
+>>>>>>> validator
 
         return guidance('''
         {{#system~}}
@@ -145,7 +166,11 @@ class ValidationSuggester(IdentifierProtocol):
 
     def suggest_negative_controls(self, variables: List[str], llm: guidance.llms, treatment: str, outcome: str):
 
+<<<<<<< HEAD
         suggest_negative_controls = self.suggest_negative_controls_program()
+=======
+        suggest_negative_controls = self._suggest_negative_controls_program()
+>>>>>>> validator
         
         negative_controls = []
         not_controls = []
@@ -182,8 +207,12 @@ class ValidationSuggester(IdentifierProtocol):
 
         return (negative_controls, not_controls)
 
+<<<<<<< HEAD
 
     def suggest_negative_controls_program(self): 
+=======
+    def _suggest_negative_controls_program(self): 
+>>>>>>> validator
         
         return guidance('''
         {{#system~}}

@@ -47,10 +47,14 @@ class IdentificationSuggester(IdentifierProtocol):
     def suggest_backdoor(self, confounders: List[str], treatment: str, outcome: str, llm: guidance.llm):
         
 <<<<<<< HEAD
+<<<<<<< HEAD
         program = self.backdoor_program()
 =======
         program = self._backdoor_program()
 >>>>>>> identification
+=======
+        program = self._backdoor_program()
+>>>>>>> validator
         
         backdoor_set : Set[str] = []
 
@@ -81,10 +85,14 @@ class IdentificationSuggester(IdentifierProtocol):
     def suggest_frontdoor(self, confounders: List[str], treatment: str, outcome: str, llm: guidance.llm):
          
 <<<<<<< HEAD
+<<<<<<< HEAD
         program = self.frontdoor_program()
 =======
         program = self._frontdoor_program()
 >>>>>>> identification
+=======
+        program = self._frontdoor_program()
+>>>>>>> validator
 
         frontdoor_set : Set[str] = []
 
@@ -115,10 +123,14 @@ class IdentificationSuggester(IdentifierProtocol):
     def suggest_iv(self, confounders: List[str], treatment: str, outcome: str, llm: guidance.llm):
          
 <<<<<<< HEAD
+<<<<<<< HEAD
         program = self.iv_program()
 =======
         program = self._iv_program()
 >>>>>>> identification
+=======
+        program = self._iv_program()
+>>>>>>> validator
         
         iv_set : set[str] = []
 
@@ -148,10 +160,14 @@ class IdentificationSuggester(IdentifierProtocol):
         return iv_set
     
 <<<<<<< HEAD
+<<<<<<< HEAD
     def backdoor_program(self):
 =======
     def _backdoor_program(self):
 >>>>>>> identification
+=======
+    def _backdoor_program(self):
+>>>>>>> validator
             
         return guidance(    
             '''
@@ -172,10 +188,14 @@ class IdentificationSuggester(IdentifierProtocol):
             ''')          
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     def frontdoor_program(self):
 =======
     def _frontdoor_program(self):
 >>>>>>> identification
+=======
+    def _frontdoor_program(self):
+>>>>>>> validator
         
         return guidance( 
         '''
@@ -196,10 +216,14 @@ class IdentificationSuggester(IdentifierProtocol):
         ''') 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     def iv_program(self):
 =======
     def _iv_program(self):
 >>>>>>> identification
+=======
+    def _iv_program(self):
+>>>>>>> validator
         
         return guidance(    
         '''

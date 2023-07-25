@@ -4,7 +4,11 @@ import guidance
 
 class ToTModelSuggester(ModelSuggester):       
 
+<<<<<<< HEAD
     def _pairwise_relationship_program(self):
+=======
+    def pairwise_relationship_program(self):
+>>>>>>> validator
         
         '''
         Uses tree of thought prompting to choose best answer for pairwise relationship

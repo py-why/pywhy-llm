@@ -10,6 +10,7 @@ class ModelSuggester(ModelerProtocol):
 
     def suggest_confounders(self, variables: List[str], llm: guidance.llms, treatment: str, outcome: str):
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         generate_confounders = self._confounder_program()
 
@@ -18,6 +19,10 @@ class ModelSuggester(ModelerProtocol):
         generate_confounders = self._confounder_program()
 
 >>>>>>> modeler
+=======
+        generate_confounders = self.confounder_program()
+
+>>>>>>> validator
         success : bool = False
         suggested_confounders : list = []
 
@@ -48,12 +53,17 @@ class ModelSuggester(ModelerProtocol):
     
     def suggest_relationships(self, variables: List[str], llm: guidance.llms):
 
+<<<<<<< HEAD
         generate_relationships = self._pairwise_relationship_program()
 
 <<<<<<< HEAD
 
 =======
 >>>>>>> modeler
+=======
+        generate_relationships = self.pairwise_relationship_program()
+
+>>>>>>> validator
         relationships: List[Tuple[str, str]] = []
         success: bool = False
 
@@ -84,11 +94,15 @@ class ModelSuggester(ModelerProtocol):
                                 
         return g
 
+<<<<<<< HEAD
     def _confounder_program(self):
 <<<<<<< HEAD
 
 =======
 >>>>>>> modeler
+=======
+    def confounder_program(self):
+>>>>>>> validator
         return guidance('''
         {{#system~}}
         You are a helpful assistant on causal reasoning. Your goal is to answer questions about cause and effect in arctic sea ice and atmosphere sciences in a factual and concise way.
@@ -106,11 +120,16 @@ class ModelSuggester(ModelerProtocol):
         {{~/assistant}} 
         ''')
 <<<<<<< HEAD
+<<<<<<< HEAD
    
 =======
     
 >>>>>>> modeler
     def _pairwise_relationship_program(self):
+=======
+    
+    def pairwise_relationship_program(self):
+>>>>>>> validator
                 
         return guidance('''
         {{#system~}}
