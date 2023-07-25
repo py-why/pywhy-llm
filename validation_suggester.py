@@ -110,9 +110,9 @@ class ValidationSuggester(IdentifierProtocol):
         ''')   
 
     def suggest_latent_confounders(self, llm: guidance.llms, treatment: str, outcome: str):
-
-        generate_latent_confounders = self._latent_confounder_program()
         
+        generate_latent_confounders = self._latent_confounder_program()
+
         output = generate_latent_confounders(
         treatment=treatment, 
         outcome=outcome,
@@ -146,7 +146,7 @@ class ValidationSuggester(IdentifierProtocol):
     def suggest_negative_controls(self, variables: List[str], llm: guidance.llms, treatment: str, outcome: str):
 
         suggest_negative_controls = self._suggest_negative_controls_program()
-        
+
         negative_controls = []
         not_controls = []
 
