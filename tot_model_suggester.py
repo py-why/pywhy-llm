@@ -4,7 +4,7 @@ import guidance
 
 class ToTModelSuggester(ModelSuggester):       
 
-    def pairwise_relationship_program(self):
+    def _pairwise_relationship_program(self):
         
         '''
         Uses tree of thought prompting to choose best answer for pairwise relationship
