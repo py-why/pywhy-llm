@@ -1,5 +1,4 @@
-
-from model_suggester import ModelSuggester
+from .model_suggester import ModelSuggester
 import guidance
 
 class ToTModelSuggester(ModelSuggester):       
