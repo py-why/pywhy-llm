@@ -1,9 +1,13 @@
-from suggesters.model_suggester import ModelSuggester
-#from suggesters.identification_suggester import IdentificationSuggester
-from suggesters.validation_suggester import ValidationSuggester
+from .model_suggester import ModelSuggester
+from .helpers import ModelType, RelationshipStrategy
+
+from .identification_suggester import IdentificationSuggester
+from .validation_suggester import ValidationSuggester
 
 __all__ = [
     "ModelSuggester",
-    #"IdentificationSuggester", 
-    "ValidationSuggester", 
+    "ModelType",
+    "RelationshipStrategy",
+    "IdentificationSuggester",
+    "ValidationSuggester",
 ]

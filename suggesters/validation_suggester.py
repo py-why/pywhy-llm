@@ -1,5 +1,7 @@
-from typing import List, Tuple, Dict
-from protocols import IdentifierProtocol
+from typing import List, Tuple, Dict, Set
+from suggesters.protocols import IdentifierProtocol
+from .helpers import RelationshipStrategy, ModelType
+from .prompts import prompts as ps
 import networkx as nx
 import guidance
 import copy
@@ -7,219 +9,551 @@ import re
 
 
 class ValidationSuggester(IdentifierProtocol):
-    def critique_graph(self, graph: nx.DiGraph, llm: guidance.llms):
-        generator = self._critique_graph_program()
-        discriminator = self._critique_program()
-
-        critiqued_edges: Dict[Tuple[Tuple[str, str], Tuple[str, str]], str] = {}
-
-        critiqued_graph = copy.deepcopy(graph)
-
-        for edge in list(critiqued_graph.edges):
-            x = edge[0]
-            y = edge[1]
-            success = False
-            while not success:
-                try:
-                    output_1 = generator(variable_a=x, variable_b=y, llm=llm)
-
-                    explanation_1 = re.findall(
-                        r"<explanation>(.*)</explanation>",
-                        output_1["relationship"],
-                        re.DOTALL,
-                    )
-
-                    answer_1 = re.findall(
-                        r"<answer>(.*)</answer>", output_1["relationship"], re.DOTALL
-                    )
-
-                    output_2 = discriminator(
-                        variable_a=x,
-                        variable_b=y,
-                        answer=answer_1[0],
-                        explanation=explanation_1[0],
-                        llm=llm,
-                    )
-
-                    answer_2 = re.findall(
-                        r"<answer>(.*?)</answer>", output_2["relationship"], re.DOTALL
-                    )
-
-                    explanation_2 = re.findall(
-                        r"<explanation>(.*?)</explanation>",
-                        output_2["relationship"],
-                        re.DOTALL,
-                    )
-
-                    if answer_2[0] == "A":
-                        key = ((x, y), (x, y))
-                        critiqued_edges[key] = explanation_2
-
-                    elif answer_2[0] == "B":
-                        key = ((x, y), (y, x))
-                        critiqued_edges[key] = explanation_2
-                        graph.remove_edge(x, y)
-                        graph.add_edge(y, x)
-
-                    elif answer_2[0] == "C":
-                        key = ((x, y), ("Deleted", "Deleted"))
-                        critiqued_edges[key] = explanation_2
-                        graph.remove_edge(x, y)
-
-                    success = True
-
-                except KeyError:
-                    success = False
-                    continue
-
-                except IndexError:
-                    success = False
-                    continue
-
-        return (critiqued_edges, critiqued_graph)
-
-    def _critique_graph_program(self):
-        return guidance(
-            """
-        {{#system~}}
-        You are a helpful assistant on causal reasoning. Your goal is to factually and concisely answer questions about cause and effect relationships in a factual and concise way.
-        {{~/system}}
-
-        {{#user~}}
-        Which cause and effect relationship is more likely?
-        A. {{variable_a}} causes {{variable_b}}?
-        B. {{variable_b}} causes {{variable_a}}?
-        C. Neither. No causal relationship exists. 
-        Let's think step-by-step to make sure that we have the right answer. Keep your argument to no more than one paragraph, otherwise you lose points, and wrap it within the tags, <explanation>...</explanation>. Then provide your final answer within the tags, <answer>A/B/C</answer>.
-        {{~/user}}
-
-        {{#assistant~}}
-        {{gen 'relationship' temperature=0.3}}
-        {{~/assistant}}                     
-        """
-        )
-
-    def _critique_program(self):
-        return guidance(
-            """
-        {{#system~}}
-        You are a helpful assistant on causal reasoning. Your goal is to factually and concisely answer questions about cause and effect relationships in a factual and concise way.
-        {{~/system}}
-
-        {{#user~}}
-        Analyze the output from an AI assistant. Is the final answer {{answer}} consistent with the reasoning provided by the assistant?
-                        
-        Question
-        Which cause and effect relationship is more likely?
-        A. {{variable_a}} causes {{variable_b}}?
-        B. {{variable_b}} causes {{variable_a}}?
-        C. Neither. No causal relationship exists. 
-        Let's think step-by-step to make sure that we have the right answer. Keep your argument to no more than one paragraph, otherwise you lose points, and wrap it within the tags, <explanation>...</explanation>. Then provide your final answer within the tags, <answer>A/B/C</answer>.
-            
-        AI Assistant Explanation
-        {{explanation}}          
-                        
-        Critique the AI Assistant's argument by providing your own individual version of the argument. Provide your explanations within the tags, <explanation>...</explanation> and answer your final answer to the question within the tags, <answer>A/B/C</answer>.
-        {{~/user}}
-
-        {{#assistant~}}
-        {{gen 'relationship' temperature=0.3}}
-        {{~/assistant}}                     
-        """
-        )
-
-    def suggest_latent_confounders(
-        self, llm: guidance.llms, treatment: str, outcome: str
-    ):
-        generate_latent_confounders = self._latent_confounder_program()
-
-        output = generate_latent_confounders(
-            treatment=treatment, outcome=outcome, llm=llm
-        )
-
-        # Find all occurrences of confounders, explanations, and categories
-        confounders = re.findall(
-            r"<latent_confounder>(.*?)</latent_confounder>",
-            output["latent_confounders"],
-        )
-
-        # Combine confounders and explanations into a dictionary
-        latent_confounders = list(confounders)
-
-        return latent_confounders
-
-    def _latent_confounder_program(self):
-        return guidance(
-            """
-        {{#system~}}
-        You are a helpful assistant on causal reasoning. Your goal is to answer questions about cause and effect in a factual and concise way.
-        {{~/system}}
-
-        {{#user~}}
-        In a causal observational study of arctic sea ice and atmosphere science where we wish to measure the causal effect of {{outcome}} on {{treatment}}, we are trying to add unobserved common causes. To help validate our analysis, what are some examples of specific latent confounders that we may bias our results if we do not account for them? Be specific about the confounders you mention.
-        Let's think step-by-step to make sure that we have the right answer. Explanations should not excede one sentence, otherwise you lose points. For each latent confounder, provide your explanation within the tags, <explanation>...</explanation> and the confounder within the tags, <latent_confounder>...</latent_confounder>
-        {{~/user}}
-
-        {{#assistant~}}
-        {{gen 'latent_confounders' temperature=0.3}}
-        {{~/assistant}} 
-        """
-        )
+    EXPERTS: list() = [
+        "causality, you are an intelligent AI with expertise in causality",
+        "answering questions about causality, you are a helpful causality assistant ",
+    ]
+    CONTEXT: str = """causal mechanisms"""
 
     def suggest_negative_controls(
-        self, variables: List[str], llm: guidance.llms, treatment: str, outcome: str
+        self,
+        treatment: str,
+        outcome: str,
+        factors_list: list(),
+        llm: guidance.llms,
+        experts: list() = EXPERTS,
+        analysis_context: list() = CONTEXT,
+        stakeholders: list() = None,
+        temperature=0.3,
+        model_type: ModelType = ModelType.Completion,
     ):
-        suggest_negative_controls = self._suggest_negative_controls_program()
+        expert_list: List[str] = list()
+        for elements in experts:
+            expert_list.append(elements)
+        if stakeholders is not None:
+            for elements in stakeholders:
+                expert_list.append(elements)
 
-        negative_controls = []
+        suggest = guidance(ps[model_type.value]["expert_suggests_negative_controls"])
 
-        for variable in variables:
-            if variable is not treatment and variable is not outcome:
+        negative_controls_counter: Dict[str, int] = dict()
+        negative_controls: List[str] = list()
+
+        edited_factors_list: List[str] = []
+        for i in range(len(factors_list)):
+            if factors_list[i] != treatment and factors_list[i] != outcome:
+                edited_factors_list.append(factors_list[i])
+
+        if len(expert_list) > 1:
+            for expert in expert_list:
+                (
+                    negative_controls_counter,
+                    negative_controls_list,
+                ) = self.request_negative_controls(
+                    treatment=treatment,
+                    outcome=outcome,
+                    program=suggest,
+                    edited_factors_list=edited_factors_list,
+                    negative_controls_counter=negative_controls_counter,
+                    llm=llm,
+                    expert=expert,
+                    analysis_context=analysis_context,
+                    temperature=temperature,
+                )
+                for m in negative_controls_list:
+                    if m not in negative_controls:
+                        negative_controls.append(m)
+        else:
+            (
+                negative_controls_counter,
+                negative_controls_list,
+            ) = self.request_negative_controls(
+                treatment=treatment,
+                outcome=outcome,
+                program=suggest,
+                edited_factors_list=edited_factors_list,
+                negative_controls_counter=negative_controls_counter,
+                llm=llm,
+                expert=expert,
+                analysis_context=analysis_context,
+                temperature=temperature,
+            )
+            for m in negative_controls_list:
+                if m not in negative_controls:
+                    negative_controls.append(m)
+
+        return negative_controls_counter, negative_controls
+
+    def request_negative_controls(
+        self,
+        treatment: str,
+        outcome: str,
+        program,
+        edited_factors_list: list(),
+        negative_controls_counter: list(),
+        llm: guidance.llms,
+        expert: str = EXPERTS[0],
+        analysis_context: list() = CONTEXT,
+        temperature=0.3,
+    ):
+        negative_controls_list: List[str] = list()
+
+        success: bool = False
+        while not success:
+            try:
+                output = program(
+                    analysis_context=analysis_context,
+                    domain_expertise=expert,
+                    factors_list=edited_factors_list,
+                    treatment=treatment,
+                    outcome=outcome,
+                    temperature=temperature,
+                    llm=llm,
+                )
+                negative_controls = re.findall(
+                    r"<negative_control>(.*?)</negative_control>",
+                    output["output"],
+                )
+
+                if negative_controls:
+                    for factor in negative_controls:
+                        # to not add it twice into the list
+                        if (
+                            factor in edited_factors_list
+                            and factor not in negative_controls_list
+                        ):
+                            negative_controls_list.append(factor)
+                    success = True
+                else:
+                    llm.OpenAI.cache.clear()
+                    success = False
+
+            except KeyError:
                 success = False
-                while not success:
-                    try:
-                        output = suggest_negative_controls(
-                            treatment=treatment,
-                            outcome=outcome,
-                            variable=variable,
+                continue
+
+            for element in negative_controls_list:
+                if element in negative_controls_counter:
+                    negative_controls_counter[element] += 1
+                else:
+                    negative_controls_counter[element] = 1
+        return negative_controls_counter, negative_controls_list
+
+    def suggest_latent_confounders(
+        self,
+        treatment: str,
+        outcome: str,
+        llm: guidance.llms,
+        experts: list() = EXPERTS,
+        analysis_context: list() = CONTEXT,
+        stakeholders: list() = None,
+        temperature=0.3,
+        model_type: ModelType = ModelType.Completion,
+    ):
+        expert_list: List[str] = list()
+        for elements in experts:
+            expert_list.append(elements)
+        if stakeholders is not None:
+            for elements in stakeholders:
+                expert_list.append(elements)
+
+        suggest = guidance(ps[model_type.value]["expert_suggests_latent_confounders"])
+
+        latent_confounders_counter: Dict[str, int] = dict()
+        latent_confounders: List[str, str] = list()
+
+        if len(expert_list) > 1:
+            for expert in expert_list:
+                (
+                    latent_confounders_counter,
+                    latent_confounders_list,
+                ) = self.request_latent_confounders(
+                    treatment=treatment,
+                    outcome=outcome,
+                    program=suggest,
+                    latent_confounders_counter=latent_confounders_counter,
+                    llm=llm,
+                    expert=expert,
+                    analysis_context=analysis_context,
+                    temperature=temperature,
+                )
+                for m in latent_confounders_list:
+                    if m not in latent_confounders:
+                        latent_confounders.append(m)
+        else:
+            (
+                latent_confounders_counter,
+                latent_confounders_list,
+            ) = self.request_latent_confounders(
+                treatment=treatment,
+                outcome=outcome,
+                program=suggest,
+                latent_confounders_counter=latent_confounders_counter,
+                llm=llm,
+                expert=expert,
+                analysis_context=analysis_context,
+                temperature=temperature,
+            )
+            for m in latent_confounders_list:
+                if m not in latent_confounders:
+                    latent_confounders.append(m)
+
+        return latent_confounders_counter, latent_confounders
+
+    def request_latent_confounders(
+        self,
+        treatment: str,
+        outcome: str,
+        program,
+        latent_confounders_counter: list(),
+        llm: guidance.llms,
+        expert: str = EXPERTS[0],
+        analysis_context: list() = CONTEXT,
+        temperature=0.3,
+    ):
+        latent_confounders_list: List[str] = list()
+
+        success: bool = False
+        while not success:
+            try:
+                output = program(
+                    analysis_context=analysis_context,
+                    domain_expertise=expert,
+                    treatment=treatment,
+                    outcome=outcome,
+                    temperature=temperature,
+                    llm=llm,
+                )
+                latent_confounders = re.findall(
+                    r"<confounding_factor>(.*?)</confounding_factor>",
+                    output["output"],
+                )
+
+                if latent_confounders:
+                    for factor in latent_confounders:
+                        latent_confounders_list.append(factor)
+                    success = True
+                else:
+                    llm.OpenAI.cache.clear()
+                    success = False
+
+            except KeyError:
+                success = False
+                continue
+
+            for element in latent_confounders_list:
+                if element in latent_confounders_counter:
+                    latent_confounders_counter[element] += 1
+                else:
+                    latent_confounders_counter[element] = 1
+        return latent_confounders_counter, latent_confounders_list
+
+    def request_parent_critique(
+        self,
+        analysis_context,
+        factor,
+        factors_list,
+        expert,
+        llm: guidance.llms,
+        temperature=0.3,
+        model_type=ModelType.Completion,
+    ):
+        suggest = guidance(ps[model_type.value]["expert_critiques_parents"])
+
+        edited_factors_list: List[str] = []
+
+        for i in range(len(factors_list)):
+            if factors_list[i] not in factor:
+                edited_factors_list.append(factors_list[i])
+
+        parents: List[str] = list()
+
+        success: bool = False
+
+        while not success:
+            try:
+                output = suggest(
+                    analysis_context=analysis_context,
+                    domain_expertise=expert,
+                    potential_factors_list=edited_factors_list,
+                    factor=factor,
+                    temperature=temperature,
+                    llm=llm,
+                )
+                influencing_factors = re.findall(
+                    r"<influencing_factor>(.*?)</influencing_factor>",
+                    output["output"],
+                )
+
+                if influencing_factors:
+                    for factor in influencing_factors:
+                        if factor in edited_factors_list and factor not in parents:
+                            parents.append(factor)
+                    success = True
+                else:
+                    llm.OpenAI.cache.clear()
+                    success = False
+
+            except KeyError:
+                success = False
+                continue
+
+        return parents
+
+    def request_children_critique(
+        self,
+        analysis_context,
+        factor,
+        factors_list,
+        expert,
+        llm: guidance.llms,
+        temperature=0.3,
+        model_type=ModelType.Completion,
+    ):
+        suggest = guidance(ps[model_type.value]["expert_critiques_children"])
+
+        edited_factors_list: List[str] = []
+
+        for i in range(len(factors_list)):
+            if factors_list[i] not in factor:
+                edited_factors_list.append(factors_list[i])
+
+        children: List[str] = list()
+
+        success: bool = False
+
+        while not success:
+            try:
+                output = suggest(
+                    analysis_context=analysis_context,
+                    domain_expertise=expert,
+                    potential_factors_list=edited_factors_list,
+                    factor=factor,
+                    temperature=temperature,
+                    llm=llm,
+                )
+                influencing_factors = re.findall(
+                    r"<influenced_factor>(.*?)</influenced_factor>",
+                    output["output"],
+                )
+
+                if influencing_factors:
+                    for factor in influencing_factors:
+                        if factor in edited_factors_list and factor not in children:
+                            children.append(factor)
+
+                    success = True
+                else:
+                    llm.OpenAI.cache.clear()
+                    success = False
+
+            except KeyError:
+                success = False
+                continue
+
+        return children
+
+    def request_pairwise_critique(
+        self,
+        expert,
+        factor_a: str,
+        factor_b: str,
+        llm: guidance.llms,
+        temperature=0.3,
+        analysis_context: str = CONTEXT,
+        model_type=ModelType.Completion,
+    ):
+        suggest = guidance(ps[model_type.value]["expert_critiques_pairwise"])
+
+        success: bool = False
+
+        while not success:
+            try:
+                output = suggest(
+                    analysis_context=analysis_context,
+                    domain_expertise=expert,
+                    a=factor_a,
+                    b=factor_b,
+                    temperature=temperature,
+                    llm=llm,
+                )
+                answer = re.findall(
+                    r"<answer>(.*?)</answer>",
+                    output["output"],
+                )
+
+                if answer:
+                    if answer[0] == "A" or answer[0] == "(A)":
+                        return (factor_a, factor_b)
+
+                    elif answer[0] == "B" or answer[0] == "(B)":
+                        return (factor_b, factor_a)
+
+                    elif answer[0] == "C" or answer[0] == "(C)":
+                        return None
+                    else:
+                        llm.OpenAI.cache.clear()
+                        success = False
+
+                else:
+                    llm.OpenAI.cache.clear()
+                    success = False
+
+            except KeyError:
+                success = False
+                continue
+
+    def critique_graph(
+        self,
+        factors_list: List[str],
+        edges: List[Tuple[str, str]],
+        llm: guidance.llms,
+        experts: list() = EXPERTS,
+        analysis_context: str = CONTEXT,
+        stakeholders: list() = None,
+        temperature=0.3,
+        model_type: ModelType = ModelType.Completion,
+        relationship_strategy: RelationshipStrategy = RelationshipStrategy.Parent,
+    ):
+        expert_list: List[str] = list()
+        for elements in experts:
+            expert_list.append(elements)
+        if stakeholders is not None:
+            for elements in stakeholders:
+                expert_list.append(elements)
+
+        if relationship_strategy == RelationshipStrategy.Parent:
+            "loop asking parents program"
+
+            parent_edges: Dict[Tuple[str, str], int] = dict()
+
+            for factor in factors_list:
+                if len(expert_list) > 1:
+                    for expert in expert_list:
+                        suggested_parent = self.request_parent_critique(
+                            analysis_context=analysis_context,
+                            factor=factor,
+                            factors_list=factors_list,
+                            expert=expert,
                             llm=llm,
+                            temperature=temperature,
+                            model_type=model_type,
                         )
-                        # Find all occurrences of confounders, explanations, and categories
-                        negative_control = re.findall(
-                            r"<answer>(.*?)</answer>", output["negative_control"]
+                        for element in suggested_parent:
+                            if (
+                                element,
+                                factor,
+                            ) in parent_edges and element in factors_list:
+                                parent_edges[(element, factor)] += 1
+                            else:
+                                parent_edges[(element, factor)] = 1
+                else:
+                    suggested_parent = self.request_parent_critique(
+                        analysis_context=analysis_context,
+                        factor=factor,
+                        factors_list=factors_list,
+                        expert=expert_list[0],
+                        llm=llm,
+                        temperature=temperature,
+                        model_type=model_type,
+                    )
+
+                    for element in suggested_parent:
+                        if (element, factor) in parent_edges:
+                            parent_edges[(element, factor)] += 1
+                        else:
+                            parent_edges[(element, factor)] = 1
+
+            return edges, parent_edges
+
+        elif relationship_strategy == RelationshipStrategy.Child:
+            "loop asking children program"
+
+            critiqued_children_edges: Dict[Tuple[str, str], int] = dict()
+
+            for factor in factors_list:
+                if len(expert_list) > 1:
+                    for expert in expert_list:
+                        suggested_children = self.request_children_critique(
+                            analysis_context=analysis_context,
+                            factor=factor,
+                            factors_list=factors_list,
+                            expert=expert,
+                            llm=llm,
+                            temperature=temperature,
+                            model_type=model_type,
                         )
+                        for element in suggested_children:
+                            if (
+                                (
+                                    element,
+                                    factor,
+                                )
+                                in critiqued_children_edges
+                                and element in factors_list
+                            ):
+                                critiqued_children_edges[(element, factor)] += 1
+                            else:
+                                critiqued_children_edges[(element, factor)] = 1
+                else:
+                    suggested_children = self.request_children_critique(
+                        analysis_context=analysis_context,
+                        factor=factor,
+                        factors_list=factors_list,
+                        expert=expert_list[0],
+                        llm=llm,
+                        temperature=temperature,
+                        model_type=model_type,
+                    )
 
-                        if negative_control == "A" or negative_control == "A. Yes":
-                            negative_controls.append(variable)
+                    for element in suggested_children:
+                        if (element, factor) in critiqued_children_edges:
+                            critiqued_children_edges[(element, factor)] += 1
+                        else:
+                            critiqued_children_edges[(element, factor)] = 1
 
-                        success = True
+            return edges, critiqued_children_edges
 
-                    except KeyError:
-                        success = False
-                        continue
+        elif relationship_strategy == RelationshipStrategy.Pairwise:
+            "loop through all pairs asking critique for edge"
 
-                    except IndexError:
-                        success = False
-                        continue
+            critiqued_pairwise_edges: Dict[Tuple[str, str], int] = dict()
 
-        return negative_controls
+            for factor_a in factors_list:
+                for factor_b in factors_list:
+                    if factor_a != factor_b:
+                        if len(expert_list) > 1:
+                            for expert in expert_list:
+                                suggested_edge = self.request_pairwise_critique(
+                                    analysis_context=analysis_context,
+                                    factor_a=factor_a,
+                                    factor_b=factor_b,
+                                    expert=expert,
+                                    llm=llm,
+                                    temperature=temperature,
+                                    model_type=model_type,
+                                )
 
-    def _suggest_negative_controls_program(self):
-        return guidance(
-            """
-        {{#system~}}
-        You are a helpful assistant on causal reasoning. Your goal is to answer questions about cause and effect in a factual and concise way.
-        {{~/system}}
+                                if suggested_edge is not None:
+                                    if suggested_edge in critiqued_pairwise_edges:
+                                        critiqued_pairwise_edges[suggested_edge] += 1
+                                    else:
+                                        critiqued_pairwise_edges[suggested_edge] = 1
+                        else:
+                            suggested_edge = self.request_pairwise_critique(
+                                analysis_context=analysis_context,
+                                factor_a=factor_a,
+                                factor_b=factor_b,
+                                expert=expert_list[0],
+                                llm=llm,
+                                temperature=temperature,
+                                model_type=model_type,
+                            )
 
-        {{#user~}}
-        In a causal observational study of arctic sea ice and atmosphere science where we wish to measure the causal effect of {{treatment}} on {{outcome}}, we want to identify whether {{variable}} is a negative control where we might expect to see zero treatment effect. Is {{variable}} a likely negative control?
-        A. Yes
-        B. No
-        Let's think step-by-step to make sure that we have the right answer. Provide your explanations within the tags, <explanation>...</explanation> and confounders within the tags, <answer>A/B</answer>. Explanations should be specific and not excede one sentence, otherwise you lose points. 
-        {{~/user}}
+                            if suggested_edge is not None:
+                                if suggested_edge in critiqued_pairwise_edges:
+                                    critiqued_pairwise_edges[suggested_edge] += 1
+                                else:
+                                    critiqued_pairwise_edges[suggested_edge] = 1
 
-        {{#assistant~}}
-        {{gen 'negative_control' temperature=0.3}}
-        {{~/assistant}} 
-        """
-        )
+            return edges, critiqued_pairwise_edges

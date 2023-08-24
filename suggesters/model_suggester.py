@@ -1,547 +1,596 @@
-from typing import List, Tuple, Dict
-from protocols import ModelerProtocol
+from typing import Set, Tuple, Dict, List
+from suggesters.protocols import ModelerProtocol
 import networkx as nx
 import guidance
+from .helpers import RelationshipStrategy, ModelType
+import copy
+import random
 from enum import Enum
+from .prompts import prompts as ps
+import os
 import re
-
-
-class Strategy(Enum):
-    Straight = 0
-    CoT = 1
-    ToT_Single = 2
-    ToT_Multi = 2
-
-
-class Relationship(Enum):
-    One_sided = 1
-    Two_sided = 2
+import csv
 
 
 class ModelSuggester(ModelerProtocol):
-    def suggest_description(
+    EXPERTS: list() = [
+        "answering questions about causality, you are a helpful causality assistant ",
+        "causality, you are an intelligent AI with expertise in causality",
+        "cause and effect",
+    ]
+    CONTEXT: str = """causal mechanisms"""
+
+    def suggest_domain_expertises(
         self,
-        variables: List[str],
+        analysis_context,
+        factors,
         llm: guidance.llms,
-        context=None,
-        ask_reference=False,
+        n_experts: int = 1,
         temperature=0.3,
+        model_type: ModelType = ModelType.Completion,
     ):
-        generate_description = self._build_description_program()
+        suggest = guidance(ps[model_type.value]["expertises"])
 
+        expertise_list: List[str] = list()
         success: bool = False
-        suggested_description: Dict[str, Dict[str, str]]
 
-        for variable in variables:
-            success = False
-            while not success:
-                try:
-                    if context is None:
-                        output = generate_description(
-                            variable=variable, llm=llm, temperature=temperature
-                        )
-                    else:
-                        output = generate_description(
-                            context=context,
-                            variable=variable,
-                            llm=llm,
-                            temperature=temperature,
-                        )
+        while not success:
+            try:
+                output = suggest(
+                    analysis_context=analysis_context,
+                    factors_list=factors,
+                    n_experts=n_experts,
+                    temperature=temperature,
+                    llm=llm,
+                )
+                expertise = re.findall(
+                    r"<domain_expertise>(.*?)</domain_expertise>", output["output"]
+                )
 
-                    description = re.findall(
-                        r"<description>(.*?)</description>", output["output"]
-                    )
-
-                    suggested_description["description"] = description[0]
-
-                    if ask_reference:
-                        reference = re.findall(
-                            r"<reference>(.*?)</reference>", output["output"]
-                        )
-
-                        suggested_description["reference"] = reference[0]
-                        success = True
-
-                    return suggested_description
-
-                except KeyError:
+                if expertise:
+                    for i in range(n_experts):
+                        expertise_list.append(expertise[i])
+                    success = True
+                else:
+                    llm.OpenAI.cache.clear()
                     success = False
-                    continue
 
-    def _build_description_program(self, use_context=False, ask_reference=False):
-        query = ""
+            except KeyError:
+                success = False
+                continue
 
-        if use_context:
-            query = """
-            {{#system~}} 
-            You are a helpful assistant for writing concise and peer-reviewed descriptions. Your goal is to provide factual and succinct descriptions related to the given concept and context. 
-            {{~/system}}
-            
-            {{#user~}}
-            {{context}}
-            Using this context about the particular variable, describe the concept of {{variable}}.
-            In one sentence, provide a factual and succinct description of {{variable}}"""
+        return expertise_list
 
-            if ask_reference:
-                query += """
-                Then provide two research papers that support your description.
-                Let's think step-by-step to make sure that we have a proper and clear description. Then provide your final answer within the tags, <description></description>, and each research paper within the tags <reference></reference>.
-                {{~/user}}
+    def suggest_domain_experts(
+        self,
+        analysis_context,
+        factors,
+        llm: guidance.llms,
+        n_experts: int = 5,
+        temperature=0.3,
+        model_type: ModelType = ModelType.Chat,
+    ):
+        suggest = guidance(ps[model_type.value]["domain_experts"])
 
-                {{#assistant~}}
-                {{gen 'output' temperature=temperature}}
-                {{~/assistant}}"""
-            else:
-                query += """
-                Let's think step-by-step to make sure that we have a proper and clear description. Then provide your final answer within the tags, <description></description> .
-                {{~/user}}
+        experts_list: Set[str] = set()
+        success: bool = False
 
-                {{#assistant~}}
-                {{gen 'output' temperature=temperature}}
-                {{~/assistant}}"""
+        while not success:
+            try:
+                output = suggest(
+                    analysis_context=analysis_context,
+                    factors_list=factors,
+                    n_experts=n_experts,
+                    temperature=temperature,
+                    llm=llm,
+                )
+                experts = re.findall(
+                    r"<domain_expert>(.*?)</domain_expert>", output["output"]
+                )
 
-        else:
-            query = """
-            {{#system~}} 
-            You are a helpful assistant for writing concise and peer-reviewed descriptions. Your goal is to provide factual and succinct description of the given concept. 
-            {{~/system}}
-            
-            {{#user~}}
-            Describe the concept of {{variable}}.
-            In one sentence, provide a factual and succinct description of {{variable}}.
-            """
+                if experts:
+                    for i in range(n_experts):
+                        experts_list.add(experts[i])
+                    success = True
+                else:
+                    llm.OpenAI.cache.clear()
+                    success = False
 
-            if ask_reference:
-                query += """
-                Then provide two research papers that support your description.
-                Let's think step-by-step to make sure that we have a proper and clear description. Then provide your final answer within the tags, <description></description>, and each research paper within the tags <paper></paper>.
-                {{~/user}}
+            except KeyError:
+                success = False
+                continue
 
-                {{#assistant~}}
-                {{gen 'output' temperature=temperature}}
-                {{~/assistant}}"""
-            else:
-                query += """
-                Let's think step-by-step to make sure that we have a proper and clear description. Then provide your final answer within the tags, <description></description> .
-                {{~/user}}
+        return experts_list
 
-                {{#assistant~}}
-                {{gen 'output' temperature=temperature}}
-                {{~/assistant}}"""
+    def suggest_stakeholders(
+        self,
+        factors,
+        llm: guidance.llms,
+        n_experts: int = 5,  # must be > 1
+        temperature=0.3,
+        analysis_context=CONTEXT,
+        model_type: ModelType = ModelType.Chat,
+    ):
+        suggest = guidance(ps[model_type.value]["stakeholders"])
 
-        return guidance(query)
+        stakeholder_list: List[str] = list()
+        success: bool = False
+
+        while not success:
+            try:
+                output = suggest(
+                    analysis_context=analysis_context,
+                    factors_list=factors,
+                    n_experts=n_experts,
+                    temperature=temperature,
+                    llm=llm,
+                )
+                stakeholder = re.findall(
+                    r"<stakeholder>(.*?)</stakeholder>", output["output"]
+                )
+
+                if stakeholder:
+                    for i in range(n_experts):
+                        stakeholder_list.append(stakeholder[i])
+                    success = True
+                else:
+                    llm.OpenAI.cache.clear()
+                    success = False
+
+            except KeyError:
+                success = False
+                continue
+
+        return stakeholder_list
 
     def suggest_confounders(
         self,
-        variables,
-        llm: guidance.llms,
         treatment: str,
         outcome: str,
-        domain=None,  # , explanation=False
+        factors_list: list(),
+        llm: guidance.llms,
+        experts: list() = EXPERTS,
+        analysis_context: list() = CONTEXT,
+        stakeholders: list() = None,
+        temperature=0.3,
+        model_type: ModelType = ModelType.Completion,
     ):
-        generate_confounders = self._build_confounder_program(use_domain=domain)
+        expert_list: List[str] = list()
+        for elements in experts:
+            expert_list.append(elements)
+        if stakeholders is not None:
+            for elements in stakeholders:
+                expert_list.append(elements)
+
+        suggest = guidance(ps[model_type.value]["expert_suggests_confounders"])
+
+        confounders_edges: Dict[Tuple[str, str], int] = dict()
+        confounders_edges[(treatment, outcome)] = 1
+
+        confounders: List[str] = list()
+
+        edited_factors_list: List[str] = []
+        for i in range(len(factors_list)):
+            if factors_list[i] != treatment and factors_list[i] != outcome:
+                edited_factors_list.append(factors_list[i])
+
+        if len(expert_list) > 1:
+            for expert in expert_list:
+                confounders_edges, confounders_list = self.request_confounders(
+                    suggest=suggest,
+                    treatment=treatment,
+                    outcome=outcome,
+                    analysis_context=analysis_context,
+                    expert=expert,
+                    edited_factors_list=edited_factors_list,
+                    temperature=temperature,
+                    llm=llm,
+                    confounders_edges=confounders_edges,
+                )
+
+                for m in confounders_list:
+                    if m not in confounders:
+                        confounders.append(m)
+        else:
+            confounders_edges, confounders_list = self.request_confounders(
+                suggest=suggest,
+                treatment=treatment,
+                outcome=outcome,
+                analysis_context=analysis_context,
+                expert=expert_list[0],
+                edited_factors_list=edited_factors_list,
+                temperature=temperature,
+                llm=llm,
+                confounders_edges=confounders_edges,
+            )
+
+            for m in confounders_list:
+                if m not in confounders:
+                    confounders.append(m)
+
+        return confounders_edges, confounders
+
+    def request_confounders(
+        self,
+        suggest,
+        treatment,
+        outcome,
+        analysis_context,
+        expert,
+        edited_factors_list,
+        temperature,
+        llm,
+        confounders_edges,
+    ):
+        confounders: List[str] = list()
 
         success: bool = False
-        suggested_confounders: Dict[str, str]
 
-        for variable in variables:
-            if variable != treatment and variable != outcome:
+        while not success:
+            try:
+                output = suggest(
+                    treatment=treatment,
+                    outcome=outcome,
+                    analysis_context=analysis_context,
+                    domain_expertise=expert,
+                    factors_list=edited_factors_list,
+                    factor=factor,
+                    temperature=temperature,
+                    llm=llm,
+                )
+                confounding_factors = re.findall(
+                    r"<confounding_factor>(.*?)</confounding_factor>",
+                    output["output"],
+                )
+
+                if confounding_factors:
+                    for factor in confounding_factors:
+                        # to not add it twice into the list
+                        if factor in edited_factors_list and factor not in confounders:
+                            confounders.append(factor)
+                    success = True
+                else:
+                    llm.OpenAI.cache.clear()
+                    success = False
+
+            except KeyError:
                 success = False
-                while not success:
-                    try:
-                        output = generate_confounders(
-                            treatment=treatment,
-                            outcome=outcome,
-                            variable=variable,
-                            llm=llm,
-                        )
+                continue
 
-                        confounder = re.findall(
-                            r"<answer>(.*?)</answer>", output["confounders"]
-                        )
-                        # explanation = re.findall(r'<explanation>(.*?)</explanation>', output['confounders'])
-                        print(confounder)
-                        if confounder[0] == "A" or confounder[0] == "A. Yes":
-                            suggested_confounders.append(variable)
+            for element in confounders:
+                if (element, treatment) in confounders_edges and (
+                    element,
+                    outcome,
+                ) in confounders_edges:
+                    confounders_edges[(element, treatment)] += 1
+                    confounders_edges[(element, outcome)] += 1
+                else:
+                    confounders_edges[(element, treatment)] = 1
+                    confounders_edges[(element, outcome)] = 1
 
-                        success = True
+        return confounders_edges, confounders
 
-                    except KeyError:
-                        success = False
-                        continue
-
-        return suggested_confounders
-
-    def _build_confounder_program(
+    def suggest_parents(
         self,
-        use_domain=None,
-        # use_strategy=Strategy.Straight,
-        # use_description=None,
-        # ask_explanation=False
-    ):
-        assistant = """{{#assistant~}} {{gen 'output' temperature=temperature}} {{~/assistant}}"""
-
-        # set systen
-        system = ""
-        if use_domain == "":
-            system = """{{#system~}} You are a helpful assistant on causal reasoning. Your goal is to answer questions about cause and effect in a factual and concise way. {{~/system}}"""
-        else:
-            system = (
-                """{{#system~}} You are a helpful assistant on causal reasoning and """
-            )
-            +use_domain
-            (
-                +""". Your goal is to answer questions about cause and effect in """
-                + use_domain
-                + """ in a factual and concise way. {{~/system}}"""
-            )
-
-        # set user
-        user = """{{#user~}}
-        Is it true that changing {{variable}} can change {{treatment}} and {{outcome}}? 
-        A. Yes
-        B. No
-        Answer Yes or No. Think step-by-step to make sure that you are concise and accurate in your answer.
-        Then provide your final answer within the tags, <answer>Yes/No</answer>.
-        \n\n\n----------------\n\n\nExample of output structure: <answer>Yes</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>No</answer>
-        {{~/user}}"""
-
-        # set assistant
-        assistant = """{{#assistant~}}
-        {{gen 'confounders' temperature=temperature}}
-        {{~/assistant}}"""
-
-        return guidance(assistant + user + assistant)
-
-    def suggest_relationship(
-        self,
-        variable_set_a: List[str],
-        variable_set_b: List[str],
-        llm,
-        description_a=None,
-        description_b=None,
-        domain=None,
-        strategy: Strategy = None,
-        comparison_type=Relationship.Two_sided,
-        ask_reference=False,
-        consider_feedback_loop=False,
+        analysis_context,
+        factor,
+        factors_list,
+        expert,
+        llm: guidance.llms,
         temperature=0.3,
+        model_type=ModelType.Completion,
     ):
-        use_description = (
-            True if description_a is not None and description_b is not None else False
+        suggest = guidance(ps[model_type.value]["expert_suggests_parents"])
+
+        edited_factors_list: List[str] = []
+
+        for i in range(len(factors_list)):
+            if factors_list[i] not in factor:
+                edited_factors_list.append(factors_list[i])
+
+        parents: List[str] = list()
+
+        success: bool = False
+
+        while not success:
+            try:
+                output = suggest(
+                    analysis_context=analysis_context,
+                    domain_expertise=expert,
+                    factors_list=edited_factors_list,
+                    factor=factor,
+                    temperature=temperature,
+                    llm=llm,
+                )
+                influencing_factors = re.findall(
+                    r"<influencing_factor>(.*?)</influencing_factor>",
+                    output["output"],
+                )
+
+                if influencing_factors:
+                    for factor in influencing_factors:
+                        if factor in edited_factors_list and factor not in parents:
+                            parents.append(factor)
+                    success = True
+                else:
+                    llm.OpenAI.cache.clear()
+                    success = False
+
+            except KeyError:
+                success = False
+                continue
+
+        return parents
+
+    def suggest_children(
+        self,
+        analysis_context,
+        factor,
+        factors_list,
+        expert,
+        llm: guidance.llms,
+        temperature=0.3,
+        model_type=ModelType.Completion,
+    ):
+        suggest = guidance(ps[model_type.value]["expert_suggests_children"])
+
+        edited_factors_list: List[str] = []
+
+        for i in range(len(factors_list)):
+            if factors_list[i] not in factor:
+                edited_factors_list.append(factors_list[i])
+
+        children: List[str] = list()
+
+        success: bool = False
+
+        while not success:
+            try:
+                output = suggest(
+                    analysis_context=analysis_context,
+                    domain_expertise=expert,
+                    factors_list=edited_factors_list,
+                    factor=factor,
+                    temperature=temperature,
+                    llm=llm,
+                )
+                influencing_factors = re.findall(
+                    r"<influenced_factor>(.*?)</influenced_factor>",
+                    output["output"],
+                )
+
+                if influencing_factors:
+                    for factor in influencing_factors:
+                        if factor in edited_factors_list and factor not in children:
+                            children.append(factor)
+                    success = True
+                else:
+                    llm.OpenAI.cache.clear()
+                    success = False
+
+            except KeyError:
+                success = False
+                continue
+
+        return children
+
+    def suggest_pairwise_relationship(
+        self,
+        expert,
+        factor_a: str,
+        factor_b: str,
+        llm: guidance.llms,
+        temperature=0.3,
+        analysis_context: str = CONTEXT,
+        model_type=ModelType.Completion,
+    ):
+        suggest = guidance(
+            ps[model_type.value]["expert_suggests_pairwise_relationships"]
         )
 
-        program: guidance()
-
-        if comparison_type == Relationship.One_sided:
-            program = self._build_one_sided_relationship_program(
-                use_domain=domain,
-                use_strategy=strategy,
-                use_description=use_description,
-                ask_reference=ask_reference,
-                temperature=temperature,
-            )
-        elif comparison_type == Relationship.Two_sided:
-            program = self._build_two_sided_relationship_program(
-                use_domain=domain,
-                use_strategy=strategy,
-                use_description=use_description,
-                ask_reference=ask_reference,
-                consider_feedback_loop=True,
-            )
-
         success: bool = False
-        suggested_relationship: Dict[Tuple[str, str], Dict[str, str]]
 
-        for variable_a in variable_set_a:
-            for variable_b in variable_set_b:
-                if variable_a != variable_b:
-                    while not success:
-                        try:
-                            if use_description:
-                                output = program(
-                                    variable_a=variable_a,
-                                    description_a=description_a,
-                                    variable_b=variable_b,
-                                    description_b=description_b,
-                                    llm=llm,
-                                    temperature=temperature,
-                                )
+        while not success:
+            try:
+                output = suggest(
+                    analysis_context=analysis_context,
+                    domain_expertise=expert,
+                    a=factor_a,
+                    b=factor_b,
+                    temperature=temperature,
+                    llm=llm,
+                )
+                answer = re.findall(
+                    r"<answer>(.*?)</answer>",
+                    output["output"],
+                )
+
+                if answer:
+                    if answer[0] == "A" or answer[0] == "(A)":
+                        return (factor_a, factor_b)
+
+                    elif answer[0] == "B" or answer[0] == "(B)":
+                        return (factor_b, factor_a)
+
+                    elif answer[0] == "C" or answer[0] == "(C)":
+                        return None
+                    else:
+                        llm.OpenAI.cache.clear()
+                        success = False
+
+                else:
+                    llm.OpenAI.cache.clear()
+                    success = False
+
+            except KeyError:
+                success = False
+                continue
+
+    def suggest_relationships(
+        self,
+        treatment: str,
+        outcome: str,
+        factors_list: list(),
+        llm: guidance.llms,
+        experts: list() = EXPERTS,
+        analysis_context: str = CONTEXT,
+        stakeholders: list() = None,
+        temperature=0.3,
+        model_type: ModelType = ModelType.Completion,
+        relationship_strategy: RelationshipStrategy = RelationshipStrategy.Parent,
+    ):
+        expert_list: List[str] = list()
+        for elements in experts:
+            expert_list.append(elements)
+        if stakeholders is not None:
+            for elements in stakeholders:
+                expert_list.append(elements)
+
+        if relationship_strategy == RelationshipStrategy.Parent:
+            "loop asking parents program"
+
+            parent_edges: Dict[Tuple[str, str], int] = dict()
+
+            for factor in factors_list:
+                if len(expert_list) > 1:
+                    for expert in expert_list:
+                        suggested_parent = self.suggest_parents(
+                            analysis_context=analysis_context,
+                            factor=factor,
+                            factors_list=factors_list,
+                            expert=expert,
+                            llm=llm,
+                            temperature=temperature,
+                            model_type=model_type,
+                        )
+                        for element in suggested_parent:
+                            if (
+                                element,
+                                factor,
+                            ) in parent_edges and element in factors_list:
+                                parent_edges[(element, factor)] += 1
                             else:
-                                output = program(
-                                    variable_a=variable_a,
-                                    variable_b=variable_b,
+                                parent_edges[(element, factor)] = 1
+                else:
+                    suggested_parent = self.suggest_parents(
+                        analysis_context=analysis_context,
+                        factor=factor,
+                        factors_list=factors_list,
+                        expert=expert_list[0],
+                        llm=llm,
+                        temperature=temperature,
+                        model_type=model_type,
+                    )
+
+                    for element in suggested_parent:
+                        if (element, factor) in parent_edges:
+                            parent_edges[(element, factor)] += 1
+                        else:
+                            parent_edges[(element, factor)] = 1
+
+            return parent_edges
+
+        elif relationship_strategy == RelationshipStrategy.Child:
+            "loop asking children program"
+
+            children_edges: Dict[Tuple[str, str], int] = dict()
+
+            for factor in factors_list:
+                if len(expert_list) > 1:
+                    for expert in expert_list:
+                        suggested_children = self.suggest_children(
+                            analysis_context=analysis_context,
+                            factor=factor,
+                            factors_list=factors_list,
+                            expert=expert,
+                            llm=llm,
+                            temperature=temperature,
+                            model_type=model_type,
+                        )
+                        for element in suggested_children:
+                            if (
+                                element,
+                                factor,
+                            ) in children_edges and element in factors_list:
+                                children_edges[(element, factor)] += 1
+                            else:
+                                children_edges[(element, factor)] = 1
+                else:
+                    suggested_children = self.suggest_parents(
+                        analysis_context=analysis_context,
+                        factor=factor,
+                        factors_list=factors_list,
+                        expert=expert_list[0],
+                        llm=llm,
+                        temperature=temperature,
+                        model_type=model_type,
+                    )
+
+                    for element in suggested_children:
+                        if (element, factor) in children_edges:
+                            children_edges[(element, factor)] += 1
+                        else:
+                            children_edges[(element, factor)] = 1
+
+            return children_edges
+
+        elif relationship_strategy == RelationshipStrategy.Pairwise:
+            "loop through all pairs asking relationship for"
+
+            pairwise_edges: Dict[Tuple[str, str], int] = dict()
+
+            for factor_a in factors_list:
+                for factor_b in factors_list:
+                    if factor_a != factor_b:
+                        if len(expert_list) > 1:
+                            for expert in expert_list:
+                                suggested_edge = self.suggest_pairwise_relationship(
+                                    analysis_context=analysis_context,
+                                    factor_a=factor_a,
+                                    factor_b=factor_b,
+                                    expert=expert,
                                     llm=llm,
                                     temperature=temperature,
+                                    model_type=model_type,
                                 )
 
-                            answer = re.findall(
-                                r"<answer>(.*?)</answer>", output["output"]
+                                if suggested_edge is not None:
+                                    if suggested_edge in pairwise_edges:
+                                        pairwise_edges[suggested_edge] += 1
+                                    else:
+                                        pairwise_edges[suggested_edge] = 1
+                        else:
+                            suggested_edge = self.suggest_pairwise_relationship(
+                                analysis_context=analysis_context,
+                                factor_a=factor_a,
+                                factor_b=factor_b,
+                                expert=expert_list[0],
+                                llm=llm,
+                                temperature=temperature,
+                                model_type=model_type,
                             )
-                            temp_dict: Dict[str, str] = {}
-                            if comparison_type is Relationship.One_sided:
-                                if answer[0] == "Yes" or answer[0] == "yes":
-                                    temp_dict["relationship"] = "R"  # Right: a causes b
-                                elif answer[0] == "No" or answer[0] == "no":
-                                    temp_dict[
-                                        "relationship"
-                                    ] = "N"  # No: a does not cause b
+
+                            if suggested_edge is not None:
+                                if suggested_edge in pairwise_edges:
+                                    pairwise_edges[suggested_edge] += 1
                                 else:
-                                    success = False
+                                    pairwise_edges[suggested_edge] = 1
 
-                            elif comparison_type is Relationship.Two_sided:
-                                if consider_feedback_loop:
-                                    if answer[0] == "A":  # Right
-                                        temp_dict["relationship"] = "R"
-                                    elif answer[0] == "B":  # Left
-                                        temp_dict["relationship"] = "L"
-                                    elif answer[0] == "C":  # Both
-                                        temp_dict["relationship"] = "B"
-                                    elif answer[0] == "D":  # Neither/No
-                                        temp_dict["relationship"] = "N"
-                                    else:
-                                        success = False
-                                else:
-                                    if answer[0] == "A":  # Right
-                                        temp_dict["relationship"] == "R"
-                                    elif answer[0] == "B":  # Left
-                                        temp_dict["relationship"] = "L"
-                                    elif answer[0] == "C":  # Neither
-                                        temp_dict["relationship"] = "N"
-                                    else:
-                                        success = False
+            return pairwise_edges
 
-                            if ask_reference:
-                                reference = re.findall(
-                                    r"<reference>(.*?)</reference>", output["output"]
-                                )
-                                temp_dict["reference"] = reference[0]
+        elif relationship_strategy == RelationshipStrategy.Confounder:
+            "one call to confounder program"
 
-                            suggested_relationship[(variable_a, variable_b)] = temp_dict
-
-                            success = True
-
-                        except KeyError:
-                            success = False
-                            continue
-
-        return suggested_relationship
-
-    def _build_one_sided_relationship_program(
-        self,
-        use_domain=None,
-        use_strategy=Strategy.ToT_Single,
-        use_description=False,
-        ask_reference=False,
-    ):
-        system = ""
-        user = ""
-        assistant = """{{#assistant~}} {{gen 'output' temperature=temperature}} {{~/assistant}}"""
-
-        if use_domain is None:
-            system = """{{#system~}} You are a helpful assistant on causal reasoning. Your goal is to answer questions about cause and effect in a factual and concise way. {{~/system}}"""
-        else:
-            system = (
-                """{{#system~}} You are a helpful assistant on causal reasoning and """
-            )
-            +use_domain
-            (
-                +""". Your goal is to answer questions about cause and effect in """
-                + use_domain
-                + """ in a factual and concise way. {{~/system}}"""
+            confounders_counter, confounders = self.suggest_confounders(
+                analysis_context=analysis_context,
+                treatment=treatment,
+                outcome=outcome,
+                factors_list=factors_list,
+                experts=experts,
+                llm=llm,
+                stakeholders=stakeholders,
+                temperature=temperature,
+                model_type=model_type,
             )
 
-        if use_strategy is not None:
-            """
-            Using Single Prompt ToT Ttrategy
-            https://github.com/dave1010/tree-of-thought-prompting
-            """
-            if use_strategy == Strategy.ToT_Single:
-                user += """{{#user~}} There is a council of three different experts answering this question.
-                Each of the three expert will write down 1 step of their thinking, and share it with the council. 
-                Then all experts will go on to the next step, etc.
-                All experts in the council are arguing to arrive to a true and factual answer. Their goal is to arrive at concensus but will only do so if an argument is factual and logical.
-                If an expert disagrees with an argument, then they will respectfully explain why with facts and logic. 
-                If any expert realises their argument is wrong at any point, then they will adjust their argument to be factual and logical.
-                The question is """
-
-                if use_description:
-                    user += """can changing {{variable_a}}, where {{description_a}}, change {{variable_b}}, where {{description_b}}? Answer Yes or No."""
-                else:
-                    user += """can changing {{variable_a}} change {{variable_b}}? Answer Yes or No."""
-
-                if ask_reference:
-                    user += """At each step, each expert include a reference to a research paper that supports their argument. They will provide a one sentence summary of the paper and how it supports their argument. 
-                    Then they will answer whether a change in{{variable_a}} changes {{variable_b}}. Answer Yes or No.
-                    When concensus is reached, thinking carefully and factually, explain the council's answer. Provide the answer within the tags, <answer>Yes/No</answer>, and the most influential reference within the tags <reference>Author, Title, Year of publication</reference>.
-                    \n\n\n----------------\n\n\n<answer>Yes</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\n<answer>No</answer> {{~/user}}"""
-                else:
-                    user += """When concensus is reached, thinking carefully and factually, explain the council's answer. Provide the answer within the tags, <answer>Yes/No</answer>.
-                    \n\n\n----------------\n\n\n<answer>Yes</answer>\n\n\n----------------\n\n\n<answer>No</answer> {{~/user}}"""
-
-            elif use_strategy == Strategy.CoT:
-                if use_description:
-                    user += """{{#user~}} Can changing {{variable_a}}, where {{description_a}}, change {{variable_b}}, where {{description_b}}? """
-                else:
-                    user += """{{#user~}} Can changing {{variable_a}} change {{variable_b}}?"""
-
-                if ask_reference:
-                    user += """What are three research papers that discuss each of these variables? What do they say about the relationship they may or may not have? You are to provide the paper title and a one sentence summary each paper's argument. Then use those arguments as reference to answer whether a change in{{variable_a}} changes {{variable_b}}. Answer Yes or No. 
-                    Think step-by-step to make sure that you are concise and accurate in your answer. Then provide your final answer within the tags, <answer>Yes/No</answer, and your references within the tags <reference>Author, Title, Year of publication</reference>.
-                    \n\n\n----------------\n\n\n<answer>Yes</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\n<answer>No</answer> {{~/user}}"""
-                else:
-                    user += """Answer Yes or No. Think step-by-step to make sure that you are concise and accurate in your answer. Then provide your final answer within the tags, <answer>Yes/No</answer.
-                    \n\n\n----------------\n\n\nExample of output structure: <answer>Yes</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>No</answer> {{~/user}}"""
-
-            elif use_strategy == Strategy.Straight:
-                if use_description:
-                    user += """{{#user~}} Can changing {{variable_a}}, where {{description_a}}, change {{variable_b}}, where {{description_b}}? """
-                else:
-                    user += """{{#user~}} Can changing {{variable_a}} change {{variable_b}}?"""
-
-                if ask_reference:
-                    user += """What are three research papers that discuss each of these variables? What do they say about the relationship they may or may not have? You are to provide the paper title and a one sentence summary each paper's argument. Then use those arguments as reference to answer whether a change in{{variable_a}} changes {{variable_b}}. Answer Yes or No.
-                    Within one sentence, you are to think step-by-step to make sure that you have the right answer. Provide your final answer within the tags, <answer>Yes/No</answer>, and your references within the tags <reference>Author, Title, Year of publication</reference. \n\n\n----------------\n\n\n<answer>Yes</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\n<answer>No</answer> {{~/user}}"""
-
-                else:
-                    user += """Answer Yes or No. Think step-by-step to make sure that you are concise and accurate in your answer. Then provide your final answer within the tags, <answer>Yes/No</answer>.
-                    \n\n\n----------------\n\n\nExample of output structure: <answer>Yes</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>No</answer> {{~/user}}"""
-
-        return guidance(system + user + assistant)
-
-    def _build_two_sided_relationship_program(
-        self,
-        use_domain="",
-        use_strategy=Strategy.Straight,
-        use_description=False,
-        ask_reference=False,
-        consider_feedback_loop=False,
-    ):
-        assistant = """{{#assistant~}} {{gen 'output' temperature=temperature}} {{~/assistant}}"""
-
-        # set systen
-        system = ""
-        if use_domain is None:
-            system = """{{#system~}} You are a helpful assistant on causal reasoning. Your goal is to answer questions about cause and effect in a factual and concise way. {{~/system}}"""
-        else:
-            system = (
-                """{{#system~}} You are a helpful assistant on causal reasoning and """
-            )
-            +use_domain
-            (
-                +""". Your goal is to answer questions about cause and effect in """
-                + use_domain
-                + """ in a factual and concise way. {{~/system}}"""
-            )
-
-        # set user
-        user = """"""
-        if use_strategy is not None:
-            if use_strategy == Strategy.ToT_Single:
-                user += """{{#user~}} There is a council of three different experts answering this question.
-                Each of the three expert will write down 1 step of their thinking, and share it with the council. 
-                Then all experts will go on to the next step, etc.
-                All experts in the council are arguing to arrive at a true and factual answer. Their goal is to reach concensus but will only do so if an argument is factual and logical.
-                If an expert disagrees with an argument, then they will respectfully explain why with facts and logic. 
-                If any expert realises their argument is wrong at any point, then they will adjust their argument to be factual and logical.
-                The question is """
-
-                if use_description:
-                    user += """{{#user~}} Which of the following cause and effect situations between {{variable_a}}, where {{description_a}}, and {{variable_b}}, where {{description_b}}, makes most factual sense? 
-                    A. Changing {{variable_a}} changes {{variable_b}}?
-                    B. Changing {{variable_b}} changes {{variable_a}}?
-                    C. Both A and B.
-                    D. None."""
-                else:
-                    user += """{{#user~}} Which of the following cause and effect situations between {{variable_a}} and {{variable_b}} make most factual sense? 
-                    A. Changing {{variable_a}} changes {{variable_b}}?
-                    B. Changing {{variable_b}} changes {{variable_a}}?
-                    C. Both A and B.
-                    D. None."""
-
-                if ask_reference:
-                    user += """At the end of each step, each expert include a reference to a research paper that supports their argument. They will provide a one sentence summary of the paper and how it supports their argument. 
-                    Which of the following cause and effect situations between {{variable_a}} and {{variable_b}} make most factual sense? Answer A, B, C, or D.
-                    When concensus is reached, thinking carefully and factually, explain the council's answer. Provide the answer within the tags, <answer>A/B/C/D</answer>, and the most influential reference within the tags <reference>Author, Title, Year of publication</reference>. 
-                    \n\n\n----------------\n\n\nExample of output structure: <answer>A</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\nExample of output structure: <answer>B</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\nExample of output structure: <answer>C</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\nExample of output structure: <answer>D</answer>\n<reference>Author, Title, Year of publication</reference> {{~/user}}"""
-                else:
-                    user += """Which of the following cause and effect situations between {{variable_a}} and {{variable_b}} make most factual sense? Answer A, B, C, or D. When concensus is reached, thinking carefully and factually, explain the council's answer. Provide the answer within the tags, <answer>A/B/C/D</answer>.
-                    \n\n\n----------------\n\n\nExample of output structure: <answer>A</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>B</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>C</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>D</answer> {{~/user}}"""
-
-            elif use_strategy == Strategy.CoT:
-                if use_description:
-                    user += """{{#user~}} Which of the following cause and effect situations between {{variable_a}}, where {{description_a}}, and {{variable_b}}, where {{description_b}}, make most factual sense? 
-                    A. Changing {{variable_a}} changes {{variable_b}}?
-                    B. Changing {{variable_b}} changes {{variable_a}}?
-                    C. Both A and B.
-                    D. None."""
-                else:
-                    user += """{{#user~}} Which of the following cause and effect situations between {{variable_a}} and {{variable_b}} make most factual sense? 
-                    A. Changing {{variable_a}} changes {{variable_b}}?
-                    B. Changing {{variable_b}} changes {{variable_a}}?
-                    C. Both A and B.
-                    D. None."""
-
-                if ask_reference:
-                    user += """What are three research papers that discuss each of these variables? What do they say about the relationship they may or may not have? You are to provide the paper title and a one sentence summary each paper's argument. Then use those arguments as reference to answer whether a change in{{variable_a}} changes {{variable_b}}. Answer Yes or No.
-                    Think step-by-step to make sure that you are concise and accurate in your answer. Then provide your final answer within the tags, <answer>Yes/No</answer>, and your references within the tags <reference>Author, Title, Year of publication</reference>.
-                    \n\n\n----------------\n\n\nExample of output structure: <answer>A</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\nExample of output structure: <answer>B</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\nExample of output structure: <answer>C</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\nExample of output structure: <answer>D</answer>\n<reference>Author, Title, Year of publication</reference> {{~/user}}"""
-                else:
-                    user += """Answer Yes or No. Think step-by-step to make sure that you are concise and accurate in your answer. Then provide your final answer within the tags, <answer>Yes/No</answer.
-                    \n\n\n----------------\n\n\nExample of output structure: <answer>A</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>B</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>C</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>D</answer> {{~/user}}"""
-
-            elif use_strategy == Strategy.Straight:
-                # add variable description
-                if use_description:
-                    user += """{{#user~}} Which of the following cause and effect situations between {{variable_a}}, where {{description_a}}, and {{variable_b}}, where {{description_b}}, make most factual sense?"""
-
-                # no variable description
-                else:
-                    user += """{{#user~}} Which of the following cause and effect situations between {{variable_a}} and {{variable_b}} make most factual sense?"""
-
-                # consider "both" in answer option
-                if consider_feedback_loop:
-                    user += """ 
-                    A. Changing {{variable_a}} changes {{variable_b}}?
-                    B. Changing {{variable_b}} changes {{variable_a}}?
-                    C. Both A and B.
-                    D. None."""
-
-                # don't consider "both" in answer options
-                else:
-                    user += """ 
-                    A. Changing {{variable_a}} changes {{variable_b}}?
-                    B. Changing {{variable_b}} changes {{variable_a}}?
-                    C. None."""
-
-                # request research paper support
-                if ask_reference:
-                    user += """What are three research papers that discuss each of these variables? What do they say about the relationship they may or may not have? You are to provide the paper title and a one sentence summary each paper's argument. Then use those arguments as reference to identify which of the cause and effect situations between {{variable_a}} and {{variable_b}} make most factual sense."""
-
-                    # fourth option in examples
-                    if consider_feedback_loop:
-                        user += """Answer A, B, C, or D.
-                   Think step-by-step to make sure that you are concise and accurate in your answer. Then provide your final answer within the tags, <answer>A/B/C/D</answer>, and your references within the tags <reference>Author, Title, Year of publication</reference. 
-                    \n\n\n----------------\n\n\nExample of output structure: <answer>A</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\nExample of output structure: <answer>B</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\nExample of output structure: <answer>C</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\nExample of output structure: <answer>D</answer>\n<reference>Author, Title, Year of publication</reference> {{~/user}}"""
-
-                    # three options in examples
-                    else:
-                        user += """Answer A, B, or C.
-                   Think step-by-step to make sure that you are concise and accurate in your answer. Then provide your final answer within the tags, <answer>A/B/C/D</answer>, and your references within the tags <reference>Author, Title, Year of publication</reference. 
-                    \n\n\n----------------\n\n\nExample of output structure: <answer>A</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\nExample of output structure: <answer>B</answer>\n<reference>Author, Title, Year of publication</reference>\n\n\n----------------\n\n\nExample of output structure: <answer>C</answer>\n<reference>Author, Title, Year of publication</reference> {{~/user}}"""
-
-                # Don't request research paper support
-                else:
-                    user += """Think carefully and factually to identify which of the cause and effect situations between {{variable_a}} and {{variable_b}} makes most factual sense."""
-
-                    # consider four examples
-                    if consider_feedback_loop:
-                        user += """Answer A, B, C, D. Think step-by-step to make sure that you are concise and accurate in your answer. Then provide your final answer within the tags, <answer>A/B/C/D</answer>.
-                        \n\n\n----------------\n\n\nExample of output structure: <answer>A</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>B</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>C</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>D</answer>{{~/user}}"""
-
-                    # consider three examples
-                    else:
-                        user += """Answer A, B, C. Think step-by-step to make sure that you are concise and accurate in your answer. Then provide your final answer within the tags, <answer>A/B/C</answer>.
-                        \n\n\n----------------\n\n\nExample of output structure: <answer>A</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>B</answer>\n\n\n----------------\n\n\nExample of output structure: <answer>C</answer>{{~/user}}"""
-
-        return guidance(system + user + assistant)
+            return confounders_counter, confounders

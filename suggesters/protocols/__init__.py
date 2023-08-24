@@ -1,9 +1,9 @@
-from protocols.modeler import ModelerProtocol
-from protocols.identifier import IdentifierProtocol
-from protocols.validator import ValidatorProtocol
+from .modeler import ModelerProtocol
+from .identifier import IdentifierProtocol
+from .validator import ValidatorProtocol
 
 __all__ = [
     "ModelerProtocol",
-    "IdentifierProtocol", 
-    "ValidatorProtocol", 
+    "IdentifierProtocol",
+    "ValidatorProtocol",
 ]
