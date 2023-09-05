@@ -1,0 +1,20 @@
+name: pywhy-llm
+channels:
+  - conda-forge
+  - bioconda
+  - pytorch
+  - plotly
+  - defaults
+dependencies:
+  - python=3.10
+  - more-itertools
+  - setuptools
+  - dowhy
+  - matplotlib
+  - networkx
+  - jupyterlab
+  - jupyter
+  - pip:
+      - python-dotenv
+      - openai
+      - guidance

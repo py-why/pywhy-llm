@@ -1,5 +1,5 @@
 from typing import List, Tuple, Dict
-from protocols import ModelerProtocol
+from suggesters.protocols import ModelerProtocol
 import networkx as nx
 import guidance
 from enum import Enum

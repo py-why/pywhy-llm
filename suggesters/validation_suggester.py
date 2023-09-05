@@ -1,5 +1,5 @@
 from typing import List, Tuple, Dict
-from protocols import IdentifierProtocol
+from suggesters.protocols import IdentifierProtocol
 import networkx as nx
 import guidance
 import copy

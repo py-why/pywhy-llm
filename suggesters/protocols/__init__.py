@@ -1,6 +1,6 @@
-from protocols.modeler import ModelerProtocol
-from protocols.identifier import IdentifierProtocol
-from protocols.validator import ValidatorProtocol
+from suggesters.protocols.modeler import ModelerProtocol
+from suggesters.protocols.identifier import IdentifierProtocol
+from suggesters.protocols.validator import ValidatorProtocol
 
 __all__ = [
     "ModelerProtocol",

@@ -17,6 +17,16 @@ To install PyWhy-LLM, you can use pip:
 pip install pywhy-llm
 ```
 
+To install dependencies of this repository you can use [micromamba](https://mamba.readthedocs.io/en/latest/micromamba-installation.html) or conda:
+```bash
+micromamba create -f environment.yaml
+micromamba activate pywhy-llm
+```
+You can also install it locally with:
+```
+pip install -e .
+```
+
 ## Usage
 
 PyWhy-LLM seamlessly integrates into your existing causal inference process. Import the necessary classes and start exploring the power of LLM-augmented causal analysis.

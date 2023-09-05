@@ -1,9 +1,9 @@
 from typing import List, Dict, Set, Tuple, Protocol
-from protocols import IdentifierProtocol
+from suggesters.protocols import IdentifierProtocol
 import guidance
 import re
 
-from dowhy.causal_identifier import (
+from dowhy.causal_identifier.auto_identifier import (
     EstimandType,
     IdentifiedEstimand,
     construct_iv_estimand,
