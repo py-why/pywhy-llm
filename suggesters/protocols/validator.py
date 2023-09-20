@@ -1,6 +1,8 @@
 from typing import Dict, Set, Tuple, Protocol
 
 class ValidatorProtocol(Protocol):
+
+    # TODO: replace validate with critique
     def validate_variable_descriptions(self, variable_descriptions: Dict[str, str]) -> Dict[str, str]:
         """
         Validate the descriptions for each variable.

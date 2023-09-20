@@ -1,9 +1,10 @@
 from typing import Protocol
-import guidance
 
 class EstimatorProtocol(Protocol):
-    def suggest_estimation_code(self, llm: guidance.llms) -> str:
+    def suggest_estimation_code(self) -> str:
         """
+        TODO: needs to be updated to take in a task specification
+
         Suggest code to run the causal effect analysis
 
         Returns:

@@ -1,5 +1,5 @@
 from typing import List, Tuple, Dict
-from protocols import ModelerProtocol
+from suggesters.protocols import ModelerProtocol
 import networkx as nx
 import guidance
 from enum import Enum
@@ -134,7 +134,7 @@ class ModelSuggester(ModelerProtocol):
     def suggest_confounders(
         self,
         variables,
-        llm: guidance.llms,
+        #llm: guidance.llms,
         treatment: str,
         outcome: str,
         domain=None,  # , explanation=False
@@ -152,8 +152,8 @@ class ModelSuggester(ModelerProtocol):
                         output = generate_confounders(
                             treatment=treatment,
                             outcome=outcome,
-                            variable=variable,
-                            llm=llm,
+                            variable=variable
+                            #llm=llm,
                         )
 
                         confounder = re.findall(
@@ -174,7 +174,7 @@ class ModelSuggester(ModelerProtocol):
 
     def _build_confounder_program(
         self,
-        use_domain=None,
+        use_domain="",
         # use_strategy=Strategy.Straight,
         # use_description=None,
         # ask_explanation=False
@@ -183,7 +183,7 @@ class ModelSuggester(ModelerProtocol):
 
         # set systen
         system = ""
-        if use_domain == "":
+        if use_domain == "" or use_domain == None:
             system = """{{#system~}} You are a helpful assistant on causal reasoning. Your goal is to answer questions about cause and effect in a factual and concise way. {{~/system}}"""
         else:
             system = (

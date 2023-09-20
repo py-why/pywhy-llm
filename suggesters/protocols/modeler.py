@@ -1,28 +1,45 @@
-
-
 from typing import List, Protocol
-import guidance
 
 class ModelerProtocol(Protocol):
 
-    def suggest_variable_relationships(self, variables: List[str], llm: guidance.llms):
+    def suggest_pairwise_relationship(self, variable1: str, variable2: str):
         """
         Suggest the relationships between variables.
 
         Args:
-            variable_descriptions: Dict[str, str]
-                A dictionary mapping variable names to their descriptions.
+            variable1: str
+                A string name of variable1
 
-            llm: guidance.llms
-                User provided llm access.
-        
+            variable2: str
+                A string name of variable2
+
         Returns:
-            variable_relationships: Dict[Tuple[str, str], str]
-                A dictionary where the keys are edges, where it's assumed that parent is first, child is second, and the values are an explanation for how their relationship occurs.
+            [variable1, variable2, description] if variable1 causes variable2
+            [variable2, variable1, description] if variable2 causes variable1
+            [None, None, description] if neither causes the other
         """
         pass
 
-    def suggest_confounders(self, variables: List[str], llm: guidance.llms, treatment: str, outcome: str):
+
+    def suggest_variable_relationships(self, variables: List[str]):
+        """
+        Suggest the relationships between variables.
+
+        Args:
+            variables: List[str]
+                A list of variable names
+
+            TODO: add a way to pass in longer variable descriptions
+        
+        Returns:
+            variable_relationships: Dict[[cause,effect],description] 
+            
+            TODO: update to return a NetworkX graph, with the description as metadata for each edge
+                
+        """
+        pass
+
+    def suggest_confounders(self, variables: List[str], treatment: str, outcome: str):
         """
         Suggest confounders
 
@@ -32,9 +49,6 @@ class ModelerProtocol(Protocol):
 
             variable_relationships: Dict[Tuple[str, str], str]
                 A dictionary where the keys are edges, where it's assumed that parent is first, child is second, and the values are an explanation for how their relationship occurs.
-
-            llm: guidance.llms
-                User provided llm access.
 
         Returns:
             confounders: Set[Tuple[str, str]]
