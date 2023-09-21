@@ -55,13 +55,3 @@ class ModelerProtocol(Protocol):
                 Set of confounders along with a reasoning or explanation for how the confounding occurs.
         """
         pass
-
-
-
-
-
-
-
-
-
-
