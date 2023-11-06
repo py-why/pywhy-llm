@@ -6,16 +6,7 @@ class IdentifierProtocol(Protocol):
         self,
         treatment,
         outcome,
-        factors_list,
-        confounders,
-        llm,
-        temperature=0.3,
-        experts=None,
-        stakeholders=None,
-        model_type="chat",
-        analysis_context=None,
-        expert_confidence=0.7,
-        relationship_strategy="parent",
+        factors_list
     ):
         """
         Suggests variables that potentially satisfy the backdoor criterion
@@ -28,15 +19,7 @@ class IdentifierProtocol(Protocol):
         self,
         treatment,
         outcome,
-        factors_list,
-        llm,
-        temperature=0.3,
-        experts=None,
-        stakeholders=None,
-        model_type="chat",
-        analysis_context=None,
-        expert_confidence=0.7,
-        relationship_strategy="parent",
+        factors_list
     ):
         """
         Suggest variables that potentially satisfy the frontdoor criterion
@@ -50,15 +33,7 @@ class IdentifierProtocol(Protocol):
         self,
         treatment,
         outcome,
-        factors_list,
-        llm,
-        temperature=0.3,
-        experts=None,
-        stakeholders=None,
-        model_type="chat",
-        analysis_context=None,
-        expert_confidence=0.7,
-        relationship_strategy="parent",
+        factors_list
     ):
         """
         Suggest potential instrumental variables

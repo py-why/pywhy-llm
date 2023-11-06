@@ -68,3 +68,35 @@ class SimpleModelSuggester:
             relationships[(y[0], y[1])] = y[2]
 
         return relationships
+    
+    def suggest_confounders(self, variables: List[str], treatment: str, outcome: str):
+        prompt = """
+        {{#system~}} 
+        You are a helpful assistant for causal reasoning.
+        {{~/system}}
+        
+        {{#user~}}
+        What latent confounding factors might influence the relationship between {{treatment}} and {{outcome}}?
+
+        We have already considered the following factors {{variables}}.  Please do not repeat them.
+
+        List the confounding factors between {{treatment}} and {{outcome}} enclosing the name of each factor in <conf> </conf> tags.
+        {{~/user}}
+
+        {{#assistant}}
+        {{~gen 'latents'}}
+        {{~/assistant}}
+        """ 
+        program = guidance(prompt)
+
+        executed_program = program(variables=str(variables), treatment=treatment, outcome=outcome)
+
+        if( executed_program._exception is not None):
+            raise executed_program._exception
+        
+        latents = executed_program['latents']
+        latents_list = re.findall(r'<conf>(.*?)</conf>', latents)
+
+        return latents_list
+
+
