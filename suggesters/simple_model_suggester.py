@@ -7,8 +7,31 @@ import re
 import itertools
 
 class SimpleModelSuggester:
+    """
+    A class that provides methods for suggesting causal relationships and confounding factors between variables.
+
+    This class uses the guidance library to interact with LLMs, and assumes that guidance.llm has already been initialized to the user's preferred LLM 
+
+    Methods:
+    - suggest_pairwise_relationship(variable1: str, variable2: str) -> List[str]: 
+        Suggests the causal relationship between two variables and returns a list containing the cause, effect, and a description of the relationship.
+    - suggest_relationships(variables: List[str]) -> Dict[Tuple[str, str], str]: 
+        Suggests the causal relationships between all pairs of variables in a list and returns a dictionary containing the cause-effect pairs and their descriptions.
+    - suggest_confounders(variables: List[str], treatment: str, outcome: str) -> List[str]: 
+        Suggests the confounding factors that might influence the relationship between a treatment and an outcome, given a list of variables that have already been considered.
+    """
 
     def suggest_pairwise_relationship(self, variable1: str, variable2: str):
+        """
+        Suggests a cause-and-effect relationship between two variables.
+
+        Args:
+            variable1 (str): The name of the first variable.
+            variable2 (str): The name of the second variable.
+
+        Returns:
+            list: A list containing the suggested cause variable, the suggested effect variable, and a description of the reasoning behind the suggestion.  If there is no relationship between the two variables, the first two elements will be None.
+        """
         prompt = """
         {{#system~}} 
         You are a helpful assistant for causal reasoning.
@@ -53,23 +76,47 @@ class SimpleModelSuggester:
         else:
             assert False, "Invalid answer from LLM: " + answer
 
-    def suggest_relationships(self, variables: List[str]):
-        relationships = {}
-        total = (len(variables) * (len(variables)-1)/2)
-        i=0
-        for(var1, var2) in itertools.combinations(variables, 2):
-            i+=1
-            print(f"{i}/{total}: Querying for relationship between {var1} and {var2}")
-            y = self.suggest_pairwise_relationship(var1, var2)
-            if( y[0] == None ):
-                print(f"\tNo relationship found between {var1} and {var2}")
-                continue
-            print(f"\t{y[0]} causes {y[1]}")
-            relationships[(y[0], y[1])] = y[2]
 
-        return relationships
+        def suggest_relationships(self, variables: List[str]):
+            """
+            Given a list of variables, suggests relationships between them by querying for pairwise relationships.
+
+            Args:
+                variables (List[str]): A list of variable names.
+
+            Returns:
+                dict: A dictionary of edges found between variables, where the keys are tuples representing the causal relationship between two variables,
+                and the values are the strength of the relationship.
+            """
+            relationships = {}
+            total = (len(variables) * (len(variables)-1)/2)
+            i=0
+            for(var1, var2) in itertools.combinations(variables, 2):
+                i+=1
+                print(f"{i}/{total}: Querying for relationship between {var1} and {var2}")
+                y = self.suggest_pairwise_relationship(var1, var2)
+                if( y[0] == None ):
+                    print(f"\tNo relationship found between {var1} and {var2}")
+                    continue
+                print(f"\t{y[0]} causes {y[1]}")
+                relationships[(y[0], y[1])] = y[2]
+
+            return relationships
     
-    def suggest_confounders(self, variables: List[str], treatment: str, outcome: str):
+
+    def suggest_confounders(self, variables: List[str], treatment: str, outcome: str) -> List[str]:
+        """
+        Suggests potential confounding factors that might influence the relationship between the treatment and outcome variables.
+
+        Args:
+            variables (List[str]): A list of variables that have already been considered.
+            treatment (str): The name of the treatment variable.
+            outcome (str): The name of the outcome variable.
+
+        Returns:
+            List[str]: A list of potential confounding factors.
+        """
+
         prompt = """
         {{#system~}} 
         You are a helpful assistant for causal reasoning.
