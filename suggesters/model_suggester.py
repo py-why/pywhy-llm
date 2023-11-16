@@ -1,5 +1,5 @@
 from typing import Set, Tuple, Dict, List
-from suggesters.suggesters.protocols import ModelerProtocol
+from suggesters.protocols import ModelerProtocol
 import networkx as nx
 import guidance
 from .helpers import RelationshipStrategy, ModelType
