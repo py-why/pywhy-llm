@@ -16,103 +16,6 @@ class IdentificationSuggester(IdentifierProtocol):
     ]
     CONTEXT: str = """causal mechanisms"""
 
-    # def suggest_estimand(
-    #     self,
-    #     treatment: str,
-    #     outcome: str,
-    #     factors_list: list(),
-    #     llm: guidance.llms,
-    #     backdoor: Set[str] = None,
-    #     frontdoor: Set[str] = None,
-    #     ivs: Set[str] = None,
-    #     experts: list() = EXPERTS,
-    #     analysis_context: list() = CONTEXT,
-    #     stakeholders: list() = None,
-    #     temperature=0.3,
-    #     model_type: ModelType = ModelType.Completion,
-    #     estimand_type: ci.auto_identifier.auto_identifier.EstimandType = ci.auto_identifier.EstimandType.NONPARAMETRIC_ATE,
-    # ):
-    #     estimands_dict = {}
-
-    #     if len(backdoor) > 0 and backdoor is not None:
-    #         estimands_dict["backdoor"] = ci.construct_backdoor_estimand(
-    #             treatment_name=treatment, outcome_name=outcome, common_causes=backdoor
-    #         )
-    #     else:
-    #         backdoor_edges, backdoor_set = self.suggest_backdoor(
-    #             treatment=treatment,
-    #             outcome=outcome,
-    #             factors_list=factors_list,
-    #             llm=llm,
-    #             experts=experts,
-    #             analysis_context=analysis_context,
-    #             stakeholders=stakeholders,
-    #             temperature=temperature,
-    #             model_type=model_type,
-    #         )
-    #         if len(backdoor_set) > 0:
-    #             estimands_dict["backdoor"] = backdoor_set
-    #         else:
-    #             estimands_dict["backdoor"] = None
-
-    #     if len(frontdoor) > 0 and frontdoor is not None:
-    #         estimands_dict[
-    #             "frontdoor"
-    #         ] = ci.auto_identifier.construct_frontdoor_estimand(
-    #             treatment_name=treatment,
-    #             outcome_name=outcome,
-    #             frontdoor_variables_names=frontdoor,
-    #         )
-    #     else:
-    #         frontdoor_edges, frontdoor_set = self.suggest_frontdoor(
-    #             treatment=treatment,
-    #             outcome=outcome,
-    #             factors_list=factors_list,
-    #             llm=llm,
-    #             experts=experts,
-    #             analysis_context=analysis_context,
-    #             stakeholders=stakeholders,
-    #             temperature=temperature,
-    #             model_type=model_type,
-    #         )
-    #         if len(frontdoor) > 0:
-    #             estimands_dict["frontdoor"] = frontdoor_set
-    #         else:
-    #             estimands_dict["frontdoor"] = None
-
-    #     if len(ivs) > 0 and ivs is not None:
-    #         estimands_dict["iv"] = ci.auto_identifier.construct_iv_estimand(
-    #             treatment_name=treatment, outcome_name=outcome, instrument_names=ivs
-    #         )
-    #     else:
-    #         ivs_edges, ivs_set = self.suggest_ivs(
-    #             treatment=treatment,
-    #             outcome=outcome,
-    #             factors_list=factors_list,
-    #             llm=llm,
-    #             experts=experts,
-    #             analysis_context=analysis_context,
-    #             stakeholders=stakeholders,
-    #             temperature=temperature,
-    #             model_type=model_type,
-    #         )
-    #         if len(frontdoor) > 0:
-    #             estimands_dict["iv"] = ivs_set
-    #         else:
-    #             estimands_dict["iv"] = None
-
-    #     estimand = ci.auto_identifier.IdentifiedEstimand(
-    #         None,
-    #         treatment_variable=treatment,
-    #         outcome_variable=outcome,
-    #         estimand_type=estimand_type,
-    #         estimands=estimands_dict,
-    #         backdoor_variables=backdoor,
-    #         instrumental_variables=ivs,
-    #         frontdoor_variables=frontdoor,
-    #     )
-    #     return estimand
-
     def suggest_backdoor(
         self,
         treatment: str,
@@ -121,8 +24,9 @@ class IdentificationSuggester(IdentifierProtocol):
         llm: guidance.llms,
         experts: list() = EXPERTS,
         analysis_context: list() = CONTEXT,
-        stakeholders: list() = None,
         temperature=0.3,
+        prompt_template: str = None,
+        stakeholders: list() = None,
         model_type: ModelType = ModelType.Completion,
     ):
         backdoor_set = ModelSuggester.suggest_confounders(
@@ -131,9 +35,10 @@ class IdentificationSuggester(IdentifierProtocol):
             outcome=outcome,
             factors_list=factors_list,
             experts=experts,
-            llm=llm,
-            stakeholders=stakeholders,
+            llm=llm, 
             temperature=temperature,
+            prompt_template=prompt_template,
+            stakeholders=stakeholders,
             model_type=model_type,
         )
         return backdoor_set
@@ -144,20 +49,23 @@ class IdentificationSuggester(IdentifierProtocol):
         outcome: str,
         factors_list: list(),
         llm: guidance.llms,
-        experts: list() = EXPERTS,
+        domain_expertise_list: list() = EXPERTS,
         analysis_context: list() = CONTEXT,
-        stakeholders: list() = None,
         temperature=0.3,
+        prompt_template: str = None,
+        stakeholders: list() = None,
         model_type: ModelType = ModelType.Completion,
     ):
         expert_list: List[str] = list()
-        for elements in experts:
+        for elements in domain_expertise_list:
             expert_list.append(elements)
         if stakeholders is not None:
             for elements in stakeholders:
                 expert_list.append(elements)
 
-        suggest = guidance(ps[model_type.value]["expert_suggests_mediators"])
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["expert_suggests_mediators"]
+        suggest = guidance(prompt_template)
 
         mediators: List[str] = list()
         mediators_edges: Dict[Tuple[str, str], int] = dict()
@@ -175,7 +83,7 @@ class IdentificationSuggester(IdentifierProtocol):
                     treatment=treatment,
                     outcome=outcome,
                     analysis_context=analysis_context,
-                    expert=expert,
+                    domain_expertise=expert,
                     edited_factors_list=edited_factors_list,
                     temperature=temperature,
                     llm=llm,
@@ -190,7 +98,7 @@ class IdentificationSuggester(IdentifierProtocol):
                 treatment=treatment,
                 outcome=outcome,
                 analysis_context=analysis_context,
-                expert=expert_list[0],
+                domain_expertise=expert_list[0],
                 edited_factors_list=edited_factors_list,
                 temperature=temperature,
                 llm=llm,
@@ -209,7 +117,7 @@ class IdentificationSuggester(IdentifierProtocol):
         treatment,
         outcome,
         analysis_context,
-        expert,
+        domain_expertise,
         edited_factors_list,
         temperature,
         llm,
@@ -225,7 +133,7 @@ class IdentificationSuggester(IdentifierProtocol):
                     treatment=treatment,
                     outcome=outcome,
                     analysis_context=analysis_context,
-                    domain_expertise=expert,
+                    domain_expertise=domain_expertise,
                     factors_list=edited_factors_list,
                     factor=factor,
                     temperature=temperature,
@@ -269,20 +177,26 @@ class IdentificationSuggester(IdentifierProtocol):
         outcome: str,
         factors_list: list(),
         llm: guidance.llms,
-        experts: list() = EXPERTS,
+        domain_expertise_list: list() = EXPERTS,
         analysis_context: list() = CONTEXT,
-        stakeholders: list() = None,
         temperature=0.3,
+        prompt_template: str = None,
+        stakeholders: list() = None,
         model_type: ModelType = ModelType.Completion,
     ):
+        """ 
+        Note: stakeholders is not included in the prompt but is used to construct the domains of expertise list.
+        """
         expert_list: List[str] = list()
-        for elements in experts:
+        for elements in domain_expertise_list:
             expert_list.append(elements)
         if stakeholders is not None:
             for elements in stakeholders:
                 expert_list.append(elements)
-
-        suggest = guidance(ps[model_type.value]["expert_suggests_mediators"])
+        
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["expert_suggests_ivs"]
+        suggest = guidance(prompt_template)
 
         ivs: List[str] = list()
         iv_edges: Dict[Tuple[str, str], int] = dict()
@@ -300,7 +214,7 @@ class IdentificationSuggester(IdentifierProtocol):
                     treatment=treatment,
                     outcome=outcome,
                     analysis_context=analysis_context,
-                    expert=expert,
+                    domain_expertise=expert,
                     edited_factors_list=edited_factors_list,
                     temperature=temperature,
                     llm=llm,
@@ -312,7 +226,7 @@ class IdentificationSuggester(IdentifierProtocol):
                 treatment=treatment,
                 outcome=outcome,
                 analysis_context=analysis_context,
-                expert=expert_list[0],
+                domain_expertise=expert_list[0],
                 edited_factors_list=edited_factors_list,
                 temperature=temperature,
                 llm=llm,
@@ -327,7 +241,7 @@ class IdentificationSuggester(IdentifierProtocol):
         treatment,
         outcome,
         analysis_context,
-        expert,
+        domain_expertise,
         edited_factors_list,
         temperature,
         llm,
@@ -343,7 +257,7 @@ class IdentificationSuggester(IdentifierProtocol):
                     treatment=treatment,
                     outcome=outcome,
                     analysis_context=analysis_context,
-                    domain_expertise=expert,
+                    domain_expertise=domain_expertise,
                     factors_list=edited_factors_list,
                     factor=factor,
                     temperature=temperature,
