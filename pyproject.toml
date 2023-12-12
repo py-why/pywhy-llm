@@ -44,7 +44,7 @@ metadata = false
 format = "{base}"
 
 [tool.poetry-dynamic-versioning.substitution]
-files = ["dowhy/__init__.py"]
+files = ["pywhyllm/__init__.py"]
 
 #
 # Dependency compatibility notes:
