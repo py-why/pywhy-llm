@@ -21,20 +21,23 @@ class ValidationSuggester(IdentifierProtocol):
         outcome: str,
         factors_list: list(),
         llm: guidance.llms,
-        experts: list() = EXPERTS,
+        domain_expertise_list: list() = EXPERTS,
         analysis_context: list() = CONTEXT,
-        stakeholders: list() = None,
         temperature=0.3,
+        prompt_template: str = None,
+        stakeholders: list() = None,
         model_type: ModelType = ModelType.Completion,
     ):
         expert_list: List[str] = list()
-        for elements in experts:
+        for elements in domain_expertise_list:
             expert_list.append(elements)
         if stakeholders is not None:
             for elements in stakeholders:
                 expert_list.append(elements)
 
-        suggest = guidance(ps[model_type.value]["expert_suggests_negative_controls"])
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["expert_suggests_negative_controls"]
+        suggest = guidance(prompt_template)
 
         negative_controls_counter: Dict[str, int] = dict()
         negative_controls: List[str] = list()
@@ -56,7 +59,7 @@ class ValidationSuggester(IdentifierProtocol):
                     edited_factors_list=edited_factors_list,
                     negative_controls_counter=negative_controls_counter,
                     llm=llm,
-                    expert=expert,
+                    domain_expertise=expert,
                     analysis_context=analysis_context,
                     temperature=temperature,
                 )
@@ -74,7 +77,7 @@ class ValidationSuggester(IdentifierProtocol):
                 edited_factors_list=edited_factors_list,
                 negative_controls_counter=negative_controls_counter,
                 llm=llm,
-                expert=expert,
+                domain_expertise=expert_list[0],
                 analysis_context=analysis_context,
                 temperature=temperature,
             )
@@ -92,7 +95,7 @@ class ValidationSuggester(IdentifierProtocol):
         edited_factors_list: list(),
         negative_controls_counter: list(),
         llm: guidance.llms,
-        expert: str = EXPERTS[0],
+        domain_expertise: str = EXPERTS[0],
         analysis_context: list() = CONTEXT,
         temperature=0.3,
     ):
@@ -103,7 +106,7 @@ class ValidationSuggester(IdentifierProtocol):
             try:
                 output = program(
                     analysis_context=analysis_context,
-                    domain_expertise=expert,
+                    domain_expertise=domain_expertise,
                     factors_list=edited_factors_list,
                     treatment=treatment,
                     outcome=outcome,
@@ -144,20 +147,23 @@ class ValidationSuggester(IdentifierProtocol):
         treatment: str,
         outcome: str,
         llm: guidance.llms,
-        experts: list() = EXPERTS,
+        domain_expertise_list: list() = EXPERTS,
         analysis_context: list() = CONTEXT,
-        stakeholders: list() = None,
         temperature=0.3,
+        prompt_template: str = None,
+        stakeholders: list() = None,
         model_type: ModelType = ModelType.Completion,
     ):
         expert_list: List[str] = list()
-        for elements in experts:
+        for elements in domain_expertise_list:
             expert_list.append(elements)
         if stakeholders is not None:
             for elements in stakeholders:
                 expert_list.append(elements)
 
-        suggest = guidance(ps[model_type.value]["expert_suggests_latent_confounders"])
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["expert_suggests_latent_confounders"]
+        suggest = guidance(prompt_template)
 
         latent_confounders_counter: Dict[str, int] = dict()
         latent_confounders: List[str, str] = list()
@@ -173,7 +179,7 @@ class ValidationSuggester(IdentifierProtocol):
                     program=suggest,
                     latent_confounders_counter=latent_confounders_counter,
                     llm=llm,
-                    expert=expert,
+                    domain_expertise=expert,
                     analysis_context=analysis_context,
                     temperature=temperature,
                 )
@@ -190,7 +196,7 @@ class ValidationSuggester(IdentifierProtocol):
                 program=suggest,
                 latent_confounders_counter=latent_confounders_counter,
                 llm=llm,
-                expert=expert,
+                expert=expert_list[0],
                 analysis_context=analysis_context,
                 temperature=temperature,
             )
@@ -207,7 +213,7 @@ class ValidationSuggester(IdentifierProtocol):
         program,
         latent_confounders_counter: list(),
         llm: guidance.llms,
-        expert: str = EXPERTS[0],
+        domain_expertise: str = EXPERTS[0],
         analysis_context: list() = CONTEXT,
         temperature=0.3,
     ):
@@ -218,7 +224,7 @@ class ValidationSuggester(IdentifierProtocol):
             try:
                 output = program(
                     analysis_context=analysis_context,
-                    domain_expertise=expert,
+                    domain_expertise=domain_expertise,
                     treatment=treatment,
                     outcome=outcome,
                     temperature=temperature,
@@ -253,12 +259,15 @@ class ValidationSuggester(IdentifierProtocol):
         analysis_context,
         factor,
         factors_list,
-        expert,
+        domain_expertise,
         llm: guidance.llms,
         temperature=0.3,
+        prompt_template: str = None,
         model_type=ModelType.Completion,
     ):
-        suggest = guidance(ps[model_type.value]["expert_critiques_parents"])
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["expert_critiques_parents"]
+        suggest = guidance(prompt_template)
 
         edited_factors_list: List[str] = []
 
@@ -274,8 +283,8 @@ class ValidationSuggester(IdentifierProtocol):
             try:
                 output = suggest(
                     analysis_context=analysis_context,
-                    domain_expertise=expert,
-                    potential_factors_list=edited_factors_list,
+                    domain_expertise=domain_expertise,
+                    factors_list=edited_factors_list,
                     factor=factor,
                     temperature=temperature,
                     llm=llm,
@@ -305,12 +314,15 @@ class ValidationSuggester(IdentifierProtocol):
         analysis_context,
         factor,
         factors_list,
-        expert,
+        domain_expertise,
         llm: guidance.llms,
         temperature=0.3,
+        prompt_template: str = None,
         model_type=ModelType.Completion,
     ):
-        suggest = guidance(ps[model_type.value]["expert_critiques_children"])
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["expert_critiques_children"]
+        suggest = guidance(prompt_template)
 
         edited_factors_list: List[str] = []
 
@@ -326,8 +338,8 @@ class ValidationSuggester(IdentifierProtocol):
             try:
                 output = suggest(
                     analysis_context=analysis_context,
-                    domain_expertise=expert,
-                    potential_factors_list=edited_factors_list,
+                    domain_expertise=domain_expertise,
+                    factors_list=edited_factors_list,
                     factor=factor,
                     temperature=temperature,
                     llm=llm,
@@ -355,15 +367,18 @@ class ValidationSuggester(IdentifierProtocol):
 
     def request_pairwise_critique(
         self,
-        expert,
+        domain_expertise,
         factor_a: str,
         factor_b: str,
         llm: guidance.llms,
         temperature=0.3,
         analysis_context: str = CONTEXT,
+        prompt_template: str = None,
         model_type=ModelType.Completion,
     ):
-        suggest = guidance(ps[model_type.value]["expert_critiques_pairwise"])
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["expert_critiques_pairwise"]
+        suggest = guidance(prompt_template)
 
         success: bool = False
 
@@ -371,9 +386,9 @@ class ValidationSuggester(IdentifierProtocol):
             try:
                 output = suggest(
                     analysis_context=analysis_context,
-                    domain_expertise=expert,
-                    a=factor_a,
-                    b=factor_b,
+                    domain_expertise=domain_expertise,
+                    factor_a=factor_a,
+                    factor_b=factor_b,
                     temperature=temperature,
                     llm=llm,
                 )
@@ -408,15 +423,16 @@ class ValidationSuggester(IdentifierProtocol):
         factors_list: List[str],
         edges: List[Tuple[str, str]],
         llm: guidance.llms,
-        experts: list() = EXPERTS,
+        domain_expertise_list: list() = EXPERTS,
         analysis_context: str = CONTEXT,
-        stakeholders: list() = None,
         temperature=0.3,
+        prompt_template: str = None,
+        stakeholders: list() = None,
         model_type: ModelType = ModelType.Completion,
         relationship_strategy: RelationshipStrategy = RelationshipStrategy.Parent,
     ):
         expert_list: List[str] = list()
-        for elements in experts:
+        for elements in domain_expertise_list:
             expert_list.append(elements)
         if stakeholders is not None:
             for elements in stakeholders:
@@ -434,9 +450,10 @@ class ValidationSuggester(IdentifierProtocol):
                             analysis_context=analysis_context,
                             factor=factor,
                             factors_list=factors_list,
-                            expert=expert,
+                            domain_expertise=expert,
                             llm=llm,
                             temperature=temperature,
+                            prompt_template=prompt_template,
                             model_type=model_type,
                         )
                         for element in suggested_parent:
@@ -452,9 +469,10 @@ class ValidationSuggester(IdentifierProtocol):
                         analysis_context=analysis_context,
                         factor=factor,
                         factors_list=factors_list,
-                        expert=expert_list[0],
+                        domain_expertise=expert_list[0],
                         llm=llm,
                         temperature=temperature,
+                        prompt_template=prompt_template,
                         model_type=model_type,
                     )
 
@@ -478,9 +496,10 @@ class ValidationSuggester(IdentifierProtocol):
                             analysis_context=analysis_context,
                             factor=factor,
                             factors_list=factors_list,
-                            expert=expert,
+                            domain_expertise=expert,
                             llm=llm,
                             temperature=temperature,
+                            prompt_template=prompt_template,
                             model_type=model_type,
                         )
                         for element in suggested_children:
@@ -500,9 +519,10 @@ class ValidationSuggester(IdentifierProtocol):
                         analysis_context=analysis_context,
                         factor=factor,
                         factors_list=factors_list,
-                        expert=expert_list[0],
+                        domain_expertise=expert_list[0],
                         llm=llm,
                         temperature=temperature,
+                        prompt_template=prompt_template,
                         model_type=model_type,
                     )
 
@@ -528,9 +548,10 @@ class ValidationSuggester(IdentifierProtocol):
                                     analysis_context=analysis_context,
                                     factor_a=factor_a,
                                     factor_b=factor_b,
-                                    expert=expert,
+                                    domain_expertise=expert,
                                     llm=llm,
                                     temperature=temperature,
+                                    prompt_template=prompt_template,
                                     model_type=model_type,
                                 )
 
@@ -544,9 +565,10 @@ class ValidationSuggester(IdentifierProtocol):
                                 analysis_context=analysis_context,
                                 factor_a=factor_a,
                                 factor_b=factor_b,
-                                expert=expert_list[0],
+                                domain_expertise=expert_list[0],
                                 llm=llm,
                                 temperature=temperature,
+                                prompt_template=prompt_template,
                                 model_type=model_type,
                             )
 

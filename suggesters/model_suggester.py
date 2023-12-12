@@ -23,13 +23,16 @@ class ModelSuggester(ModelerProtocol):
     def suggest_domain_expertises(
         self,
         analysis_context,
-        factors,
+        factors_list,
         llm: guidance.llms,
         n_experts: int = 1,
         temperature=0.3,
+        prompt_template: str = None,
         model_type: ModelType = ModelType.Completion,
     ):
-        suggest = guidance(ps[model_type.value]["expertises"])
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["expertises"])
+        suggest = guidance(prompt_template)
 
         expertise_list: List[str] = list()
         success: bool = False
@@ -38,7 +41,7 @@ class ModelSuggester(ModelerProtocol):
             try:
                 output = suggest(
                     analysis_context=analysis_context,
-                    factors_list=factors,
+                    factors_list=factors_list,
                     n_experts=n_experts,
                     temperature=temperature,
                     llm=llm,
@@ -64,13 +67,16 @@ class ModelSuggester(ModelerProtocol):
     def suggest_domain_experts(
         self,
         analysis_context,
-        factors,
+        factors_list,
         llm: guidance.llms,
         n_experts: int = 5,
         temperature=0.3,
+        prompt_template: str = None,
         model_type: ModelType = ModelType.Chat,
     ):
-        suggest = guidance(ps[model_type.value]["domain_experts"])
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["domain_experts"]
+        suggest = guidance(prompt_template)
 
         experts_list: Set[str] = set()
         success: bool = False
@@ -79,7 +85,7 @@ class ModelSuggester(ModelerProtocol):
             try:
                 output = suggest(
                     analysis_context=analysis_context,
-                    factors_list=factors,
+                    factors_list=factors_list,
                     n_experts=n_experts,
                     temperature=temperature,
                     llm=llm,
@@ -104,14 +110,17 @@ class ModelSuggester(ModelerProtocol):
 
     def suggest_stakeholders(
         self,
-        factors,
+        factors_list,
         llm: guidance.llms,
         n_experts: int = 5,  # must be > 1
-        temperature=0.3,
+        temperarure=0.3,
         analysis_context=CONTEXT,
+        prompt_template: str = None,
         model_type: ModelType = ModelType.Chat,
     ):
-        suggest = guidance(ps[model_type.value]["stakeholders"])
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["stakeholders"]
+        suggest = guidance(prompt_template)
 
         stakeholder_list: List[str] = list()
         success: bool = False
@@ -120,7 +129,7 @@ class ModelSuggester(ModelerProtocol):
             try:
                 output = suggest(
                     analysis_context=analysis_context,
-                    factors_list=factors,
+                    factors_list=factors_list,
                     n_experts=n_experts,
                     temperature=temperature,
                     llm=llm,
@@ -151,8 +160,9 @@ class ModelSuggester(ModelerProtocol):
         llm: guidance.llms,
         experts: list() = EXPERTS,
         analysis_context: list() = CONTEXT,
-        stakeholders: list() = None,
         temperature=0.3,
+        prompt_template: str = None,
+        stakeholders: list() = None,
         model_type: ModelType = ModelType.Completion,
     ):
         expert_list: List[str] = list()
@@ -162,7 +172,9 @@ class ModelSuggester(ModelerProtocol):
             for elements in stakeholders:
                 expert_list.append(elements)
 
-        suggest = guidance(ps[model_type.value]["expert_suggests_confounders"])
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["expert_suggests_confounders"]
+        suggest = guidance(prompt_template)
 
         confounders_edges: Dict[Tuple[str, str], int] = dict()
         confounders_edges[(treatment, outcome)] = 1
@@ -181,7 +193,7 @@ class ModelSuggester(ModelerProtocol):
                     treatment=treatment,
                     outcome=outcome,
                     analysis_context=analysis_context,
-                    expert=expert,
+                    domain_expertise=domain_expertise,
                     edited_factors_list=edited_factors_list,
                     temperature=temperature,
                     llm=llm,
@@ -197,7 +209,7 @@ class ModelSuggester(ModelerProtocol):
                 treatment=treatment,
                 outcome=outcome,
                 analysis_context=analysis_context,
-                expert=expert_list[0],
+                domain_expertise=expert_list[0],
                 edited_factors_list=edited_factors_list,
                 temperature=temperature,
                 llm=llm,
@@ -216,7 +228,7 @@ class ModelSuggester(ModelerProtocol):
         treatment,
         outcome,
         analysis_context,
-        expert,
+        domain_expertise,
         edited_factors_list,
         temperature,
         llm,
@@ -232,7 +244,7 @@ class ModelSuggester(ModelerProtocol):
                     treatment=treatment,
                     outcome=outcome,
                     analysis_context=analysis_context,
-                    domain_expertise=expert,
+                    domain_expertise=domain_expertise,
                     factors_list=edited_factors_list,
                     factor=factor,
                     temperature=temperature,
@@ -275,12 +287,15 @@ class ModelSuggester(ModelerProtocol):
         analysis_context,
         factor,
         factors_list,
-        expert,
+        domain_expertise,
         llm: guidance.llms,
         temperature=0.3,
+        prompt_template: str = None,
         model_type=ModelType.Completion,
     ):
-        suggest = guidance(ps[model_type.value]["expert_suggests_parents"])
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["expert_suggests_parents"]
+        suggest = guidance(prompt_template)
 
         edited_factors_list: List[str] = []
 
@@ -296,7 +311,7 @@ class ModelSuggester(ModelerProtocol):
             try:
                 output = suggest(
                     analysis_context=analysis_context,
-                    domain_expertise=expert,
+                    domain_expertise=domain_expertise,
                     factors_list=edited_factors_list,
                     factor=factor,
                     temperature=temperature,
@@ -327,12 +342,15 @@ class ModelSuggester(ModelerProtocol):
         analysis_context,
         factor,
         factors_list,
-        expert,
+        domain_expertise,
         llm: guidance.llms,
         temperature=0.3,
+        prompt_template: str = None,
         model_type=ModelType.Completion,
     ):
-        suggest = guidance(ps[model_type.value]["expert_suggests_children"])
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["expert_suggests_children"]
+        suggest = guidance(prompt_template)
 
         edited_factors_list: List[str] = []
 
@@ -348,7 +366,7 @@ class ModelSuggester(ModelerProtocol):
             try:
                 output = suggest(
                     analysis_context=analysis_context,
-                    domain_expertise=expert,
+                    domain_expertise=domain_expertise,
                     factors_list=edited_factors_list,
                     factor=factor,
                     temperature=temperature,
@@ -376,17 +394,18 @@ class ModelSuggester(ModelerProtocol):
 
     def suggest_pairwise_relationship(
         self,
-        expert,
+        domain_expertise,
         factor_a: str,
         factor_b: str,
         llm: guidance.llms,
         temperature=0.3,
         analysis_context: str = CONTEXT,
+        prompt_template: str = None,
         model_type=ModelType.Completion,
     ):
-        suggest = guidance(
-            ps[model_type.value]["expert_suggests_pairwise_relationships"]
-        )
+        if prompt_template is None:
+            prompt_template = ps[model_type.value]["expert_suggests_pairwise_relationships"]
+        suggest = guidance(prompt_template)
 
         success: bool = False
 
@@ -394,9 +413,9 @@ class ModelSuggester(ModelerProtocol):
             try:
                 output = suggest(
                     analysis_context=analysis_context,
-                    domain_expertise=expert,
-                    a=factor_a,
-                    b=factor_b,
+                    domain_expertise=domain_expertise,
+                    factor_a=factor_a,
+                    factor_b=factor_b,
                     temperature=temperature,
                     llm=llm,
                 )
@@ -436,6 +455,7 @@ class ModelSuggester(ModelerProtocol):
         analysis_context: str = CONTEXT,
         stakeholders: list() = None,
         temperature=0.3,
+        prompt_template: str = None,
         model_type: ModelType = ModelType.Completion,
         relationship_strategy: RelationshipStrategy = RelationshipStrategy.Parent,
     ):
@@ -458,9 +478,10 @@ class ModelSuggester(ModelerProtocol):
                             analysis_context=analysis_context,
                             factor=factor,
                             factors_list=factors_list,
-                            expert=expert,
+                            domain_expertise=domain_expertise,
                             llm=llm,
                             temperature=temperature,
+                            prompt_template=prompt_template,
                             model_type=model_type,
                         )
                         for element in suggested_parent:
@@ -476,9 +497,10 @@ class ModelSuggester(ModelerProtocol):
                         analysis_context=analysis_context,
                         factor=factor,
                         factors_list=factors_list,
-                        expert=expert_list[0],
+                        domain_expertise=expert_list[0],
                         llm=llm,
                         temperature=temperature,
+                        prompt_template=prompt_template,
                         model_type=model_type,
                     )
 
@@ -502,9 +524,10 @@ class ModelSuggester(ModelerProtocol):
                             analysis_context=analysis_context,
                             factor=factor,
                             factors_list=factors_list,
-                            expert=expert,
+                            domain_expertise=domain_expertise,
                             llm=llm,
                             temperature=temperature,
+                            prompt_template=prompt_template,
                             model_type=model_type,
                         )
                         for element in suggested_children:
@@ -520,9 +543,10 @@ class ModelSuggester(ModelerProtocol):
                         analysis_context=analysis_context,
                         factor=factor,
                         factors_list=factors_list,
-                        expert=expert_list[0],
+                        domain_expertise=expert_list[0],
                         llm=llm,
                         temperature=temperature,
+                        prompt_template=prompt_template,
                         model_type=model_type,
                     )
 
@@ -548,9 +572,10 @@ class ModelSuggester(ModelerProtocol):
                                     analysis_context=analysis_context,
                                     factor_a=factor_a,
                                     factor_b=factor_b,
-                                    expert=expert,
+                                    domain_expertise=domain_expertise,
                                     llm=llm,
                                     temperature=temperature,
+                                    prompt_template=prompt_template,
                                     model_type=model_type,
                                 )
 
@@ -564,9 +589,10 @@ class ModelSuggester(ModelerProtocol):
                                 analysis_context=analysis_context,
                                 factor_a=factor_a,
                                 factor_b=factor_b,
-                                expert=expert_list[0],
+                                domain_expertise=expert_list[0],
                                 llm=llm,
                                 temperature=temperature,
+                                prompt_template=prompt_template,
                                 model_type=model_type,
                             )
 
@@ -590,6 +616,7 @@ class ModelSuggester(ModelerProtocol):
                 llm=llm,
                 stakeholders=stakeholders,
                 temperature=temperature,
+                prompt_template=prompt_template,
                 model_type=model_type,
             )
 
