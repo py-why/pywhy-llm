@@ -1,0 +1,152 @@
+[tool.poetry]
+name = "pywhyllm"
+
+#
+# 0.0.0 is standard placeholder for poetry-dynamic-versioning
+# any changes to this should not be checked in
+#
+version = "0.0.0"
+description = "PyWhyLLM enables usage of large language models in the causal inference pipeline. It integrates with existing PyWhy libraries such as DoWhy and causallearn."
+authors = ["PyWhy Community <amshar@microsoft.com>"]
+maintainers = []
+license = "MIT"
+documentation = "https://py-why.github.io/pywhyllm"
+repository = "https://github.com/py-why/pywhyllm"
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'License :: OSI Approved :: MIT License',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+]
+keywords = [
+    'large language model',
+    'causal discovery',
+    'causality',
+    'machine-learning',
+    'causal-inference',
+    'statistics',
+    'graphical-model',
+]
+include = ['docs', 'tests', 'CONTRIBUTING.md', 'GOVERNANCE.md', 'MAINTAINERS.md', 'LICENSE']
+readme = 'README.md'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+metadata = false
+format = "{base}"
+
+[tool.poetry-dynamic-versioning.substitution]
+files = ["pywhyllm/__init__.py"]
+
+#
+# Dependency compatibility notes:
+#
+[tool.poetry.dependencies]
+python = ">=3.8.1,<3.13"
+networkx = ">=2.8.5"
+guidance = ">=0.1.5"
+
+[tool.poetry.group.dev.dependencies]
+poethepoet = "^0.16.0"
+flake8 = "^4.0.1"
+black = { version = "^22.6.0", extras = ["jupyter"] }
+isort = "^5.10.1"
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+pytest-split = "^0.8.0"
+nbformat = "^5.4.0"
+jupyter = "^1.0.0"
+flaky = "^3.7.0"
+mypy = "^0.971"
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+#
+# Dependencies for Documentation Generation
+#
+
+sphinx_design = "^0.3.0"
+sphinx = "^5.3.0"
+sphinxcontrib-googleanalytics = { git = "https://github.com/sphinx-contrib/googleanalytics.git", branch = "master" }
+nbsphinx = "^0.8.9"
+sphinx-rtd-theme = "^1.0.0"
+pydata-sphinx-theme = "^0.9.0"
+ipykernel = "^6.15.1"
+sphinx-copybutton = "0.5.0"
+seaborn = "^0.12.1"
+
+#
+# Versions defined for security reasons
+#
+# https://github.com/py-why/dowhy/security/dependabot/1 - CVE-2022-34749
+nbconvert = { version = "7.0.0rc3", allow-prereleases = true }
+
+[tool.pytest.ini_options]
+markers = [
+    "advanced: not be to run each time. only on package updates.",
+    "notebook: jupyter notebook tests",
+    "focused: a debug marker to focus on specific tests",
+]
+
+[tool.poe.tasks]
+# stop the build if there are Python syntax errors or undefined names
+_flake8Errors = "flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics"
+_flake8Warnings = "flake8 . --count --exit-zero --statistics"
+_black = 'black .'
+_isort = 'isort .'
+_black_check = 'black --check .'
+_isort_check = 'isort --check .'
+
+# testing tasks
+test = "pytest -v -m 'not advanced' --durations=0 --durations-min=60.0"
+test_no_notebooks= "pytest -v -m 'not advanced and not notebook' --durations=0 --durations-min=60.0"
+test_durations = "poetry run poe test --store-durations"
+test_advanced = "pytest -v"
+test_focused = "pytest -v -m 'focused'"
+
+[tool.poe.tasks.format]
+sequence = ['_black', '_isort']
+ignore_fail = 'return_non_zero'
+
+[tool.poe.tasks.format_check]
+sequence = ['_black_check', '_isort_check']
+ignore_fail = 'return_non_zero'
+
+[tool.poe.tasks.lint]
+sequence = ['_flake8Errors', '_flake8Warnings']
+ignore_fail = 'return_non_zero'
+
+[tool.poe.tasks.verify]
+sequence = ['lint', 'format_check', 'test']
+ignore_fail = "return_non_zero"
+
+[tool.black]
+line-length = 120
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+(
+      __pycache__
+    | \.github
+)
+'''
+
+[tool.pylint]
+max-line-length = 120
+disable = ["W0511"]
+
+[tool.isort]
+profile = 'black'
+multi_line_output = 3
+line_length = 120
+py_version = 38
