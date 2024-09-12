@@ -1,7 +1,7 @@
 from typing import List, Tuple, Dict
-from suggesters.protocols import ModelerProtocol
 import networkx as nx
 import guidance
+from guidance import system, user, assistant, gen, select
 from enum import Enum
 import re
 import itertools
@@ -21,7 +21,7 @@ class SimpleModelSuggester:
         Suggests the confounding factors that might influence the relationship between a treatment and an outcome, given a list of variables that have already been considered.
     """
 
-    def suggest_pairwise_relationship(self, variable1: str, variable2: str):
+    def suggest_pairwise_relationship(self, lm: guidance.models, variable1: str, variable2: str):
         """
         Suggests a cause-and-effect relationship between two variables.
 
@@ -32,52 +32,38 @@ class SimpleModelSuggester:
         Returns:
             list: A list containing the suggested cause variable, the suggested effect variable, and a description of the reasoning behind the suggestion.  If there is no relationship between the two variables, the first two elements will be None.
         """
-        prompt = """
-        {{#system~}} 
-        You are a helpful assistant for causal reasoning.
-        {{~/system}}
-        
-        {{#user~}}
-        Which cause-and-effect-relationship is more likely?
-        A. {{variable1}} causes {{variable2}}
-        B. {{variable2}} causes {{variable1}}
-        C. neither {{variable1}} nor {{variable2}} cause each other
-        First let's very succinctly think about each option.
-        Then I'll ask you to provide your final answer A, B, or C.
-        {{~/user}}
+        with system():
+            lm += "You are a helpful assistant for causal reasoning."
+        with user():
+            lm += f""" 
+            Which cause-and-effect-relationship is more likely?
+            A. {variable1} causes {variable2}
+            B. {variable2} causes {variable1}
+            C. neither {variable1} nor {variable2} cause each other
+            First let's very succinctly think about each option.
+            Then I'll ask you to provide your final answer A, B, or C."""
 
-        {{#assistant}}
-        {{~gen 'description'}}
-        {{~/assistant}}
+        with assistant():
+            lm += gen("description")
 
-        {{#user~}}
-        Now what is your final answer: A, B, or C?
-        {{~/user}}
+        with user():
+            lm += "Now what is your final answer: A, B, or C? Answer in a single word."
 
-        {{#assistant}}
-        {{~#select 'answer'}}A{{~or}}B{{~or}}C{{~/select}}
-        {{~/assistant}}
-        """
+        with assistant():
+            lm += select(['A','B','C'], name="answer") 
 
-        program = guidance(prompt)
-        executed_program = program(variable1=variable1, variable2=variable2)
-        if( executed_program._exception is not None):
-            raise executed_program._exception
 
-        description = executed_program['description']
-        answer = executed_program['answer']
-
-        if( answer == "A"):
-            return [variable1, variable2, description]
-        elif( answer == "B"):
-            return [variable2, variable1, description]
-        elif(answer == "C"):
-            return [None, None, description] # maybe we want to save the description in this case too
+        if lm["answer"] == "A":
+            return [variable1, variable2, lm["description"]]
+        elif lm["answer"] == "B":
+            return [variable2, variable1, lm["description"]]
+        elif lm["answer"] == "C":
+            return [None, None, lm["description"]] # maybe we want to save the description in this case too
         else:
-            assert False, "Invalid answer from LLM: " + answer
+            assert False, "Invalid answer from LLM: " + lm["answer"]
 
 
-        def suggest_relationships(self, variables: List[str]):
+    def suggest_relationships(self, lm: guidance.models, variables: List[str]):
             """
             Given a list of variables, suggests relationships between them by querying for pairwise relationships.
 
@@ -94,7 +80,7 @@ class SimpleModelSuggester:
             for(var1, var2) in itertools.combinations(variables, 2):
                 i+=1
                 print(f"{i}/{total}: Querying for relationship between {var1} and {var2}")
-                y = self.suggest_pairwise_relationship(var1, var2)
+                y = self.suggest_pairwise_relationship(lm, var1, var2)
                 if( y[0] == None ):
                     print(f"\tNo relationship found between {var1} and {var2}")
                     continue
@@ -104,7 +90,7 @@ class SimpleModelSuggester:
             return relationships
     
 
-    def suggest_confounders(self, variables: List[str], treatment: str, outcome: str) -> List[str]:
+    def suggest_confounders(self, lm: guidance.models, variables: List[str], treatment: str, outcome: str) -> List[str]:
         """
         Suggests potential confounding factors that might influence the relationship between the treatment and outcome variables.
 
@@ -117,32 +103,20 @@ class SimpleModelSuggester:
             List[str]: A list of potential confounding factors.
         """
 
-        prompt = """
-        {{#system~}} 
-        You are a helpful assistant for causal reasoning.
-        {{~/system}}
+        with system(): 
+            lm += "You are a helpful assistant for causal reasoning."
         
-        {{#user~}}
-        What latent confounding factors might influence the relationship between {{treatment}} and {{outcome}}?
+        with user():
+         lm += f"""
+         What latent confounding factors might influence the relationship between {treatment} and {outcome}?
 
-        We have already considered the following factors {{variables}}.  Please do not repeat them.
+        We have already considered the following factors {variables}.  Please do not repeat them.
 
-        List the confounding factors between {{treatment}} and {{outcome}} enclosing the name of each factor in <conf> </conf> tags.
-        {{~/user}}
+        List the confounding factors between {treatment} and {outcome} enclosing the name of each factor in <conf> </conf> tags."""
+        with assistant():
+            lm += gen("latents")
 
-        {{#assistant}}
-        {{~gen 'latents'}}
-        {{~/assistant}}
-        """ 
-        program = guidance(prompt)
-
-        executed_program = program(variables=str(variables), treatment=treatment, outcome=outcome)
-
-        if( executed_program._exception is not None):
-            raise executed_program._exception
-        
-        latents = executed_program['latents']
-        latents_list = re.findall(r'<conf>(.*?)</conf>', latents)
+        latents_list = re.findall(r'<conf>(.*?)</conf>', lm["latents"])
 
         return latents_list
 

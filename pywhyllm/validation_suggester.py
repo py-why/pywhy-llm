@@ -1,5 +1,5 @@
 from typing import List, Tuple, Dict, Set
-from suggesters.protocols import IdentifierProtocol
+from .protocols import IdentifierProtocol
 from .helpers import RelationshipStrategy, ModelType
 from .prompts import prompts as ps
 import networkx as nx
