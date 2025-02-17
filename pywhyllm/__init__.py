@@ -1,4 +1,4 @@
-from pywhyllm.suggesters.simple_model_suggester import SimpleModelSuggester
+from .suggesters.simple_model_suggester import SimpleModelSuggester
 from .suggesters.model_suggester import ModelSuggester
 from .suggesters.validation_suggester import ValidationSuggester
 from .helpers import ModelType, RelationshipStrategy

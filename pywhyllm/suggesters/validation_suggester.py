@@ -1,7 +1,7 @@
 from typing import List, Tuple, Dict, Set
 from ..protocols import IdentifierProtocol
-from pywhyllm.helpers import RelationshipStrategy, ModelType
-from pywhyllm.prompts import prompts as ps
+from ..helpers import RelationshipStrategy, ModelType
+from ..prompts import prompts as ps
 import networkx as nx
 import guidance
 import copy
@@ -20,7 +20,7 @@ class ValidationSuggester(IdentifierProtocol):
         treatment: str,
         outcome: str,
         factors_list: list(),
-        llm: guidance.llms,
+        llm: guidance.models,
         experts: list() = EXPERTS,
         analysis_context: list() = CONTEXT,
         stakeholders: list() = None,
@@ -91,7 +91,7 @@ class ValidationSuggester(IdentifierProtocol):
         program,
         edited_factors_list: list(),
         negative_controls_counter: list(),
-        llm: guidance.llms,
+        llm: guidance.models,
         expert: str = EXPERTS[0],
         analysis_context: list() = CONTEXT,
         temperature=0.3,
@@ -143,7 +143,7 @@ class ValidationSuggester(IdentifierProtocol):
         self,
         treatment: str,
         outcome: str,
-        llm: guidance.llms,
+        llm: guidance.models,
         experts: list() = EXPERTS,
         analysis_context: list() = CONTEXT,
         stakeholders: list() = None,
@@ -206,7 +206,7 @@ class ValidationSuggester(IdentifierProtocol):
         outcome: str,
         program,
         latent_confounders_counter: list(),
-        llm: guidance.llms,
+        llm: guidance.models,
         expert: str = EXPERTS[0],
         analysis_context: list() = CONTEXT,
         temperature=0.3,
@@ -254,7 +254,7 @@ class ValidationSuggester(IdentifierProtocol):
         factor,
         factors_list,
         expert,
-        llm: guidance.llms,
+        llm: guidance.models,
         temperature=0.3,
         model_type=ModelType.Completion,
     ):
@@ -306,7 +306,7 @@ class ValidationSuggester(IdentifierProtocol):
         factor,
         factors_list,
         expert,
-        llm: guidance.llms,
+        llm: guidance.models,
         temperature=0.3,
         model_type=ModelType.Completion,
     ):
@@ -358,7 +358,7 @@ class ValidationSuggester(IdentifierProtocol):
         expert,
         factor_a: str,
         factor_b: str,
-        llm: guidance.llms,
+        llm: guidance.models,
         temperature=0.3,
         analysis_context: str = CONTEXT,
         model_type=ModelType.Completion,
@@ -407,7 +407,7 @@ class ValidationSuggester(IdentifierProtocol):
         self,
         factors_list: List[str],
         edges: List[Tuple[str, str]],
-        llm: guidance.llms,
+        llm: guidance.models,
         experts: list() = EXPERTS,
         analysis_context: str = CONTEXT,
         stakeholders: list() = None,

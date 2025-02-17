@@ -2,11 +2,11 @@ from typing import Set, Tuple, Dict, List
 from ..protocols import ModelerProtocol
 import networkx as nx
 import guidance
-from pywhyllm.helpers import RelationshipStrategy, ModelType
+from ..helpers import RelationshipStrategy, ModelType
 import copy
 import random
 from enum import Enum
-from pywhyllm.prompts import prompts as ps
+from ..prompts import prompts as ps
 import os
 import re
 import csv
