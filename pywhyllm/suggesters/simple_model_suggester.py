@@ -46,28 +46,32 @@ class SimpleModelSuggester:
             lm += "You are a helpful assistant for causal reasoning."
 
         with user():
-            lm += f"""Which cause-and-effect-relationship is more likely? First let's very succinctly think about each option. A. {variable1} causes {variable2} B. {variable2} causes {variable1} C. neither {variable1} nor {variable2} cause each other. """
+            lm += f"""Which cause-and-effect-relationship is more likely? Provide reasoning and give your final answer (A, B, or C) in <answer> </answer> tags with the letter only and no whitespaces.
+            A. {variable1} causes {variable2} B. {variable2} causes {variable1} C. neither {variable1} nor {variable2} cause each other."""
 
         with assistant():
             lm += gen("description")
 
-        with user():
-            lm += "Now what is your final answer: A, B, or C? Just give me a single letter."
-
-        with assistant():
-            lm += gen("answer")
+        # with user():
+        #     lm += "Now what is your final answer: A, B, or C? Just give me a single letter."
+        #
+        # with assistant():
+        #     lm += gen("answer")
 
         description = lm['description']
-        answer = lm['answer']
+        print(description)
+        answer = re.findall(r'<answer>(.*?)</answer>', description)
+        answer = [ans.strip() for ans in answer]
+        answer_str = "".join(answer)
 
-        if (answer == "A"):
+        if (answer_str == "A"):
             return [variable1, variable2, description]
-        elif (answer == "B"):
+        elif (answer_str == "B"):
             return [variable2, variable1, description]
-        elif (answer == "C"):
+        elif (answer_str == "C"):
             return [None, None, description]  # maybe we want to save the description in this case too
         else:
-            assert False, "Invalid answer from LLM: " + answer
+            assert False, "Invalid answer from LLM: " + answer_str
 
     def suggest_relationships(self, variables: List[str]):
         """
