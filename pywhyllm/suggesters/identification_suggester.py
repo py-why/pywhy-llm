@@ -1,8 +1,8 @@
 from typing import List, Dict, Set, Tuple, Protocol
-from .protocols import IdentifierProtocol
-from .helpers import RelationshipStrategy, ModelType
+from ..protocols import IdentifierProtocol
+from ..helpers import RelationshipStrategy, ModelType
 from .model_suggester import ModelSuggester
-from .prompts import prompts as ps
+from ..prompts import prompts as ps
 import guidance
 import re
 

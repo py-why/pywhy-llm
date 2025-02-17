@@ -1,149 +1,21 @@
-from typing import Set, Tuple, Dict, List
-from suggesters.protocols import ModelerProtocol
+from typing import List, Tuple, Dict, Set
+from ..protocols import IdentifierProtocol
+from pywhyllm.helpers import RelationshipStrategy, ModelType
+from pywhyllm.prompts import prompts as ps
 import networkx as nx
 import guidance
-from .helpers import RelationshipStrategy, ModelType
 import copy
-import random
-from enum import Enum
-from .prompts import prompts as ps
-import os
 import re
-import csv
 
 
-class ModelSuggester(ModelerProtocol):
+class ValidationSuggester(IdentifierProtocol):
     EXPERTS: list() = [
-        "answering questions about causality, you are a helpful causality assistant ",
         "causality, you are an intelligent AI with expertise in causality",
-        "cause and effect",
+        "answering questions about causality, you are a helpful causality assistant ",
     ]
     CONTEXT: str = """causal mechanisms"""
 
-    def suggest_domain_expertises(
-        self,
-        analysis_context,
-        factors,
-        llm: guidance.llms,
-        n_experts: int = 1,
-        temperature=0.3,
-        model_type: ModelType = ModelType.Completion,
-    ):
-        suggest = guidance(ps[model_type.value]["expertises"])
-
-        expertise_list: List[str] = list()
-        success: bool = False
-
-        while not success:
-            try:
-                output = suggest(
-                    analysis_context=analysis_context,
-                    factors_list=factors,
-                    n_experts=n_experts,
-                    temperature=temperature,
-                    llm=llm,
-                )
-                expertise = re.findall(
-                    r"<domain_expertise>(.*?)</domain_expertise>", output["output"]
-                )
-
-                if expertise:
-                    for i in range(n_experts):
-                        expertise_list.append(expertise[i])
-                    success = True
-                else:
-                    llm.OpenAI.cache.clear()
-                    success = False
-
-            except KeyError:
-                success = False
-                continue
-
-        return expertise_list
-
-    def suggest_domain_experts(
-        self,
-        analysis_context,
-        factors,
-        llm: guidance.llms,
-        n_experts: int = 5,
-        temperature=0.3,
-        model_type: ModelType = ModelType.Chat,
-    ):
-        suggest = guidance(ps[model_type.value]["domain_experts"])
-
-        experts_list: Set[str] = set()
-        success: bool = False
-
-        while not success:
-            try:
-                output = suggest(
-                    analysis_context=analysis_context,
-                    factors_list=factors,
-                    n_experts=n_experts,
-                    temperature=temperature,
-                    llm=llm,
-                )
-                experts = re.findall(
-                    r"<domain_expert>(.*?)</domain_expert>", output["output"]
-                )
-
-                if experts:
-                    for i in range(n_experts):
-                        experts_list.add(experts[i])
-                    success = True
-                else:
-                    llm.OpenAI.cache.clear()
-                    success = False
-
-            except KeyError:
-                success = False
-                continue
-
-        return experts_list
-
-    def suggest_stakeholders(
-        self,
-        factors,
-        llm: guidance.llms,
-        n_experts: int = 5,  # must be > 1
-        temperature=0.3,
-        analysis_context=CONTEXT,
-        model_type: ModelType = ModelType.Chat,
-    ):
-        suggest = guidance(ps[model_type.value]["stakeholders"])
-
-        stakeholder_list: List[str] = list()
-        success: bool = False
-
-        while not success:
-            try:
-                output = suggest(
-                    analysis_context=analysis_context,
-                    factors_list=factors,
-                    n_experts=n_experts,
-                    temperature=temperature,
-                    llm=llm,
-                )
-                stakeholder = re.findall(
-                    r"<stakeholder>(.*?)</stakeholder>", output["output"]
-                )
-
-                if stakeholder:
-                    for i in range(n_experts):
-                        stakeholder_list.append(stakeholder[i])
-                    success = True
-                else:
-                    llm.OpenAI.cache.clear()
-                    success = False
-
-            except KeyError:
-                success = False
-                continue
-
-        return stakeholder_list
-
-    def suggest_confounders(
+    def suggest_negative_controls(
         self,
         treatment: str,
         outcome: str,
@@ -162,12 +34,10 @@ class ModelSuggester(ModelerProtocol):
             for elements in stakeholders:
                 expert_list.append(elements)
 
-        suggest = guidance(ps[model_type.value]["expert_suggests_confounders"])
+        suggest = guidance(ps[model_type.value]["expert_suggests_negative_controls"])
 
-        confounders_edges: Dict[Tuple[str, str], int] = dict()
-        confounders_edges[(treatment, outcome)] = 1
-
-        confounders: List[str] = list()
+        negative_controls_counter: Dict[str, int] = dict()
+        negative_controls: List[str] = list()
 
         edited_factors_list: List[str] = []
         for i in range(len(factors_list)):
@@ -176,78 +46,83 @@ class ModelSuggester(ModelerProtocol):
 
         if len(expert_list) > 1:
             for expert in expert_list:
-                confounders_edges, confounders_list = self.request_confounders(
-                    suggest=suggest,
+                (
+                    negative_controls_counter,
+                    negative_controls_list,
+                ) = self.request_negative_controls(
                     treatment=treatment,
                     outcome=outcome,
-                    analysis_context=analysis_context,
-                    expert=expert,
+                    program=suggest,
                     edited_factors_list=edited_factors_list,
-                    temperature=temperature,
+                    negative_controls_counter=negative_controls_counter,
                     llm=llm,
-                    confounders_edges=confounders_edges,
+                    expert=expert,
+                    analysis_context=analysis_context,
+                    temperature=temperature,
                 )
-
-                for m in confounders_list:
-                    if m not in confounders:
-                        confounders.append(m)
+                for m in negative_controls_list:
+                    if m not in negative_controls:
+                        negative_controls.append(m)
         else:
-            confounders_edges, confounders_list = self.request_confounders(
-                suggest=suggest,
+            (
+                negative_controls_counter,
+                negative_controls_list,
+            ) = self.request_negative_controls(
                 treatment=treatment,
                 outcome=outcome,
-                analysis_context=analysis_context,
-                expert=expert_list[0],
+                program=suggest,
                 edited_factors_list=edited_factors_list,
-                temperature=temperature,
+                negative_controls_counter=negative_controls_counter,
                 llm=llm,
-                confounders_edges=confounders_edges,
+                expert=expert_list[0],
+                analysis_context=analysis_context,
+                temperature=temperature,
             )
+            for m in negative_controls_list:
+                if m not in negative_controls:
+                    negative_controls.append(m)
 
-            for m in confounders_list:
-                if m not in confounders:
-                    confounders.append(m)
+        return negative_controls_counter, negative_controls
 
-        return confounders_edges, confounders
-
-    def request_confounders(
+    def request_negative_controls(
         self,
-        suggest,
-        treatment,
-        outcome,
-        analysis_context,
-        expert,
-        edited_factors_list,
-        temperature,
-        llm,
-        confounders_edges,
+        treatment: str,
+        outcome: str,
+        program,
+        edited_factors_list: list(),
+        negative_controls_counter: list(),
+        llm: guidance.llms,
+        expert: str = EXPERTS[0],
+        analysis_context: list() = CONTEXT,
+        temperature=0.3,
     ):
-        confounders: List[str] = list()
+        negative_controls_list: List[str] = list()
 
         success: bool = False
-
         while not success:
             try:
-                output = suggest(
-                    treatment=treatment,
-                    outcome=outcome,
+                output = program(
                     analysis_context=analysis_context,
                     domain_expertise=expert,
                     factors_list=edited_factors_list,
-                    factor=factor,
+                    treatment=treatment,
+                    outcome=outcome,
                     temperature=temperature,
                     llm=llm,
                 )
-                confounding_factors = re.findall(
-                    r"<confounding_factor>(.*?)</confounding_factor>",
+                negative_controls = re.findall(
+                    r"<negative_control>(.*?)</negative_control>",
                     output["output"],
                 )
 
-                if confounding_factors:
-                    for factor in confounding_factors:
+                if negative_controls:
+                    for factor in negative_controls:
                         # to not add it twice into the list
-                        if factor in edited_factors_list and factor not in confounders:
-                            confounders.append(factor)
+                        if (
+                            factor in edited_factors_list
+                            and factor not in negative_controls_list
+                        ):
+                            negative_controls_list.append(factor)
                     success = True
                 else:
                     llm.OpenAI.cache.clear()
@@ -257,20 +132,123 @@ class ModelSuggester(ModelerProtocol):
                 success = False
                 continue
 
-            for element in confounders:
-                if (element, treatment) in confounders_edges and (
-                    element,
-                    outcome,
-                ) in confounders_edges:
-                    confounders_edges[(element, treatment)] += 1
-                    confounders_edges[(element, outcome)] += 1
+            for element in negative_controls_list:
+                if element in negative_controls_counter:
+                    negative_controls_counter[element] += 1
                 else:
-                    confounders_edges[(element, treatment)] = 1
-                    confounders_edges[(element, outcome)] = 1
+                    negative_controls_counter[element] = 1
+        return negative_controls_counter, negative_controls_list
 
-        return confounders_edges, confounders
+    def suggest_latent_confounders(
+        self,
+        treatment: str,
+        outcome: str,
+        llm: guidance.llms,
+        experts: list() = EXPERTS,
+        analysis_context: list() = CONTEXT,
+        stakeholders: list() = None,
+        temperature=0.3,
+        model_type: ModelType = ModelType.Completion,
+    ):
+        expert_list: List[str] = list()
+        for elements in experts:
+            expert_list.append(elements)
+        if stakeholders is not None:
+            for elements in stakeholders:
+                expert_list.append(elements)
 
-    def suggest_parents(
+        suggest = guidance(ps[model_type.value]["expert_suggests_latent_confounders"])
+
+        latent_confounders_counter: Dict[str, int] = dict()
+        latent_confounders: List[str, str] = list()
+
+        if len(expert_list) > 1:
+            for expert in expert_list:
+                (
+                    latent_confounders_counter,
+                    latent_confounders_list,
+                ) = self.request_latent_confounders(
+                    treatment=treatment,
+                    outcome=outcome,
+                    program=suggest,
+                    latent_confounders_counter=latent_confounders_counter,
+                    llm=llm,
+                    expert=expert,
+                    analysis_context=analysis_context,
+                    temperature=temperature,
+                )
+                for m in latent_confounders_list:
+                    if m not in latent_confounders:
+                        latent_confounders.append(m)
+        else:
+            (
+                latent_confounders_counter,
+                latent_confounders_list,
+            ) = self.request_latent_confounders(
+                treatment=treatment,
+                outcome=outcome,
+                program=suggest,
+                latent_confounders_counter=latent_confounders_counter,
+                llm=llm,
+                expert=expert_list[0],
+                analysis_context=analysis_context,
+                temperature=temperature,
+            )
+            for m in latent_confounders_list:
+                if m not in latent_confounders:
+                    latent_confounders.append(m)
+
+        return latent_confounders_counter, latent_confounders
+
+    def request_latent_confounders(
+        self,
+        treatment: str,
+        outcome: str,
+        program,
+        latent_confounders_counter: list(),
+        llm: guidance.llms,
+        expert: str = EXPERTS[0],
+        analysis_context: list() = CONTEXT,
+        temperature=0.3,
+    ):
+        latent_confounders_list: List[str] = list()
+
+        success: bool = False
+        while not success:
+            try:
+                output = program(
+                    analysis_context=analysis_context,
+                    domain_expertise=expert,
+                    treatment=treatment,
+                    outcome=outcome,
+                    temperature=temperature,
+                    llm=llm,
+                )
+                latent_confounders = re.findall(
+                    r"<confounding_factor>(.*?)</confounding_factor>",
+                    output["output"],
+                )
+
+                if latent_confounders:
+                    for factor in latent_confounders:
+                        latent_confounders_list.append(factor)
+                    success = True
+                else:
+                    llm.OpenAI.cache.clear()
+                    success = False
+
+            except KeyError:
+                success = False
+                continue
+
+            for element in latent_confounders_list:
+                if element in latent_confounders_counter:
+                    latent_confounders_counter[element] += 1
+                else:
+                    latent_confounders_counter[element] = 1
+        return latent_confounders_counter, latent_confounders_list
+
+    def request_parent_critique(
         self,
         analysis_context,
         factor,
@@ -280,7 +258,7 @@ class ModelSuggester(ModelerProtocol):
         temperature=0.3,
         model_type=ModelType.Completion,
     ):
-        suggest = guidance(ps[model_type.value]["expert_suggests_parents"])
+        suggest = guidance(ps[model_type.value]["expert_critiques_parents"])
 
         edited_factors_list: List[str] = []
 
@@ -297,7 +275,7 @@ class ModelSuggester(ModelerProtocol):
                 output = suggest(
                     analysis_context=analysis_context,
                     domain_expertise=expert,
-                    factors_list=edited_factors_list,
+                    potential_factors_list=edited_factors_list,
                     factor=factor,
                     temperature=temperature,
                     llm=llm,
@@ -322,7 +300,7 @@ class ModelSuggester(ModelerProtocol):
 
         return parents
 
-    def suggest_children(
+    def request_children_critique(
         self,
         analysis_context,
         factor,
@@ -332,7 +310,7 @@ class ModelSuggester(ModelerProtocol):
         temperature=0.3,
         model_type=ModelType.Completion,
     ):
-        suggest = guidance(ps[model_type.value]["expert_suggests_children"])
+        suggest = guidance(ps[model_type.value]["expert_critiques_children"])
 
         edited_factors_list: List[str] = []
 
@@ -349,7 +327,7 @@ class ModelSuggester(ModelerProtocol):
                 output = suggest(
                     analysis_context=analysis_context,
                     domain_expertise=expert,
-                    factors_list=edited_factors_list,
+                    potential_factors_list=edited_factors_list,
                     factor=factor,
                     temperature=temperature,
                     llm=llm,
@@ -363,6 +341,7 @@ class ModelSuggester(ModelerProtocol):
                     for factor in influencing_factors:
                         if factor in edited_factors_list and factor not in children:
                             children.append(factor)
+
                     success = True
                 else:
                     llm.OpenAI.cache.clear()
@@ -374,7 +353,7 @@ class ModelSuggester(ModelerProtocol):
 
         return children
 
-    def suggest_pairwise_relationship(
+    def request_pairwise_critique(
         self,
         expert,
         factor_a: str,
@@ -384,9 +363,7 @@ class ModelSuggester(ModelerProtocol):
         analysis_context: str = CONTEXT,
         model_type=ModelType.Completion,
     ):
-        suggest = guidance(
-            ps[model_type.value]["expert_suggests_pairwise_relationships"]
-        )
+        suggest = guidance(ps[model_type.value]["expert_critiques_pairwise"])
 
         success: bool = False
 
@@ -426,11 +403,10 @@ class ModelSuggester(ModelerProtocol):
                 success = False
                 continue
 
-    def suggest_relationships(
+    def critique_graph(
         self,
-        treatment: str,
-        outcome: str,
-        factors_list: list(),
+        factors_list: List[str],
+        edges: List[Tuple[str, str]],
         llm: guidance.llms,
         experts: list() = EXPERTS,
         analysis_context: str = CONTEXT,
@@ -454,7 +430,7 @@ class ModelSuggester(ModelerProtocol):
             for factor in factors_list:
                 if len(expert_list) > 1:
                     for expert in expert_list:
-                        suggested_parent = self.suggest_parents(
+                        suggested_parent = self.request_parent_critique(
                             analysis_context=analysis_context,
                             factor=factor,
                             factors_list=factors_list,
@@ -472,7 +448,7 @@ class ModelSuggester(ModelerProtocol):
                             else:
                                 parent_edges[(element, factor)] = 1
                 else:
-                    suggested_parent = self.suggest_parents(
+                    suggested_parent = self.request_parent_critique(
                         analysis_context=analysis_context,
                         factor=factor,
                         factors_list=factors_list,
@@ -488,17 +464,17 @@ class ModelSuggester(ModelerProtocol):
                         else:
                             parent_edges[(element, factor)] = 1
 
-            return parent_edges
+            return edges, parent_edges
 
         elif relationship_strategy == RelationshipStrategy.Child:
             "loop asking children program"
 
-            children_edges: Dict[Tuple[str, str], int] = dict()
+            critiqued_children_edges: Dict[Tuple[str, str], int] = dict()
 
             for factor in factors_list:
                 if len(expert_list) > 1:
                     for expert in expert_list:
-                        suggested_children = self.suggest_children(
+                        suggested_children = self.request_children_critique(
                             analysis_context=analysis_context,
                             factor=factor,
                             factors_list=factors_list,
@@ -509,14 +485,18 @@ class ModelSuggester(ModelerProtocol):
                         )
                         for element in suggested_children:
                             if (
-                                element,
-                                factor,
-                            ) in children_edges and element in factors_list:
-                                children_edges[(element, factor)] += 1
+                                (
+                                    element,
+                                    factor,
+                                )
+                                in critiqued_children_edges
+                                and element in factors_list
+                            ):
+                                critiqued_children_edges[(element, factor)] += 1
                             else:
-                                children_edges[(element, factor)] = 1
+                                critiqued_children_edges[(element, factor)] = 1
                 else:
-                    suggested_children = self.suggest_parents(
+                    suggested_children = self.request_children_critique(
                         analysis_context=analysis_context,
                         factor=factor,
                         factors_list=factors_list,
@@ -527,24 +507,24 @@ class ModelSuggester(ModelerProtocol):
                     )
 
                     for element in suggested_children:
-                        if (element, factor) in children_edges:
-                            children_edges[(element, factor)] += 1
+                        if (element, factor) in critiqued_children_edges:
+                            critiqued_children_edges[(element, factor)] += 1
                         else:
-                            children_edges[(element, factor)] = 1
+                            critiqued_children_edges[(element, factor)] = 1
 
-            return children_edges
+            return edges, critiqued_children_edges
 
         elif relationship_strategy == RelationshipStrategy.Pairwise:
-            "loop through all pairs asking relationship for"
+            "loop through all pairs asking critique for edge"
 
-            pairwise_edges: Dict[Tuple[str, str], int] = dict()
+            critiqued_pairwise_edges: Dict[Tuple[str, str], int] = dict()
 
             for factor_a in factors_list:
                 for factor_b in factors_list:
                     if factor_a != factor_b:
                         if len(expert_list) > 1:
                             for expert in expert_list:
-                                suggested_edge = self.suggest_pairwise_relationship(
+                                suggested_edge = self.request_pairwise_critique(
                                     analysis_context=analysis_context,
                                     factor_a=factor_a,
                                     factor_b=factor_b,
@@ -555,12 +535,12 @@ class ModelSuggester(ModelerProtocol):
                                 )
 
                                 if suggested_edge is not None:
-                                    if suggested_edge in pairwise_edges:
-                                        pairwise_edges[suggested_edge] += 1
+                                    if suggested_edge in critiqued_pairwise_edges:
+                                        critiqued_pairwise_edges[suggested_edge] += 1
                                     else:
-                                        pairwise_edges[suggested_edge] = 1
+                                        critiqued_pairwise_edges[suggested_edge] = 1
                         else:
-                            suggested_edge = self.suggest_pairwise_relationship(
+                            suggested_edge = self.request_pairwise_critique(
                                 analysis_context=analysis_context,
                                 factor_a=factor_a,
                                 factor_b=factor_b,
@@ -571,26 +551,9 @@ class ModelSuggester(ModelerProtocol):
                             )
 
                             if suggested_edge is not None:
-                                if suggested_edge in pairwise_edges:
-                                    pairwise_edges[suggested_edge] += 1
+                                if suggested_edge in critiqued_pairwise_edges:
+                                    critiqued_pairwise_edges[suggested_edge] += 1
                                 else:
-                                    pairwise_edges[suggested_edge] = 1
+                                    critiqued_pairwise_edges[suggested_edge] = 1
 
-            return pairwise_edges
-
-        elif relationship_strategy == RelationshipStrategy.Confounder:
-            "one call to confounder program"
-
-            confounders_counter, confounders = self.suggest_confounders(
-                analysis_context=analysis_context,
-                treatment=treatment,
-                outcome=outcome,
-                factors_list=factors_list,
-                experts=experts,
-                llm=llm,
-                stakeholders=stakeholders,
-                temperature=temperature,
-                model_type=model_type,
-            )
-
-            return confounders_counter, confounders
+            return edges, critiqued_pairwise_edges
