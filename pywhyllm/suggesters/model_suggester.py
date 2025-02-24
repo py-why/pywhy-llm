@@ -2,6 +2,7 @@ from typing import Set, Tuple, Dict, List
 from ..protocols import ModelerProtocol
 import networkx as nx
 import guidance
+from guidance import system, user, assistant, gen
 from ..helpers import RelationshipStrategy, ModelType
 import copy
 import random
@@ -20,14 +21,18 @@ class ModelSuggester(ModelerProtocol):
     ]
     CONTEXT: str = """causal mechanisms"""
 
+    def __init__(self, llm):
+        if (llm == 'gpt-4'):
+            self.llm = guidance.models.OpenAI('gpt-4')
+
     def suggest_domain_expertises(
-        self,
-        analysis_context,
-        factors,
-        llm: guidance.models,
-        n_experts: int = 1,
-        temperature=0.3,
-        model_type: ModelType = ModelType.Completion,
+            self,
+            analysis_context,
+            factors,
+            llm: guidance.models,
+            n_experts: int = 1,
+            temperature=0.3,
+            model_type: ModelType = ModelType.Completion,
     ):
         suggest = guidance(ps[model_type.value]["expertises"])
 
@@ -62,13 +67,13 @@ class ModelSuggester(ModelerProtocol):
         return expertise_list
 
     def suggest_domain_experts(
-        self,
-        analysis_context,
-        factors,
-        llm: guidance.models,
-        n_experts: int = 5,
-        temperature=0.3,
-        model_type: ModelType = ModelType.Chat,
+            self,
+            analysis_context,
+            factors,
+            llm: guidance.models,
+            n_experts: int = 5,
+            temperature=0.3,
+            model_type: ModelType = ModelType.Chat,
     ):
         suggest = guidance(ps[model_type.value]["domain_experts"])
 
@@ -103,13 +108,13 @@ class ModelSuggester(ModelerProtocol):
         return experts_list
 
     def suggest_stakeholders(
-        self,
-        factors,
-        llm: guidance.models,
-        n_experts: int = 5,  # must be > 1
-        temperature=0.3,
-        analysis_context=CONTEXT,
-        model_type: ModelType = ModelType.Chat,
+            self,
+            factors,
+            llm: guidance.models,
+            n_experts: int = 5,  # must be > 1
+            temperature=0.3,
+            analysis_context=CONTEXT,
+            model_type: ModelType = ModelType.Chat,
     ):
         suggest = guidance(ps[model_type.value]["stakeholders"])
 
@@ -144,16 +149,16 @@ class ModelSuggester(ModelerProtocol):
         return stakeholder_list
 
     def suggest_confounders(
-        self,
-        treatment: str,
-        outcome: str,
-        factors_list: list(),
-        llm: guidance.models,
-        experts: list() = EXPERTS,
-        analysis_context: list() = CONTEXT,
-        stakeholders: list() = None,
-        temperature=0.3,
-        model_type: ModelType = ModelType.Completion,
+            self,
+            treatment: str,
+            outcome: str,
+            factors_list: list(),
+            llm: guidance.models,
+            experts: list() = EXPERTS,
+            analysis_context: list() = CONTEXT,
+            stakeholders: list() = None,
+            temperature=0.3,
+            model_type: ModelType = ModelType.Completion,
     ):
         expert_list: List[str] = list()
         for elements in experts:
@@ -211,16 +216,16 @@ class ModelSuggester(ModelerProtocol):
         return confounders_edges, confounders
 
     def request_confounders(
-        self,
-        suggest,
-        treatment,
-        outcome,
-        analysis_context,
-        expert,
-        edited_factors_list,
-        temperature,
-        llm,
-        confounders_edges,
+            self,
+            suggest,
+            treatment,
+            outcome,
+            analysis_context,
+            expert,
+            edited_factors_list,
+            temperature,
+            llm,
+            confounders_edges,
     ):
         confounders: List[str] = list()
 
@@ -259,8 +264,8 @@ class ModelSuggester(ModelerProtocol):
 
             for element in confounders:
                 if (element, treatment) in confounders_edges and (
-                    element,
-                    outcome,
+                        element,
+                        outcome,
                 ) in confounders_edges:
                     confounders_edges[(element, treatment)] += 1
                     confounders_edges[(element, outcome)] += 1
@@ -271,21 +276,16 @@ class ModelSuggester(ModelerProtocol):
         return confounders_edges, confounders
 
     def suggest_parents(
-        self,
-        analysis_context,
-        factor,
-        factors_list,
-        expert,
-        llm: guidance.models,
-        temperature=0.3,
-        model_type=ModelType.Completion,
+            self,
+            analysis_context,
+            domain_expertise,
+            factor,
+            factors_list,
     ):
-        suggest = guidance(ps[model_type.value]["expert_suggests_parents"])
-
         edited_factors_list: List[str] = []
 
         for i in range(len(factors_list)):
-            if factors_list[i] not in factor:
+            if factors_list[i] != factor:
                 edited_factors_list.append(factors_list[i])
 
         parents: List[str] = list()
@@ -294,18 +294,40 @@ class ModelSuggester(ModelerProtocol):
 
         while not success:
             try:
-                output = suggest(
-                    analysis_context=analysis_context,
-                    domain_expertise=expert,
-                    factors_list=edited_factors_list,
-                    factor=factor,
-                    temperature=temperature,
-                    llm=llm,
-                )
-                influencing_factors = re.findall(
-                    r"<influencing_factor>(.*?)</influencing_factor>",
-                    output["output"],
-                )
+                lm = self.llm
+                with system():
+                    lm += f"""You are an expert in {domain_expertise} and are studying {analysis_context}"""
+
+                with user():
+                    lm += f"""You are using your knowledge to help build a causal model that 
+                            contains all the assumptions about the factors that are directly influencing 
+                            and causing the {factor}. Where a causal model is a conceptual model that describes the 
+                            causal mechanisms of a system. You will do this by by answering questions about cause and 
+                            effect and using your domain knowledge as an expert in {domain_expertise}. Follow the next 
+                            two steps, and complete the first one before moving on to the second: (1) From your 
+                            perspective 
+                            as an expert in {domain_expertise} think step by step as you consider the relevant factor 
+                            directly influencing and causing the {factor}. Be concise and keep your thinking within two 
+                            paragraphs. Then provide your step by step chain of thoughts within the tags 
+                            <thinking></thinking>. 
+                            (2) From your perspective as an expert in {domain_expertise} which of the following 
+                            factors has 
+                            a high likelihood of directly influencing and causing the {factor}? factors list: [
+{factors_list}] 
+                            For any factors within the list with a high likelihood of directly influencing and causing 
+                            the {factor} wrap the name of the factor with the tags 
+                            <influencing_factor>factor_name</influencing_factor>. 
+                            If a factor does not have a high likelihood of directly influencing and causing the 
+{factor}, 
+                            then do not wrap the factor with any tags. Your answer as an expert in 
+{domain_expertise}:"""
+
+                with assistant():
+                    lm += gen("output")
+
+                output = lm["output"]
+
+                influencing_factors = re.findall(r"<influencing_factor>(.*?)</influencing_factor", output)
 
                 if influencing_factors:
                     for factor in influencing_factors:
@@ -313,7 +335,6 @@ class ModelSuggester(ModelerProtocol):
                             parents.append(factor)
                     success = True
                 else:
-                    llm.OpenAI.cache.clear()
                     success = False
 
             except KeyError:
@@ -322,7 +343,8 @@ class ModelSuggester(ModelerProtocol):
 
         return parents
 
-    def suggest_children(
+
+def suggest_children(
         self,
         analysis_context,
         factor,
@@ -331,58 +353,58 @@ class ModelSuggester(ModelerProtocol):
         llm: guidance.models,
         temperature=0.3,
         model_type=ModelType.Completion,
-    ):
-        suggest = guidance(ps[model_type.value]["expert_suggests_children"])
+):
+    suggest = guidance(ps[model_type.value]["expert_suggests_children"])
 
-        edited_factors_list: List[str] = []
+    edited_factors_list: List[str] = []
 
-        for i in range(len(factors_list)):
-            if factors_list[i] not in factor:
-                edited_factors_list.append(factors_list[i])
+    for i in range(len(factors_list)):
+        if factors_list[i] not in factor:
+            edited_factors_list.append(factors_list[i])
 
-        children: List[str] = list()
+    children: List[str] = list()
 
-        success: bool = False
+    success: bool = False
 
-        while not success:
-            try:
-                output = suggest(
-                    analysis_context=analysis_context,
-                    domain_expertise=expert,
-                    factors_list=edited_factors_list,
-                    factor=factor,
-                    temperature=temperature,
-                    llm=llm,
-                )
-                influencing_factors = re.findall(
-                    r"<influenced_factor>(.*?)</influenced_factor>",
-                    output["output"],
-                )
+    while not success:
+        try:
+            output = suggest(
+                analysis_context=analysis_context,
+                domain_expertise=expert,
+                factors_list=edited_factors_list,
+                factor=factor,
+                temperature=temperature,
+                llm=llm,
+            )
+            influencing_factors = re.findall(
+                r"<influenced_factor>(.*?)</influenced_factor>",
+                output["output"],
+            )
 
-                if influencing_factors:
-                    for factor in influencing_factors:
-                        if factor in edited_factors_list and factor not in children:
-                            children.append(factor)
-                    success = True
-                else:
-                    llm.OpenAI.cache.clear()
-                    success = False
-
-            except KeyError:
+            if influencing_factors:
+                for factor in influencing_factors:
+                    if factor in edited_factors_list and factor not in children:
+                        children.append(factor)
+                success = True
+            else:
+                llm.OpenAI.cache.clear()
                 success = False
-                continue
 
-        return children
+        except KeyError:
+            success = False
+            continue
+
+    return children
 
     def suggest_pairwise_relationship(
-        self,
-        expert,
-        factor_a: str,
-        factor_b: str,
-        llm: guidance.models,
-        temperature=0.3,
-        analysis_context: str = CONTEXT,
-        model_type=ModelType.Completion,
+            self,
+            expert,
+            factor_a: str,
+            factor_b: str,
+            llm: guidance.models,
+            temperature=0.3,
+            analysis_context: str = CONTEXT,
+            model_type=ModelType.Completion,
     ):
         suggest = guidance(
             ps[model_type.value]["expert_suggests_pairwise_relationships"]
@@ -427,17 +449,17 @@ class ModelSuggester(ModelerProtocol):
                 continue
 
     def suggest_relationships(
-        self,
-        treatment: str,
-        outcome: str,
-        factors_list: list(),
-        llm: guidance.models,
-        experts: list() = EXPERTS,
-        analysis_context: str = CONTEXT,
-        stakeholders: list() = None,
-        temperature=0.3,
-        model_type: ModelType = ModelType.Completion,
-        relationship_strategy: RelationshipStrategy = RelationshipStrategy.Parent,
+            self,
+            treatment: str,
+            outcome: str,
+            factors_list: list(),
+            llm: guidance.models,
+            experts: list() = EXPERTS,
+            analysis_context: str = CONTEXT,
+            stakeholders: list() = None,
+            temperature=0.3,
+            model_type: ModelType = ModelType.Completion,
+            relationship_strategy: RelationshipStrategy = RelationshipStrategy.Parent,
     ):
         expert_list: List[str] = list()
         for elements in experts:
@@ -465,8 +487,8 @@ class ModelSuggester(ModelerProtocol):
                         )
                         for element in suggested_parent:
                             if (
-                                element,
-                                factor,
+                                    element,
+                                    factor,
                             ) in parent_edges and element in factors_list:
                                 parent_edges[(element, factor)] += 1
                             else:
@@ -509,8 +531,8 @@ class ModelSuggester(ModelerProtocol):
                         )
                         for element in suggested_children:
                             if (
-                                element,
-                                factor,
+                                    element,
+                                    factor,
                             ) in children_edges and element in factors_list:
                                 children_edges[(element, factor)] += 1
                             else:
