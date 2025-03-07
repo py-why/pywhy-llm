@@ -1,8 +1,8 @@
 from typing import List, Dict, Set, Tuple, Protocol
-from .protocols import IdentifierProtocol
-from .helpers import RelationshipStrategy, ModelType
+from ..protocols import IdentifierProtocol
+from ..helpers import RelationshipStrategy, ModelType
 from .model_suggester import ModelSuggester
-from .prompts import prompts as ps
+from ..prompts import prompts as ps
 import guidance
 import re
 
@@ -21,7 +21,7 @@ class IdentificationSuggester(IdentifierProtocol):
     #     treatment: str,
     #     outcome: str,
     #     factors_list: list(),
-    #     llm: guidance.llms,
+    #     llm: guidance.models,
     #     backdoor: Set[str] = None,
     #     frontdoor: Set[str] = None,
     #     ivs: Set[str] = None,
@@ -118,7 +118,7 @@ class IdentificationSuggester(IdentifierProtocol):
         treatment: str,
         outcome: str,
         factors_list: list(),
-        llm: guidance.llms,
+        llm: guidance.models,
         experts: list() = EXPERTS,
         analysis_context: list() = CONTEXT,
         stakeholders: list() = None,
@@ -143,7 +143,7 @@ class IdentificationSuggester(IdentifierProtocol):
         treatment: str,
         outcome: str,
         factors_list: list(),
-        llm: guidance.llms,
+        llm: guidance.models,
         experts: list() = EXPERTS,
         analysis_context: list() = CONTEXT,
         stakeholders: list() = None,
@@ -268,7 +268,7 @@ class IdentificationSuggester(IdentifierProtocol):
         treatment: str,
         outcome: str,
         factors_list: list(),
-        llm: guidance.llms,
+        llm: guidance.models,
         experts: list() = EXPERTS,
         analysis_context: list() = CONTEXT,
         stakeholders: list() = None,
