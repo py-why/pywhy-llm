@@ -5,7 +5,7 @@ import re
 import sys
 from enum import Enum
 
-from suggesters import ModelSuggester
+from .. import ModelSuggester
 
 
 class Strategy(Enum):
@@ -16,8 +16,11 @@ class Strategy(Enum):
 
 
 class TuebingenModelSuggester(ModelSuggester):
+    def __init__(self, llm):
+        super().__init__(llm)
+
     def suggest_description(
-        self, variable, llm: guidance.llms, context=None, ask_reference=False
+            self, variable, context=None, ask_reference=False
     ):
         generate_description = self._build_description_program()
 
@@ -27,11 +30,10 @@ class TuebingenModelSuggester(ModelSuggester):
         while not success:
             try:
                 if context is None:
-                    output = generate_description(variable=variable, llm=llm)
+                    output = generate_description(variable=variable)
                 else:
                     output = generate_description(
-                        context=context, variable=variable, llm=llm
-                    )
+                        context=context, variable=variable)
 
                 description = re.findall(
                     r"<description>(.*?)</description>", output["output"]
@@ -54,13 +56,13 @@ class TuebingenModelSuggester(ModelSuggester):
                 continue
 
     def suggest_onesided_relationship(
-        self,
-        variable_a,
-        description_a,
-        variable_b,
-        description_b,
-        llm: guidance.llms,
-        temperature: None = 0.3,
+            self,
+            variable_a,
+            description_a,
+            variable_b,
+            description_b,
+            llm: guidance.llms,
+            temperature: None = 0.3,
     ):
         suggest_relationship = self._onesided_relationship_program()
 
@@ -96,18 +98,13 @@ class TuebingenModelSuggester(ModelSuggester):
         return suggested_relationship
 
     def _build_description_program(self, use_context=False, ask_reference=False):
-        query = ""
+        query = {}
 
         if use_context:
-            query = """
-            {{#system~}} 
-            You are a helpful assistant for writing concise and peer-reviewed descriptions. Your goal is to provide factual and succinct descriptions related to the given concept and context. 
-            {{~/system}}
-            
-            {{#user~}}
-            {{context}}
-            Using this context about the particular variable, describe the concept of {{variable}}.
-            In one sentence, provide a factual and succinct description of {{variable}}"""
+            query["system"] = f"""You are a helpful assistant for writing concise and peer-reviewed descriptions. Your goal is 
+            to provide factual and succinct descriptions related to the given concept and context."""
+            query["user"] = f"""Using this context about the particular variable, describe the concept of {variable}.
+            In one sentence, provide a factual and succinct description of {variable}"""
 
             if ask_reference:
                 query += """
@@ -179,16 +176,16 @@ class TuebingenModelSuggester(ModelSuggester):
         )
 
     def suggest_relationship(
-        self,
-        variable_a,
-        variable_b,
-        llm,
-        description_a=None,
-        description_b=None,
-        domain=None,
-        strategy=None,
-        ask_reference=False,
-        temperature=0.3,
+            self,
+            variable_a,
+            variable_b,
+            llm,
+            description_a=None,
+            description_b=None,
+            domain=None,
+            strategy=None,
+            ask_reference=False,
+            temperature=0.3,
     ):
         use_description = (
             True if description_a is not None and description_b is not None else False
@@ -249,11 +246,11 @@ class TuebingenModelSuggester(ModelSuggester):
                 continue
 
     def _build_relationship_program(
-        self,
-        use_domain=None,
-        use_strategy=Strategy.ToT_Single,
-        use_description=False,
-        ask_reference=False,
+            self,
+            use_domain=None,
+            use_strategy=Strategy.ToT_Single,
+            use_description=False,
+            ask_reference=False,
     ):
         system = ""
         user = ""
@@ -261,9 +258,9 @@ class TuebingenModelSuggester(ModelSuggester):
 
         if use_domain is not None:
             system = (
-                """{{#system~}} You are a helpful assistant on causal reasoning and """
-                + use_domain
-                + """. Your goal is to answer questions about cause and effect in a factual and concise way. {{~/system}}"""
+                    """{{#system~}} You are a helpful assistant on causal reasoning and """
+                    + use_domain
+                    + """. Your goal is to answer questions about cause and effect in a factual and concise way. {{~/system}}"""
             )
 
         else:
