@@ -254,7 +254,6 @@ class ModelSuggester(ModelerProtocol):
                     lm += gen("output")
 
                 output = lm["output"]
-                print(output)
                 confounding_factors = re.findall(r"<confounding_factor>(.*?)</confounding_factor>", output)
 
                 if confounding_factors:

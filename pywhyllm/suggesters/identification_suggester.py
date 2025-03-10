@@ -8,14 +8,8 @@ from guidance import system, user, assistant, gen
 import re
 
 
-# from dowhy import causal_identifier as ci
-
-
 class IdentificationSuggester(IdentifierProtocol):
-    # EXPERTS: list() = [
-    #     "cause and effect",
-    #     "causality, you are an intelligent AI with expertise in causality",
-    # ]
+
     CONTEXT: str = """causal mechanisms"""
 
     def __init__(self, llm):
@@ -156,12 +150,12 @@ class IdentificationSuggester(IdentifierProtocol):
             treatment: str,
             outcome: str,
             factors_list: list(),
-            experts: list(),
+            expertise_list: list(),
             analysis_context: list() = CONTEXT,
             stakeholders: list() = None
     ):
         expert_list: List[str] = list()
-        for elements in experts:
+        for elements in expertise_list:
             expert_list.append(elements)
         if stakeholders is not None:
             for elements in stakeholders:

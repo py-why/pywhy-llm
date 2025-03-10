@@ -11,10 +11,6 @@ import re
 
 
 class ValidationSuggester(IdentifierProtocol):
-    # EXPERTS: list() = [
-    #     "causality, you are an intelligent AI with expertise in causality",
-    #     "answering questions about causality, you are a helpful causality assistant ",
-    # ]
     CONTEXT: str = """causal mechanisms"""
 
     def __init__(self, llm):
@@ -405,7 +401,6 @@ class ValidationSuggester(IdentifierProtocol):
                     lm += gen("output")
 
                 output = lm["output"]
-                print(output)
 
                 answer = re.findall(
                     r"<answer>(.*?)</answer", output)
