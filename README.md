@@ -1,4 +1,7 @@
 # PyWhy-LLM: Leveraging Large Language Models for Causal Analysis
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ## Introduction
@@ -97,3 +100,25 @@ For any questions, feedback, or inquiries, please reach out to [Emre Kiciman](ma
 ---
 
 By leveraging LLMs and formalizing human-LLM collaboration, PyWhy-LLM takes causal inference to new heights. Explore its potential and join us in making causal analysis more accessible and insightful.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/grace-sng7"><img src="https://avatars.githubusercontent.com/u/108954669?v=4?s=100" width="100px;" alt="Grace Sng"/><br /><sub><b>Grace Sng</b></sub></a><br /><a href="https://github.com/py-why/pywhy-llm/commits?author=grace-sng7" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
