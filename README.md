@@ -1,6 +1,6 @@
 # PyWhy-LLM: Leveraging Large Language Models for Causal Analysis
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -112,6 +112,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/grace-sng7"><img src="https://avatars.githubusercontent.com/u/108954669?v=4?s=100" width="100px;" alt="Grace Sng"/><br /><sub><b>Grace Sng</b></sub></a><br /><a href="https://github.com/py-why/pywhy-llm/commits?author=grace-sng7" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/RoseDeSicilia26"><img src="https://avatars.githubusercontent.com/u/72463845?v=4?s=100" width="100px;" alt="Rose De Sicilia"/><br /><sub><b>Rose De Sicilia</b></sub></a><br /><a href="https://github.com/py-why/pywhy-llm/commits?author=RoseDeSicilia26" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
