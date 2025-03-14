@@ -4,17 +4,18 @@ from ..helpers import RelationshipStrategy, ModelType
 from .model_suggester import ModelSuggester
 from ..prompts import prompts as ps
 import guidance
+from guidance import system, user, assistant, gen
 import re
-
-# from dowhy import causal_identifier as ci
 
 
 class IdentificationSuggester(IdentifierProtocol):
-    EXPERTS: list() = [
-        "cause and effect",
-        "causality, you are an intelligent AI with expertise in causality",
-    ]
+
     CONTEXT: str = """causal mechanisms"""
+
+    def __init__(self, llm):
+        if llm == 'gpt-4':
+            self.llm = guidance.models.OpenAI('gpt-4')
+            self.model_suggester = ModelSuggester('gpt-4')
 
     # def suggest_estimand(
     #     self,
@@ -114,50 +115,51 @@ class IdentificationSuggester(IdentifierProtocol):
     #     return estimand
 
     def suggest_backdoor(
-        self,
-        treatment: str,
-        outcome: str,
-        factors_list: list(),
-        llm: guidance.models,
-        experts: list() = EXPERTS,
-        analysis_context: list() = CONTEXT,
-        stakeholders: list() = None,
-        temperature=0.3,
-        model_type: ModelType = ModelType.Completion,
+            self,
+            treatment: str,
+            outcome: str,
+            factors_list: list(),
+            expertise_list: list(),
+            analysis_context: list() = CONTEXT,
+            stakeholders: list() = None
     ):
-        backdoor_set = ModelSuggester.suggest_confounders(
-            analysis_context=analysis_context,
+        backdoor_set = self.model_suggester.suggest_confounders(
             treatment=treatment,
             outcome=outcome,
             factors_list=factors_list,
-            experts=experts,
-            llm=llm,
-            stakeholders=stakeholders,
-            temperature=temperature,
-            model_type=model_type,
+            expertise_list=expertise_list,
+            analysis_context=analysis_context,
+            stakeholders=stakeholders
         )
         return backdoor_set
 
+    #TODO:implement
+    def suggest_frontdoor(
+            self,
+            treatment: str,
+            outcome: str,
+            factors_list: list(),
+            expertise_list: list(),
+            analysis_context: list() = CONTEXT,
+            stakeholders: list() = None
+    ):
+        pass
+
     def suggest_mediators(
-        self,
-        treatment: str,
-        outcome: str,
-        factors_list: list(),
-        llm: guidance.models,
-        experts: list() = EXPERTS,
-        analysis_context: list() = CONTEXT,
-        stakeholders: list() = None,
-        temperature=0.3,
-        model_type: ModelType = ModelType.Completion,
+            self,
+            treatment: str,
+            outcome: str,
+            factors_list: list(),
+            expertise_list: list(),
+            analysis_context: list() = CONTEXT,
+            stakeholders: list() = None
     ):
         expert_list: List[str] = list()
-        for elements in experts:
+        for elements in expertise_list:
             expert_list.append(elements)
         if stakeholders is not None:
             for elements in stakeholders:
                 expert_list.append(elements)
-
-        suggest = guidance(ps[model_type.value]["expert_suggests_mediators"])
 
         mediators: List[str] = list()
         mediators_edges: Dict[Tuple[str, str], int] = dict()
@@ -171,29 +173,23 @@ class IdentificationSuggester(IdentifierProtocol):
         if len(expert_list) > 1:
             for expert in expert_list:
                 mediators_edges, mediators_list = self.request_mediators(
-                    suggest=suggest,
                     treatment=treatment,
                     outcome=outcome,
                     analysis_context=analysis_context,
-                    expert=expert,
-                    edited_factors_list=edited_factors_list,
-                    temperature=temperature,
-                    llm=llm,
-                    mediators_edges=mediators_edges,
+                    domain_expertise=expert,
+                    factors_list=edited_factors_list,
+                    mediators_edges=mediators_edges
                 )
                 for m in mediators_list:
                     if m not in mediators:
                         mediators.append(m)
         else:
             mediators_edges, mediators_list = self.request_mediators(
-                suggest=suggest,
                 treatment=treatment,
                 outcome=outcome,
                 analysis_context=analysis_context,
-                expert=expert_list[0],
-                edited_factors_list=edited_factors_list,
-                temperature=temperature,
-                llm=llm,
+                domain_expertise=expert_list[0],
+                factors_list=edited_factors_list,
                 mediators_edges=mediators_edges,
             )
 
@@ -204,16 +200,13 @@ class IdentificationSuggester(IdentifierProtocol):
         return mediators_edges, mediators
 
     def request_mediators(
-        self,
-        suggest,
-        treatment,
-        outcome,
-        analysis_context,
-        expert,
-        edited_factors_list,
-        temperature,
-        llm,
-        mediators_edges,
+            self,
+            treatment,
+            outcome,
+            analysis_context,
+            domain_expertise,
+            factors_list,
+            mediators_edges
     ):
         mediators: List[str] = list()
 
@@ -221,29 +214,48 @@ class IdentificationSuggester(IdentifierProtocol):
 
         while not success:
             try:
-                output = suggest(
-                    treatment=treatment,
-                    outcome=outcome,
-                    analysis_context=analysis_context,
-                    domain_expertise=expert,
-                    factors_list=edited_factors_list,
-                    factor=factor,
-                    temperature=temperature,
-                    llm=llm,
-                )
+                lm = self.llm
+                with system():
+                    lm += f"""You are an expert in {domain_expertise} and are studying {analysis_context}. You are using your 
+                knowledge to help build a causal model that contains all the assumptions about the factors that are directly 
+                influencing athe {outcome}. Where a causal model is a conceptual model that describes the causal mechanisms 
+                of a system. You will do this by by answering questions about cause and effect and using your domain knowledge 
+                in {domain_expertise}. Follow the next two steps, and complete the first one before moving on to the second:"""
+
+                with user():
+                    lm += f"""(1) From your perspective as an expert in {domain_expertise}, think step by step as you consider the factors 
+                that may interact between the {treatment} and the {outcome}. Use your knowledge as an expert in 
+                {domain_expertise} to describe the mediators, if there are any at all, between {treatment} and the 
+                {outcome}. Be concise and keep your thinking within two paragraphs. Then provide your step by step chain 
+                of thoughts within the tags <thinking></thinking>.  (2) From your perspective as an expert in {domain_expertise},
+                 which factor(s) of the following factors, if any at all, has/have a high likelihood of directly influencing and 
+                 causing the assignment of the {outcome} and also has/have a high likelihood of being directly influenced and 
+                 caused by the assignment of the {treatment}? Which factor(s) of the following factors, if any at all, is/are 
+                 on the causal chain that links the {treatment} to the {outcome}? From your perspective as an expert in 
+                 {domain_expertise}, which factor(s) of the following factors, if any at all, mediates, is/are on the causal 
+                 chain, that links the {treatment} to the {outcome}? Then provide your step by step chain of thoughts within 
+                 the tags <thinking></thinking>. factor_names : {factors_list} Wrap the name of the factor(s), if any at all, 
+                 that has/have a high likelihood of directly influencing and causing the assignment of the {outcome} and also 
+                 has/have a high likelihood of being directly influenced and caused by the assignment of the {treatment} within
+                  the tags <mediating_factor>factor_name</mediating_factor>. Where factor_name is one of the items within the 
+                  factor_names list. If a factor does not have a high likelihood of mediating, then do not wrap the factor with 
+                  any tags. Your step by step answer as an in {domain_expertise}:"""
+
+                with assistant():
+                    lm += gen("output")
+
+                output = lm["output"]
+
                 mediating_factor = re.findall(
-                    r"<mediating_factor>(.*?)</mediating_factor>",
-                    output["output"],
-                )
+                    r"<mediating_factor>(.*?)</mediating_factor>", output)
 
                 if mediating_factor:
                     for factor in mediating_factor:
                         # to not add it twice into the list
-                        if factor in edited_factors_list and factor not in mediators:
+                        if factor in factors_list and factor not in mediators:
                             mediators.append(factor)
                     success = True
                 else:
-                    llm.OpenAI.cache.clear()
                     success = False
 
             except KeyError:
@@ -252,8 +264,8 @@ class IdentificationSuggester(IdentifierProtocol):
 
             for element in mediators:
                 if (treatment, element) in mediators_edges and (
-                    element,
-                    outcome,
+                        element,
+                        outcome,
                 ) in mediators_edges:
                     mediators_edges[(treatment, element)] += 1
                     mediators_edges[(element, outcome)] += 1
@@ -264,25 +276,20 @@ class IdentificationSuggester(IdentifierProtocol):
         return mediators_edges, mediators
 
     def suggest_ivs(
-        self,
-        treatment: str,
-        outcome: str,
-        factors_list: list(),
-        llm: guidance.models,
-        experts: list() = EXPERTS,
-        analysis_context: list() = CONTEXT,
-        stakeholders: list() = None,
-        temperature=0.3,
-        model_type: ModelType = ModelType.Completion,
+            self,
+            treatment: str,
+            outcome: str,
+            factors_list: list(),
+            expertise_list: list(),
+            analysis_context: list() = CONTEXT,
+            stakeholders: list() = None
     ):
         expert_list: List[str] = list()
-        for elements in experts:
+        for elements in expertise_list:
             expert_list.append(elements)
         if stakeholders is not None:
             for elements in stakeholders:
                 expert_list.append(elements)
-
-        suggest = guidance(ps[model_type.value]["expert_suggests_mediators"])
 
         ivs: List[str] = list()
         iv_edges: Dict[Tuple[str, str], int] = dict()
@@ -296,42 +303,33 @@ class IdentificationSuggester(IdentifierProtocol):
         if len(expert_list) > 1:
             for expert in expert_list:
                 self.request_ivs(
-                    suggest=suggest,
                     treatment=treatment,
                     outcome=outcome,
                     analysis_context=analysis_context,
-                    expert=expert,
-                    edited_factors_list=edited_factors_list,
-                    temperature=temperature,
-                    llm=llm,
+                    domain_expertise=expert,
+                    factors_list=edited_factors_list,
                     iv_edges=iv_edges,
                 )
         else:
             self.request_ivs(
-                suggest=suggest,
                 treatment=treatment,
                 outcome=outcome,
                 analysis_context=analysis_context,
-                expert=expert_list[0],
-                edited_factors_list=edited_factors_list,
-                temperature=temperature,
-                llm=llm,
+                domain_expertise=expert_list[0],
+                factors_list=edited_factors_list,
                 iv_edges=iv_edges,
             )
 
         return iv_edges, ivs
 
     def request_ivs(
-        self,
-        suggest,
-        treatment,
-        outcome,
-        analysis_context,
-        expert,
-        edited_factors_list,
-        temperature,
-        llm,
-        iv_edges,
+            self,
+            treatment,
+            outcome,
+            analysis_context,
+            domain_expertise,
+            factors_list,
+            iv_edges
     ):
         ivs: List[str] = list()
 
@@ -339,29 +337,47 @@ class IdentificationSuggester(IdentifierProtocol):
 
         while not success:
             try:
-                output = suggest(
-                    treatment=treatment,
-                    outcome=outcome,
-                    analysis_context=analysis_context,
-                    domain_expertise=expert,
-                    factors_list=edited_factors_list,
-                    factor=factor,
-                    temperature=temperature,
-                    llm=llm,
-                )
-                iv_factors = re.findall(
-                    r"<iv_factor>(.*?)</iv_factor>",
-                    output["output"],
-                )
+                lm = self.llm
+                with system():
+                    lm += f"""You are an expert in {domain_expertise} and are studying {analysis_context}. 
+                        You are using your knowledge to help build a causal model that contains all the assumptions about the factors 
+                        that are directly influencing the {outcome}. Where a causal model is a conceptual model that describes the 
+                        causal mechanisms of a system. You will do this by by answering questions about cause and effect and using 
+                        your domain knowledge in {domain_expertise}. Follow the next two steps, and complete the first one before 
+                        moving on to the second:"""
+
+                with user():
+                    lm += f"""(1) From your perspective as an expert in {domain_expertise}, think step by step 
+                       as you consider the factors that may interact with the {treatment} and do not interact with {outcome}. 
+                       Use your knowlegde as an expert in {domain_expertise} to describe the instrumental variable(s), 
+                       if there are any at all, that both has/have a high likelihood of influecing and causing the {treatment} and 
+                       has/have a very low likelihood of influencing and causing the {outcome}. Be concise and keep your thinking 
+                       within two paragraphs.  Then provide your step by step chain of thoughts within the tags 
+                       <thinking></thinking>. (2) From your perspective as an expert in {domain_expertise}, which factor(s) of the 
+                       following factors, if there are any at all, both has/have a high likelihood of influecing and causing the {
+                    treatment} and has/have a very low likelihood of influencing and causing the {outcome}? Which factor(s) of 
+                       the following factors, if any at all, has/have a causal link to the {treatment} and has not causal link to 
+                       the {outcome}? Which factor(s) of the following factors, if any at all, are (an) instrumental variable(s) 
+                       to the causal relationship of the {treatment} causing the {outcome}? Be concise and keep your thinking 
+                       within two paragraphs. Then provide your step by step chain of thoughts within the tags 
+                       <thinking></thinking>. factor_names : {factors_list} Wrap the name of the factor(s), if there are any at 
+                       all, that both has/have a high likelihood of influecing and causing the {treatment} and has/have a very low 
+                       likelihood of influencing and causing the {outcome}, within the tags <iv_factor>factor_name</iv_factor>. 
+                       Where factor_name is one of the items within the factor_names list. If a factor does not have a high 
+                       likelihood of being an instrumental variable, then do not wrap the factor with any tags. Your step by step 
+                       answer as an in {domain_expertise}:"""
+                with assistant():
+                    lm += gen("output")
+
+                output = lm["output"]
+                iv_factors = re.findall(r"<iv_factor>(.*?)</iv_factor>", output)
 
                 if iv_factors:
                     for factor in iv_factors:
-                        # to not add it twice into the list
-                        if factor in edited_factors_list and factor not in ivs:
+                        if factor in factors_list and factor not in ivs:
                             ivs.append(factor)
                     success = True
                 else:
-                    llm.OpenAI.cache.clear()
                     success = False
 
             except KeyError:
