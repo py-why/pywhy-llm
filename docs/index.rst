@@ -6,8 +6,10 @@
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
-    source/modules
+ 
+   source/modules
+   notebooks/walkthrough
+    
 
 .. mdinclude:: ../README.md
 
