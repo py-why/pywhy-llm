@@ -67,7 +67,6 @@ class TuebingenModelSuggester(ModelSuggester):
             variable_b,
             description_b
     ):
-        # suggest_relationship = self._onesided_relationship_program()
 
         success: bool = False
         suggested_relationship: int
@@ -143,27 +142,6 @@ class TuebingenModelSuggester(ModelSuggester):
                         Let's think step-by-step to make sure that we have a proper and clear description. Then provide 
                         your final answer within the tags, <description></description>."""
         return query
-
-    # def _onesided_relationship_program(self):
-    #
-    #     return guidance(
-    #         """
-    #     {{#system~}}
-    #     You are a helpful assistant on causal reasoning. Your goal is to answer questions about cause and effect in a factual and concise way.
-    #     {{~/system}}
-    #
-    #     {{#user~}}
-    #     Can changing {{variable_a}}, {{description_a}}, change {{variable_b}}, {{description_b}}?
-    #     A. Yes
-    #     B. No
-    #     Within one sentence, let's think step-by-step to make sure that we have the right answer.  Then provide your final answer within the tags, <answer>A/B</answer>.
-    #     {{~/user}}
-    #
-    #     {{#assistant~}}
-    #     {{gen 'output' temperature=temperature}}
-    #     {{~/assistant}}
-    #     """
-    #     )
 
     def suggest_relationship(
             self,
