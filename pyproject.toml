@@ -10,8 +10,8 @@ description = "PyWhyLLM enables usage of large language models in the causal inf
 authors = ["PyWhy Community <amshar@microsoft.com>"]
 maintainers = []
 license = "MIT"
-documentation = "https://py-why.github.io/pywhyllm"
-repository = "https://github.com/py-why/pywhyllm"
+documentation = "https://py-why.github.io/pywhy-llm"
+repository = "https://github.com/py-why/pywhy-llm"
 classifiers = [
     'Development Status :: 4 - Beta',
     'License :: OSI Approved :: MIT License',
@@ -52,7 +52,7 @@ files = ["pywhyllm/__init__.py"]
 [tool.poetry.dependencies]
 python = ">=3.8.1,<3.13"
 networkx = ">=2.8.5"
-guidance = ">=0.1.5"
+guidance = ">=0.2"
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.16.0"
