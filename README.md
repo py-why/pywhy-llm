@@ -17,7 +17,7 @@ For detailed usage instructions and tutorials, refer to [Notebook](link_here).
 To install PyWhy-LLM, you can use pip:
 
 ```bash
-pip install pywhy-llm
+pip install pywhyllm
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ pip install pywhy-llm
 PyWhy-LLM seamlessly integrates into your existing causal inference process. Import the necessary classes and start exploring the power of LLM-augmented causal analysis.
 
 ```python
-from pywhy-llm import ModelSuggester, IdentificationSuggester, ValidationSuggester
+from pywhyllm import ModelSuggester, IdentificationSuggester, ValidationSuggester
 
 ```
 
@@ -89,37 +89,7 @@ plt.show()
 
 ```
 
-## License
-
-PyWhy-LLM is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
-
-## Contact
-
-For any questions, feedback, or inquiries, please reach out to [Emre Kiciman](mailto:emrek@microsoft.com) and [Rose De Sicilia](mailto:t-rdesicilia@microsoft.com).
-
----
-
-By leveraging LLMs and formalizing human-LLM collaboration, PyWhy-LLM takes causal inference to new heights. Explore its potential and join us in making causal analysis more accessible and insightful.
-
 ## Contributors ✨
+This project welcomes contributions and suggestions. For a guide to contributing and a list of all contributors, check out [CONTRIBUTING.md](https://github.com/py-why/pywhyllm/blob/main/CONTRIBUTING.md>). Our contributor code of conduct is available [here](https://github.com/py-why/governance/blob/main/CODE-OF-CONDUCT.md>).
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/grace-sng7"><img src="https://avatars.githubusercontent.com/u/108954669?v=4?s=100" width="100px;" alt="Grace Sng"/><br /><sub><b>Grace Sng</b></sub></a><br /><a href="https://github.com/py-why/pywhy-llm/commits?author=grace-sng7" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/RoseDeSicilia26"><img src="https://avatars.githubusercontent.com/u/72463845?v=4?s=100" width="100px;" alt="Rose De Sicilia"/><br /><sub><b>Rose De Sicilia</b></sub></a><br /><a href="https://github.com/py-why/pywhy-llm/commits?author=RoseDeSicilia26" title="Code">💻</a></td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+If you encounter an issue or have a specific request for DoWhy, please [raise an issue](https://github.com/py-why/pywhyllm/issues).

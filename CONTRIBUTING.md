@@ -10,12 +10,19 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/grace-sng7"><img src="https://avatars.githubusercontent.com/u/108954669?v=4?s=100" width="100px;" alt="Grace Sng"/><br /><sub><b>Grace Sng</b></sub></a><br /><a href="https://github.com/py-why/pywhy-llm/commits?author=grace-sng7" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/RoseDeSicilia26"><img src="https://avatars.githubusercontent.com/u/72463845?v=4?s=100" width="100px;" alt="Rose De Sicilia"/><br /><sub><b>Rose De Sicilia</b></sub></a><br /><a href="https://github.com/py-why/pywhy-llm/commits?author=RoseDeSicilia26" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
 
 ## Contributing Guide
 
