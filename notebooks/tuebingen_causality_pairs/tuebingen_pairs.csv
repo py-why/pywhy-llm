@@ -1,108 +1,2715 @@
-pair0001, Altitude, Temperature, R
-pair0002, Altitude, Precipitation, R
-pair0003, Longitude, Temperature, R
-pair0004, Altitude, Sunshine hours, R
-pair0005, Age, Length, R
-pair0006, Age, Shell weight, R
-pair0007, Age, Diameter, R
-pair0008, Age, Height, R
-pair0009, Age, Whole weight, R
-pair0010, Age, Shucked weight, R
-pair0011, Age, Viscera weight, R
-pair0012, Age, Wage per hour, R
-pair0013, Displacement, Fuel consumption, R
-pair0014, Horse power, Fuel consumption, R
-pair0015, Weight, Fuel consumption, R
-pair0016, Horsepower, Acceleration, R
-pair0017, Age, Dividends from stocks, R
-pair0018, Age, Concentration GAG, R
-pair0019, Current duration, Next interval, R
-pair0020, Latitude, Temperature, R
-pair0021, Longitude, Precipitation, R
-pair0022, Age, Height, R
-pair0023, Age, Weight, R
-pair0024, Age, Heart rate, R
-pair0025, Cement, Compressive strength, R
-pair0026, Blast furnace slag, Compressive strength, R
-pair0027, Fly ash, Compressive strength, R
-pair0028, Water, Compressive strength, R
-pair0029, Superplasticizer, Compressive strength, R
-pair0030, Coarse aggregate, Compressive strength, R
-pair0031, Fine aggregate, Compressive strength, R
-pair0032, Age, Compressive strength, R
-pair0033, Alcohol consumption, Mean corpuscular volume, R
-pair0034, Alcohol consumption, Alkaline phosphotase, R
-pair0035, Alcohol consumption, Alanine aminotransferase, R
-pair0036, Alcohol consumption, Aspartate aminotransferase, R
-pair0037, Alcohol consumption, Gamma-glutamyl transpeptdase, R
-pair0038, Age, Body mass index, R
-pair0039, Age, Serum insulin, R
-pair0040, Age, Diastolic blood pressure, R
-pair0041, Age, Plasma glucose concentration, R
-pair0042, Day of the year, Temperature, R
-pair0043, Temperature at t, Temperature at t+1, R
-pair0044, Pressure at t, Pressure at t+1, R
-pair0045, Sea level pressure at t, Sea level pressure at t+1, R
-pair0046, Relative humidity at t, Relative humidity at t+1, R
-pair0047, Number of cars, Type of day, L
-pair0048, Indoor temperature, Outdoor temperature, L
-pair0049, Ozone concentration, Temperature, R
-pair0050, Ozone concentration, Temperature, R
-pair0051, Ozone concentration, Temperature, R
-pair0052, (Temp and Press and SLP and Rh), (Temp and Press and Slp and Rh), L
-pair0053, Ozone concentration, (Wind speed and Radiation and Temperature), L
-pair0054, (Displacement and Horsepower and Weight), (Fuel cons and ption and Acceleration), R
-pair0055, Ozone concentration (16-dim.), Radiation (16-dim.), L
-pair0056, Female life expectancy 2000-2005, Latitude, L
-pair0057, Female life expectancy 1995-2000, Latitude, L
-pair0058, Female life expectancy 1990-1995, Latitude, L
-pair0059, Female life expectancy 1985-1990, Latitude, L
-pair0060, Male life expectancy 2000-2005, Latitude, L
-pair0061, Male life expectancy 1995-2000, Latitude, L
-pair0062, Male life expectancy 1990-1995, Latitude, L
-pair0063, Male life expectancy 1985-1990, Latitude, L
-pair0064, Drinking water access, Infant mortality, R
-pair0065, Stock return of Hang Seng Bank, Stock return of HSBC Hldgs, R
-pair0066, Stock return of Hutchison, Stock return of Cheung kong, R
-pair0067, Stock return of Cheung kong, Stock return of Sun Hung Kai Prop., R
-pair0068, Bytes sent, Open http connections, L
-pair0069, Inside temperature, Outside temperature, L
-pair0070, Parameter, Answer, R
-pair0071, Symptoms (6-dim.), Classification of disease (2-dim.), R
-pair0072, Sunspots, Global mean temperature, R
-pair0073, CO2 emissions, Energy use, L
-pair0074, GNI per capita, Life expectancy, R
-pair0075, Under-5 mortality rate, GNI per capita, L
-pair0076, Population growth, Food consumption growth, R
-pair0077, Temperature, Solar radiation, L
-pair0078, PPFD, Net Ecosystem Productivity, R
-pair0079, Net Ecosystem Productivity, Diffuse PPFDdif, L
-pair0080, Net Ecosystem Productivity, Direct PPFDdir, L
-pair0081, Temperature, Local CO2 flux, R
-pair0082, Temperature, Local CO2 flux, R
-pair0083, Temperature, Local CO2 flux, R
-pair0084, Employment, Population, L
-pair0085, Time of measurement, Protein content of milk, R
-pair0086, Size of apartment, Monthly rent, R
-pair0087, Temperature, Total snow, L
-pair0088, Age, Relative spinal bone mineral density, R
-pair0089, root decomposition Oct (grassl), root decomposition Oct (grassl), L
-pair0090, root decomposition Oct (forest), root decomposition Oct (forest), L
-pair0091, clay cont. in soil (forest), soil moisture, R
-pair0092, organic carbon in soil (forest), clay cont. in soil (forest), L
-pair0093, precipitation, runoff, R
-pair0094, hour of day, temperature, R
-pair0095, hour of day, electricity load, R
-pair0096, temperature, electricity load, R
-pair0097, speed at the beginning, speed at the end, R
-pair0098, speed at the beginning, speed at the end, R
-pair0099, language test score, social-economic status family, L
-pair0100, cycle time of CPU, performance, R
-pair0101, grey value of a pixel, brightness of the screen, R
-pair0102, position of a ball, time for passing a track segment, R
-pair0103, position of a ball, time for passing a track segment, R
-pair0104, time for passing 1. segment, time for passing 2. segment, R
-pair0105, pixel vector of a patch, total brightness at the screen, R
-pair0106, time required for one round, voltage, L
-pair0107, strength of contrast, answer correct or not, R
-pair0108, time for 1/6 rotation, temperature, L
+,var1,var2,ground_truth,truth_ab,truth_ba,context,var1_desc,var2_desc
+pair0001, Altitude, Temperature, R,1,0,"Information for pairs0001:
+
+DWD data (Deutscher Wetterdienst)
+
+data was taken at 349 stations
+
+taken from
+http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop/?_nfpb=true&_pageLabel=_dwdwww_klima_umwelt_klimadaten_deutschland&T82002gsbDocumentPath=Navigation%2FOeffentlichkeit%2FKlima__Umwelt%2FKlimadaten%2Fkldaten__kostenfrei%2Fausgabe__mittelwerte__node.html__nnn%3Dtrue
+
+more recent  link (Jan 2010):
+http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop/?_nfpb=true&_pageLabel=_dwdwww_klima_umwelt_klimadaten_deutschland&T82002gsbDocumentPath=Navigation%2FOeffentlichkeit%2FKlima__Umwelt%2FKlimadaten%2Fkldaten__kostenfrei%2Fausgabe__mittelwerte__node.html__nnn%3Dtrue
+
+
+x: altitude
+
+y: temperature (average over 1961-1990)
+
+",Altitude refers to the height of an object or point in relation to sea level or ground level.,"Temperature is a measure of the average kinetic energy of the particles in a system, often used in meteorology to indicate the degree of heat or cold in the atmosphere."
+pair0002, Altitude, Precipitation, R,1,0,"Information for pairs0002:
+
+DWD data (Deutscher Wetterdienst)
+
+data was taken at 349 stations
+
+taken from
+http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop/?_nfpb=true&_pageLabel=_dwdwww_klima_umwelt_klimadaten_deutschland&T82002gsbDocumentPath=Navigation%2FOeffentlichkeit%2FKlima__Umwelt%2FKlimadaten%2Fkldaten__kostenfrei%2Fausgabe__mittelwerte__node.html__nnn%3Dtrue
+
+more recent  link (Jan 2010):
+http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop/?_nfpb=true&_pageLabel=_dwdwww_klima_umwelt_klimadaten_deutschland&T82002gsbDocumentPath=Navigation%2FOeffentlichkeit%2FKlima__Umwelt%2FKlimadaten%2Fkldaten__kostenfrei%2Fausgabe__mittelwerte__node.html__nnn%3Dtrue
+
+
+x: altitude
+
+y: precipitation (yearly value averaged over 1961-1990)
+
+
+","Altitude is a geographical concept referring to the height of a specific location above a fixed reference point, often the mean sea level.","Precipitation is a meteorological phenomenon that includes all forms of water, liquid or solid, falling from the atmosphere to the earth's surface, typically measured in terms of the amount of water (in millimeters) that is deposited over a specified area over a certain period of time."
+pair0003, Longitude, Temperature, R,1,0,"Information for pairs0003:
+
+DWD data (Deutscher Wetterdienst)
+
+data was taken at 349 stations
+
+taken from
+http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop/?_nfpb=true&_pageLabel=_dwdwww_klima_umwelt_klimadaten_deutschland&T82002gsbDocumentPath=Navigation%2FOeffentlichkeit%2FKlima__Umwelt%2FKlimadaten%2Fkldaten__kostenfrei%2Fausgabe__mittelwerte__node.html__nnn%3Dtrue
+
+more recent  link (Jan 2010):
+http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop/?_nfpb=true&_pageLabel=_dwdwww_klima_umwelt_klimadaten_deutschland&T82002gsbDocumentPath=Navigation%2FOeffentlichkeit%2FKlima__Umwelt%2FKlimadaten%2Fkldaten__kostenfrei%2Fausgabe__mittelwerte__node.html__nnn%3Dtrue
+
+
+x: longitude
+
+y: temperature (averaged over 1961-1990)
+
+","Longitude is a geographic coordinate that specifies the east-west position of a point on the Earth's surface, measured in degrees from the prime meridian.","Temperature is a quantitative measure of the degree of heat present in a substance or an object, often expressed in degrees, and in this context, it refers to the averaged atmospheric temperature recorded at various stations by the Deutscher Wetterdienst from 1961-1990."
+pair0004, Altitude, Sunshine hours, R,1,0,"Information for pairs0004:
+
+DWD data (Deutscher Wetterdienst)
+
+data was taken at 349 stations
+
+taken from
+http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop/?_nfpb=true&_pageLabel=_dwdwww_klima_umwelt_klimadaten_deutschland&T82002gsbDocumentPath=Navigation%2FOeffentlichkeit%2FKlima__Umwelt%2FKlimadaten%2Fkldaten__kostenfrei%2Fausgabe__mittelwerte__node.html__nnn%3Dtrue
+
+more recent  link (Jan 2010):
+http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop/?_nfpb=true&_pageLabel=_dwdwww_klima_umwelt_klimadaten_deutschland&T82002gsbDocumentPath=Navigation%2FOeffentlichkeit%2FKlima__Umwelt%2FKlimadaten%2Fkldaten__kostenfrei%2Fausgabe__mittelwerte__node.html__nnn%3Dtrue
+
+more recent link (Oct 2012):
+http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop?_nfpb=true&_pageLabel=_dwdwww_klima_umwelt_klimadaten_deutschland&T82002gsbDocumentPath=Navigation%2FOeffentlichkeit%2FKlima__Umwelt%2FKlimadaten%2Fkldaten__kostenfrei%2Fausgabe__mittelwerte__akt__node.html%3F__nnn%3Dtrue
+
+x: altitude
+
+y: sunshine (yearly value averaged over 1961-1990)
+
+","Altitude is a geographical term referring to the height of a specific location above a fixed reference point, often the mean sea level.","Sunshine hours refer to the total number of hours during which the sun is visible and directly contributing to daylight in a specific location, typically measured on an annual basis."
+pair0005, Age, Length, R,1,0,"Information for pairs0005:
+
+https://archive.ics.uci.edu/ml/datasets/Abalone
+
+1. Title of Database: Abalone data
+
+2. Sources:
+
+   (a) Original owners of database:
+	Marine Resources Division
+	Marine Research Laboratories - Taroona
+	Department of Primary Industry and Fisheries, Tasmania
+	GPO Box 619F, Hobart, Tasmania 7001, Australia
+	(contact: Warwick Nash +61 02 277277, wnash@dpi.tas.gov.au)
+
+   (b) Donor of database:
+	Sam Waugh (Sam.Waugh@cs.utas.edu.au)
+	Department of Computer Science, University of Tasmania
+	GPO Box 252C, Hobart, Tasmania 7001, Australia
+
+   (c) Date received: December 1995
+
+3. Attribute information:
+
+   Given is the attribute name, attribute type, the measurement unit and a
+   brief description.  
+
+	Name		Data Type	Meas.	Description
+	----		---------	-----	-----------
+x:	Rings		integer			+1.5 gives the age in years
+y:	Length		continuous	mm	Longest shell measurement
+
+
+","In the context of the Abalone dataset, the concept of ""Age"" is derived from the ""Rings"" attribute, where the age in years is calculated by adding 1.5 to the integer value of the rings.","In the context of the Abalone dataset, 'Length' is a continuous variable measured in millimeters, representing the longest shell measurement of the abalone."
+pair0006, Age, Shell weight, R,1,0,"Information for pairs0006:
+
+https://archive.ics.uci.edu/ml/datasets/Abalone
+
+1. Title of Database: Abalone data
+
+2. Sources:
+
+   (a) Original owners of database:
+	Marine Resources Division
+	Marine Research Laboratories - Taroona
+	Department of Primary Industry and Fisheries, Tasmania
+	GPO Box 619F, Hobart, Tasmania 7001, Australia
+	(contact: Warwick Nash +61 02 277277, wnash@dpi.tas.gov.au)
+
+   (b) Donor of database:
+	Sam Waugh (Sam.Waugh@cs.utas.edu.au)
+	Department of Computer Science, University of Tasmania
+	GPO Box 252C, Hobart, Tasmania 7001, Australia
+
+   (c) Date received: December 1995
+
+3. Attribute information:
+
+   Given is the attribute name, attribute type, the measurement unit and a
+   brief description.  
+
+	Name		Data Type	Meas.	Description
+	----		---------	-----	-----------
+x:	Rings		integer			+1.5 gives the age in years
+y:	Shell weight	continuous	grams	after being dried
+
+
+","In the context of the Abalone dataset, Age is a derived attribute, calculated by adding 1.5 to the Rings attribute, which represents the number of rings in the abalone's shell, a common biological indicator of age in many species.","Shell weight is a continuous variable measured in grams, representing the weight of an abalone's shell after it has been dried."
+pair0007, Age, Diameter, R,1,0,"Information for pairs0007:
+
+https://archive.ics.uci.edu/ml/datasets/Abalone
+
+1. Title of Database: Abalone data
+
+2. Sources:
+
+   (a) Original owners of database:
+	Marine Resources Division
+	Marine Research Laboratories - Taroona
+	Department of Primary Industry and Fisheries, Tasmania
+	GPO Box 619F, Hobart, Tasmania 7001, Australia
+	(contact: Warwick Nash +61 02 277277, wnash@dpi.tas.gov.au)
+
+   (b) Donor of database:
+	Sam Waugh (Sam.Waugh@cs.utas.edu.au)
+	Department of Computer Science, University of Tasmania
+	GPO Box 252C, Hobart, Tasmania 7001, Australia
+
+   (c) Date received: December 1995
+
+3. Attribute information:
+
+   Given is the attribute name, attribute type, the measurement unit and a
+   brief description.  
+
+	Name		Data Type	Meas.	Description
+	----		---------	-----	-----------
+x:	Rings		integer			+1.5 gives the age in years
+y:	Diameter	continuous	mm	perpendicular to length
+
+
+","In the context of the Abalone dataset, the concept of Age is derived from the 'Rings' attribute, where each ring represents a year, with an additional 1.5 years added to account for the abalone's early life.","Diameter in the context of the Abalone dataset refers to a continuous variable measured in millimeters, representing the perpendicular length of the abalone."
+pair0008, Age, Height, R,1,0,"Information for pairs0008:
+
+https://archive.ics.uci.edu/ml/datasets/Abalone
+
+1. Title of Database: Abalone data
+
+2. Sources:
+
+   (a) Original owners of database:
+	Marine Resources Division
+	Marine Research Laboratories - Taroona
+	Department of Primary Industry and Fisheries, Tasmania
+	GPO Box 619F, Hobart, Tasmania 7001, Australia
+	(contact: Warwick Nash +61 02 277277, wnash@dpi.tas.gov.au)
+
+   (b) Donor of database:
+	Sam Waugh (Sam.Waugh@cs.utas.edu.au)
+	Department of Computer Science, University of Tasmania
+	GPO Box 252C, Hobart, Tasmania 7001, Australia
+
+   (c) Date received: December 1995
+
+3. Attribute information:
+
+   Given is the attribute name, attribute type, the measurement unit and a
+   brief description.  
+
+	Name		Data Type	Meas.	Description
+	----		---------	-----	-----------
+x:	Rings		integer			+1.5 gives the age in years
+y:	Height		continuous	mm	with meat in shell
+
+
+","In the context of the Abalone dataset, the concept of 'Age' refers to the age of the abalone, which is determined by adding 1.5 to the number of rings, an integer value, the abalone has.","The 'Height' in the Abalone dataset is a continuous variable measured in millimeters, representing the measurement of the abalone (a type of marine snail) with its meat still in the shell."
+pair0009, Age, Whole weight, R,1,0,"Information for pairs0009:
+
+https://archive.ics.uci.edu/ml/datasets/Abalone
+
+1. Title of Database: Abalone data
+
+2. Sources:
+
+   (a) Original owners of database:
+	Marine Resources Division
+	Marine Research Laboratories - Taroona
+	Department of Primary Industry and Fisheries, Tasmania
+	GPO Box 619F, Hobart, Tasmania 7001, Australia
+	(contact: Warwick Nash +61 02 277277, wnash@dpi.tas.gov.au)
+
+   (b) Donor of database:
+	Sam Waugh (Sam.Waugh@cs.utas.edu.au)
+	Department of Computer Science, University of Tasmania
+	GPO Box 252C, Hobart, Tasmania 7001, Australia
+
+   (c) Date received: December 1995
+
+3. Attribute information:
+
+   Given is the attribute name, attribute type, the measurement unit and a
+   brief description.  
+
+	Name		Data Type	Meas.	Description
+	----		---------	-----	-----------
+x:	Rings		integer			+1.5 gives the age in years
+y:	Whole weight	continuous	grams	whole abalone
+
+
+","The concept of 'Age' in the context of the Abalone dataset refers to the age of the abalone, which is determined by adding 1.5 to the integer value of the 'Rings' attribute.",Whole weight is a continuous variable measured in grams that represents the total weight of the abalone.
+pair0010, Age, Shucked weight, R,1,0,"Information for pairs0010:
+
+https://archive.ics.uci.edu/ml/datasets/Abalone
+
+1. Title of Database: Abalone data
+
+2. Sources:
+
+   (a) Original owners of database:
+	Marine Resources Division
+	Marine Research Laboratories - Taroona
+	Department of Primary Industry and Fisheries, Tasmania
+	GPO Box 619F, Hobart, Tasmania 7001, Australia
+	(contact: Warwick Nash +61 02 277277, wnash@dpi.tas.gov.au)
+
+   (b) Donor of database:
+	Sam Waugh (Sam.Waugh@cs.utas.edu.au)
+	Department of Computer Science, University of Tasmania
+	GPO Box 252C, Hobart, Tasmania 7001, Australia
+
+   (c) Date received: December 1995
+
+3. Attribute information:
+
+   Given is the attribute name, attribute type, the measurement unit and a
+   brief description.  
+
+	Name		Data Type	Meas.	Description
+	----		---------	-----	-----------
+x:	Rings		integer			+1.5 gives the age in years
+y:	Shucked weight	continuous	grams	weight of meat
+
+
+","In the context of the Abalone dataset, Age is a derived attribute, calculated by adding 1.5 to the number of rings in the abalone, representing the abalone's age in years.",Shucked weight is a continuous variable measured in grams that represents the weight of the meat from the abalone.
+pair0011, Age, Viscera weight, R,1,0,"Information for pairs0011:
+
+https://archive.ics.uci.edu/ml/datasets/Abalone
+
+1. Title of Database: Abalone data
+
+2. Sources:
+
+   (a) Original owners of database:
+	Marine Resources Division
+	Marine Research Laboratories - Taroona
+	Department of Primary Industry and Fisheries, Tasmania
+	GPO Box 619F, Hobart, Tasmania 7001, Australia
+	(contact: Warwick Nash +61 02 277277, wnash@dpi.tas.gov.au)
+
+   (b) Donor of database:
+	Sam Waugh (Sam.Waugh@cs.utas.edu.au)
+	Department of Computer Science, University of Tasmania
+	GPO Box 252C, Hobart, Tasmania 7001, Australia
+
+   (c) Date received: December 1995
+
+3. Attribute information:
+
+   Given is the attribute name, attribute type, the measurement unit and a
+   brief description.  
+
+	Name		Data Type	Meas.	Description
+	----		---------	-----	-----------
+x:	Rings		integer			+1.5 gives the age in years
+y:	Viscera weight	continuous	grams	gut weight (after bleeding)
+
+
+","In the context of the Abalone dataset, Age is a derived attribute, calculated by adding 1.5 to the number of rings an abalone has, representing the abalone's age in years.","Viscera weight is a continuous variable measured in grams, representing the weight of an abalone's gut after bleeding."
+pair0012, Age, Wage per hour, R,1,0,"Information for pairs0012:
+
+Census Income (KDD) dataset
+https://archive.ics.uci.edu/ml/datasets/Census-Income+(KDD)
+
+Info from the UCI ML webpage:
+
+""This data set contains weighted census data extracted from the 1994 and 1995
+current population surveys conducted by the U.S. Census Bureau.
+
+Original Owner:
+
+U.S. Census Bureau
+http://www.census.gov/
+United States Department of Commerce
+
+Donor:
+
+Terran Lane and Ronny Kohavi
+Data Mining and Visualization
+Silicon Graphics.
+terran '@' ecn.purdue.edu, ronnyk '@' sgi.com 
+
+The instance weight indicates the number of people in the population that each
+record represents due to stratified sampling. To do real analysis and derive
+conclusions, this field must be used. This attribute should *not* be used in
+the classifiers.""
+
+We did not use the instance weight here.
+
+
+x: Age
+
+y: Wage per hour
+
+
+","Age, in the context of the Census Income (KDD) dataset, refers to the number of years a person has lived, which is a demographic factor used to analyze the wage per hour in the U.S. population.",Wage per hour is a measure of income that represents the amount of money an individual earns for each hour of work.
+pair0013, Displacement, Fuel consumption, R,1,0,"Information for pairs0013:
+
+Auto-Mpg Data
+
+http://archive.ics.uci.edu/ml/datasets/Auto+MPG
+
+1. Sources:
+   (a) Origin:  This dataset was taken from the StatLib library which is
+                maintained at Carnegie Mellon University. The dataset was 
+                used in the 1983 American Statistical Association Exposition.
+   (c) Date: July 7, 1993
+
+2. Past Usage:
+    -  See 2b (above)
+    -  Quinlan,R. (1993). Combining Instance-Based and Model-Based Learning.
+       In Proceedings on the Tenth International Conference of Machine 
+       Learning, 236-243, University of Massachusetts, Amherst. Morgan
+       Kaufmann.
+
+3. Relevant Information:
+
+   This dataset is a slightly modified version of the dataset provided in
+   the StatLib library.  In line with the use by Ross Quinlan (1993) in
+   predicting the attribute ""mpg"", 8 of the original instances were removed 
+   because they had unknown values for the ""mpg"" attribute.  The original 
+   dataset is available in the file ""auto-mpg.data-original"".
+
+   ""The data concerns city-cycle fuel consumption in miles per gallon,
+    to be predicted in terms of 3 multivalued discrete and 5 continuous
+    attributes."" (Quinlan, 1993)
+
+Attribute information:
+
+mpg:           continuous
+displacement:  continuous
+
+x: displacement
+
+y: mpg
+
+","Displacement, in the context of the Auto-MPG dataset, is a continuous attribute representing the engine's size or capacity, typically measured in cubic centimeters (cc) or liters (L), which is used to predict the miles per gallon (mpg) of a vehicle.","Fuel consumption refers to the amount of fuel used by a vehicle over a certain distance, often measured in miles per gallon (mpg), and is influenced by factors such as engine displacement and driving conditions."
+pair0014, Horse power, Fuel consumption, R,1,0,"Information for pairs0014:
+
+Auto-Mpg Data
+
+http://archive.ics.uci.edu/ml/datasets/Auto+MPG
+
+1. Sources:
+   (a) Origin:  This dataset was taken from the StatLib library which is
+                maintained at Carnegie Mellon University. The dataset was 
+                used in the 1983 American Statistical Association Exposition.
+   (c) Date: July 7, 1993
+
+2. Past Usage:
+    -  See 2b (above)
+    -  Quinlan,R. (1993). Combining Instance-Based and Model-Based Learning.
+       In Proceedings on the Tenth International Conference of Machine 
+       Learning, 236-243, University of Massachusetts, Amherst. Morgan
+       Kaufmann.
+
+3. Relevant Information:
+
+   This dataset is a slightly modified version of the dataset provided in
+   the StatLib library.  In line with the use by Ross Quinlan (1993) in
+   predicting the attribute ""mpg"", 8 of the original instances were removed 
+   because they had unknown values for the ""mpg"" attribute.  The original 
+   dataset is available in the file ""auto-mpg.data-original"".
+
+   ""The data concerns city-cycle fuel consumption in miles per gallon,
+    to be predicted in terms of 3 multivalued discrete and 5 continuous
+    attributes."" (Quinlan, 1993)
+
+Attribute information:
+
+mpg:         continuous
+horsepower:  continuous
+
+x: horsepower
+
+y: mpg
+
+","Horsepower is a unit of measurement signifying the power an engine produces, directly influencing a vehicle's speed and performance.","Fuel consumption refers to the amount of fuel a vehicle uses to travel a certain distance, often measured in miles per gallon (mpg), and can be influenced by factors such as horsepower and driving conditions."
+pair0015, Weight, Fuel consumption, R,1,0,"Information for pairs0015:
+
+Auto-Mpg Data
+
+http://archive.ics.uci.edu/ml/datasets/Auto+MPG
+
+1. Sources:
+   (a) Origin:  This dataset was taken from the StatLib library which is
+                maintained at Carnegie Mellon University. The dataset was 
+                used in the 1983 American Statistical Association Exposition.
+   (c) Date: July 7, 1993
+
+2. Past Usage:
+    -  See 2b (above)
+    -  Quinlan,R. (1993). Combining Instance-Based and Model-Based Learning.
+       In Proceedings on the Tenth International Conference of Machine 
+       Learning, 236-243, University of Massachusetts, Amherst. Morgan
+       Kaufmann.
+
+3. Relevant Information:
+
+   This dataset is a slightly modified version of the dataset provided in
+   the StatLib library.  In line with the use by Ross Quinlan (1993) in
+   predicting the attribute ""mpg"", 8 of the original instances were removed 
+   because they had unknown values for the ""mpg"" attribute.  The original 
+   dataset is available in the file ""auto-mpg.data-original"".
+
+   ""The data concerns city-cycle fuel consumption in miles per gallon,
+    to be predicted in terms of 3 multivalued discrete and 5 continuous
+    attributes."" (Quinlan, 1993)
+
+Attribute information:
+
+mpg:      continuous
+weight:	  continuous
+
+x: weight
+
+y: mpg
+
+","In the context of the Auto-MPG dataset, ""Weight"" is a continuous attribute representing the weight of a vehicle, which is used to predict the vehicle's fuel consumption in miles per gallon.","Fuel consumption refers to the amount of fuel a vehicle uses to travel a certain distance, often measured in miles per gallon (mpg), and is influenced by factors such as vehicle weight."
+pair0016, Horsepower, Acceleration, R,1,0,"Information for pairs0016:
+
+Auto-Mpg Data
+
+http://archive.ics.uci.edu/ml/datasets/Auto+MPG
+
+1. Sources:
+   (a) Origin:  This dataset was taken from the StatLib library which is
+                maintained at Carnegie Mellon University. The dataset was 
+                used in the 1983 American Statistical Association Exposition.
+   (c) Date: July 7, 1993
+
+2. Past Usage:
+    -  See 2b (above)
+    -  Quinlan,R. (1993). Combining Instance-Based and Model-Based Learning.
+       In Proceedings on the Tenth International Conference of Machine 
+       Learning, 236-243, University of Massachusetts, Amherst. Morgan
+       Kaufmann.
+
+3. Relevant Information:
+
+   This dataset is a slightly modified version of the dataset provided in
+   the StatLib library.  In line with the use by Ross Quinlan (1993) in
+   predicting the attribute ""mpg"", 8 of the original instances were removed 
+   because they had unknown values for the ""mpg"" attribute.  The original 
+   dataset is available in the file ""auto-mpg.data-original"".
+
+   ""The data concerns city-cycle fuel consumption in miles per gallon,
+    to be predicted in terms of 3 multivalued discrete and 5 continuous
+    attributes."" (Quinlan, 1993)
+
+Attribute information:
+
+horsepower:       continuous
+acceleration:	  continuous
+
+x: horsepower
+
+y: acceleration
+
+","Horsepower is a unit of measurement used to quantify the power output of an engine, often used in the context of automotive performance to indicate the engine's capacity to perform work.","Acceleration, in the context of the Auto-MPG dataset, is a continuous attribute representing the rate at which a vehicle increases its speed."
+pair0017, Age, Dividends from stocks, R,1,0,"Information for pairs0017:
+
+Census Income (KDD) dataset
+https://archive.ics.uci.edu/ml/datasets/Census-Income+(KDD)
+
+Info from the UCI ML webpage:
+
+""This data set contains weighted census data extracted from the 1994 and 1995
+current population surveys conducted by the U.S. Census Bureau.
+
+Original Owner:
+
+U.S. Census Bureau
+http://www.census.gov/
+United States Department of Commerce
+
+Donor:
+
+Terran Lane and Ronny Kohavi
+Data Mining and Visualization
+Silicon Graphics.
+terran '@' ecn.purdue.edu, ronnyk '@' sgi.com 
+
+The instance weight indicates the number of people in the population that each
+record represents due to stratified sampling. To do real analysis and derive
+conclusions, this field must be used. This attribute should *not* be used in
+the classifiers.""
+
+We did not use the instance weight here.
+
+x: Age 
+
+y: Dividends from stock
+
+
+","Age, in the context of the Census Income (KDD) dataset, refers to the numerical representation of the years a person has lived, serving as a demographic variable that can influence factors such as income and dividends from stock.","Dividends from stocks refer to the portion of a company's earnings distributed to its shareholders, typically in cash or additional shares, serving as a source of income apart from any capital gains realized from the sale of the stock."
+pair0018, Age, Concentration GAG, R,1,0,"Information for pairs0018:
+
+Description:
+
+Data were collected on the concentration of a chemical GAG in the urine of 314 children aged from zero to seventeen years. The aim of the study was to produce a chart to help a paediatrican to assess if a child's GAG concentration is â€˜normalâ€™.
+
+
+x:    age of child in years. 
+
+y:    concentration of GAG (the units have been lost). 
+
+Source
+
+Mrs Susan Prosser, Paediatrics Department, University of Oxford, via Department of Statistics Consulting Service.
+References
+
+Venables, W. N. and Ripley, B. D. (2002) Modern Applied Statistics with S. Fourth edition. Springer. 
+
+","In this context, 'Age' refers to the number of years a child has lived, ranging from zero to seventeen, used as a variable to study its correlation with the concentration of a chemical GAG in their urine.","Concentration of GAG refers to the quantity of a chemical known as Glycosaminoglycans (GAG) present in a child's urine, used to determine if the child's GAG levels are within the normal range."
+pair0019, Current duration, Next interval, R,1,0,"Information for pairs0019:
+
+Old Faithful geyser data
+
+Old Faithful is a hydrothermal geyser in Yellowstone National Park in the state of Wyoming, USA. 
+Each observation corresponds to a single erruption.
+
+x:    duration of erruption in minutes
+
+y:    time to the next erruption in minutes
+
+
+Source
+http://research.microsoft.com/en-us/um/people/cmbishop/PRML/webdatasets/datasets.htm
+
+
+","Current duration refers to the length of a single eruption of the Old Faithful geyser, measured in minutes.","The ""Next interval"" in this context refers to the time duration in minutes until the next eruption of the Old Faithful geyser after a specific eruption has occurred."
+pair0020, Latitude, Temperature, R,1,0,"Information for pairs0020:
+
+DWD data (Deutscher Wetterdienst)
+
+data was taken at 349 stations
+
+taken from
+http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop/?_nfpb=true&_pageLabel=_dwdwww_klima_umwelt_klimadaten_deutschland&T82002gsbDocumentPath=Navigation%2FOeffentlichkeit%2FKlima__Umwelt%2FKlimadaten%2Fkldaten__kostenfrei%2Fausgabe__mittelwerte__node.html__nnn%3Dtrue
+
+more recent  link (Jan 2010):
+http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop/?_nfpb=true&_pageLabel=_dwdwww_klima_umwelt_klimadaten_deutschland&T82002gsbDocumentPath=Navigation%2FOeffentlichkeit%2FKlima__Umwelt%2FKlimadaten%2Fkldaten__kostenfrei%2Fausgabe__mittelwerte__node.html__nnn%3Dtrue
+
+
+x: latitude
+
+y: temperature (averaged over 1961-1990)
+
+","Latitude is a geographical coordinate that specifies the north-south position of a point on the Earth's surface, measured in degrees from the equator, which is 0 degrees, with the poles at 90 degrees north and south.","Temperature is a quantitative measure of the degree of heat present in a substance or a system, often expressed in units of degrees, and in this context, it refers to the average atmospheric temperature recorded at various stations by the Deutscher Wetterdienst (DWD) between 1961-1990."
+pair0021, Longitude, Precipitation, R,1,0,"Information for pairs0021:
+
+DWD data (Deutscher Wetterdienst)
+
+data was taken at 349 stations
+
+taken from
+http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop/?_nfpb=true&_pageLabel=_dwdwww_klima_umwelt_klimadaten_deutschland&T82002gsbDocumentPath=Navigation%2FOeffentlichkeit%2FKlima__Umwelt%2FKlimadaten%2Fkldaten__kostenfrei%2Fausgabe__mittelwerte__node.html__nnn%3Dtrue
+
+more recent  link (Jan 2010):
+http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop/?_nfpb=true&_pageLabel=_dwdwww_klima_umwelt_klimadaten_deutschland&T82002gsbDocumentPath=Navigation%2FOeffentlichkeit%2FKlima__Umwelt%2FKlimadaten%2Fkldaten__kostenfrei%2Fausgabe__mittelwerte__node.html__nnn%3Dtrue
+
+
+x: longitude
+
+y: precipitation (yearly value averaged over 1961-1990)
+
+","Longitude is a geographical coordinate that represents the east-west position of a point on the Earth's surface, measured in degrees from the prime meridian.","Precipitation is a meteorological phenomenon that includes all forms of water, liquid or solid, falling from the atmosphere to the Earth's surface, typically measured in terms of the amount of water (in millimeters) deposited over a specific period (like yearly)."
+pair0022, Age, Height, R,1,0,"Information for pairs0022:
+
+https://archive.ics.uci.edu/ml/datasets/Arrhythmia
+
+Cardiac Arrhythmia Database
+
+1. Sources:
+   (a) Original owners od Database:
+       -- 1. H. Altay Guvenir, PhD., 
+             Bilkent University,
+             Department of Computer Engineering and Information Science,
+             06533 Ankara, Turkey
+             Phone: +90 (312) 266 4133
+             Email: guvenir@cs.bilkent.edu.tr
+
+       -- 2. Burak Acar, M.S.,
+             Bilkent University, 
+             EE Eng. Dept. 
+             06533 Ankara, Turkey
+             Email: buraka@ee.bilkent.edu.tr
+
+       -- 2. Haldun Muderrisoglu, M.D., Ph.D., 
+             Baskent University, 
+             School of Medicine
+             Ankara, Turkey
+
+   (b) Donor: H. Altay Guvenir
+              Bilkent University,
+              Department of Computer Engineering and Information Science,
+              06533 Ankara, Turkey
+              Phone: +90 (312) 266 4133
+              Email: guvenir@cs.bilkent.edu.tr
+
+   (c) Date: January, 1998
+
+2. Past Usage:
+   1. H. Altay Guvenir, Burak Acar, Gulsen Demiroz, Ayhan Cekin
+      ""A Supervised Machine Learning Algorithm for Arrhythmia Analysis""
+      Proceedings of the Computers in Cardiology Conference, 
+      Lund, Sweden, 1997.
+      
+3. Number of Instances: 452
+
+4. Attribute Information:
+
+Age: 	Age in years  		linear
+Height: Height in centimeters 	linear
+
+
+x: age
+
+y: height
+
+
+","The concept of 'Age' in this context refers to the number of years a person has lived, used as a linear variable in the Cardiac Arrhythmia Database for analyzing arrhythmia patterns.","Height, in the context of the Cardiac Arrhythmia Database, refers to the stature of an individual measured in centimeters, and is a linear attribute used in the dataset."
+pair0023, Age, Weight, R,1,0,"Information for pairs0023:
+
+https://archive.ics.uci.edu/ml/datasets/Arrhythmia
+
+Cardiac Arrhythmia Database
+
+1. Sources:
+   (a) Original owners od Database:
+       -- 1. H. Altay Guvenir, PhD., 
+             Bilkent University,
+             Department of Computer Engineering and Information Science,
+             06533 Ankara, Turkey
+             Phone: +90 (312) 266 4133
+             Email: guvenir@cs.bilkent.edu.tr
+
+       -- 2. Burak Acar, M.S.,
+             Bilkent University, 
+             EE Eng. Dept. 
+             06533 Ankara, Turkey
+             Email: buraka@ee.bilkent.edu.tr
+
+       -- 2. Haldun Muderrisoglu, M.D., Ph.D., 
+             Baskent University, 
+             School of Medicine
+             Ankara, Turkey
+
+   (b) Donor: H. Altay Guvenir
+              Bilkent University,
+              Department of Computer Engineering and Information Science,
+              06533 Ankara, Turkey
+              Phone: +90 (312) 266 4133
+              Email: guvenir@cs.bilkent.edu.tr
+
+   (c) Date: January, 1998
+
+2. Past Usage:
+   1. H. Altay Guvenir, Burak Acar, Gulsen Demiroz, Ayhan Cekin
+      ""A Supervised Machine Learning Algorithm for Arrhythmia Analysis""
+      Proceedings of the Computers in Cardiology Conference, 
+      Lund, Sweden, 1997.
+      
+3. Number of Instances: 452
+
+4. Attribute Information:
+
+Age: 	Age in years  		linear
+Weight: Height in centimeters 	linear
+
+
+x: age
+
+y: weight
+
+
+","'Age' in this context refers to the numerical representation of the years a person has lived, used as a variable in the Cardiac Arrhythmia Database for analyzing arrhythmia through machine learning algorithms.","'Weight' in this context refers to the height of the individuals in centimeters, a linear attribute in the Cardiac Arrhythmia Database."
+pair0024, Age, Heart rate, R,1,0,"Information for pairs0024:
+
+https://archive.ics.uci.edu/ml/datasets/Arrhythmia
+
+Cardiac Arrhythmia Database
+
+1. Sources:
+   (a) Original owners od Database:
+       -- 1. H. Altay Guvenir, PhD., 
+             Bilkent University,
+             Department of Computer Engineering and Information Science,
+             06533 Ankara, Turkey
+             Phone: +90 (312) 266 4133
+             Email: guvenir@cs.bilkent.edu.tr
+
+       -- 2. Burak Acar, M.S.,
+             Bilkent University, 
+             EE Eng. Dept. 
+             06533 Ankara, Turkey
+             Email: buraka@ee.bilkent.edu.tr
+
+       -- 2. Haldun Muderrisoglu, M.D., Ph.D., 
+             Baskent University, 
+             School of Medicine
+             Ankara, Turkey
+
+   (b) Donor: H. Altay Guvenir
+              Bilkent University,
+              Department of Computer Engineering and Information Science,
+              06533 Ankara, Turkey
+              Phone: +90 (312) 266 4133
+              Email: guvenir@cs.bilkent.edu.tr
+
+   (c) Date: January, 1998
+
+2. Past Usage:
+   1. H. Altay Guvenir, Burak Acar, Gulsen Demiroz, Ayhan Cekin
+      ""A Supervised Machine Learning Algorithm for Arrhythmia Analysis""
+      Proceedings of the Computers in Cardiology Conference, 
+      Lund, Sweden, 1997.
+      
+3. Number of Instances: 452
+
+4. Attribute Information:
+
+Age: 		Age in years 	 			linear
+Heart rate: 	Number of heart beats per minute 	linear
+
+
+We discarded one instance, because heart rate was missing.
+
+
+x: age
+
+y: heart rate
+
+
+","'Age' in this context refers to the number of years a person has lived, used as a variable in the Cardiac Arrhythmia Database to study its potential correlation with heart rate.","Heart rate, in the context of the Cardiac Arrhythmia Database, refers to the number of heart beats per minute, which is a linear attribute used to analyze arrhythmia."
+pair0025, Cement, Compressive strength, R,1,0,"Information for pairs0025:
+
+Concrete Compressive Strength 
+
+---------------------------------
+
+Abstract: Concrete is the most important material in civil engineering. The 
+concrete compressive strength is a highly nonlinear function of age and 
+ingredients. These ingredients include cement, blast furnace slag, fly ash, 
+water, superplasticizer, coarse aggregate, and fine aggregate.
+
+---------------------------------
+
+Sources: 
+
+  Original Owner and Donor
+  Prof. I-Cheng Yeh
+  Department of Information Management 
+  Chung-Hua University, 
+  Hsin Chu, Taiwan 30067, R.O.C.
+  e-mail:icyeh@chu.edu.tw
+  TEL:886-3-5186511
+
+  Date Donated: August 3, 2007
+ 
+---------------------------------
+
+Data Characteristics:
+    
+The actual concrete compressive strength (MPa) for a given mixture under a 
+specific age (days) was determined from laboratory. Data is in raw form (not scaled). 
+
+Number of instances (observations): 1030
+---------------------------------
+
+Name  -- Description
+
+Cement -- kg in a m3 mixture 
+Concrete compressive strength  -- MPa 
+
+
+x: cement
+
+y: compressive strength
+
+
+","Cement is a key ingredient in a concrete mixture, measured in kilograms per cubic meter (kg/m3), that significantly influences the compressive strength of the concrete.","Compressive strength is a key property of concrete, indicating its ability to resist compression or withstand loads that tend to decrease its size, and it is determined as a nonlinear function of the concrete's age and its ingredients such as cement, blast furnace slag, fly ash, water, superplasticizer, coarse aggregate, and fine aggregate."
+pair0026, Blast furnace slag, Compressive strength, R,1,0,"Information for pairs0026:
+
+Concrete Compressive Strength 
+
+---------------------------------
+
+Abstract: Concrete is the most important material in civil engineering. The 
+concrete compressive strength is a highly nonlinear function of age and 
+ingredients. These ingredients include cement, blast furnace slag, fly ash, 
+water, superplasticizer, coarse aggregate, and fine aggregate.
+
+---------------------------------
+
+Sources: 
+
+  Original Owner and Donor
+  Prof. I-Cheng Yeh
+  Department of Information Management 
+  Chung-Hua University, 
+  Hsin Chu, Taiwan 30067, R.O.C.
+  e-mail:icyeh@chu.edu.tw
+  TEL:886-3-5186511
+
+  Date Donated: August 3, 2007
+ 
+---------------------------------
+
+Data Characteristics:
+    
+The actual concrete compressive strength (MPa) for a given mixture under a 
+specific age (days) was determined from laboratory. Data is in raw form (not scaled). 
+
+Number of instances (observations): 1030
+---------------------------------
+
+Name  -- Description
+
+Blast Furnace Slag -- kg in a m3 mixture 
+Concrete compressive strength -- MPa 
+
+
+x: blast furnace slag
+
+y: compressive strength
+
+
+","Blast furnace slag is a byproduct of the iron-making process, used as a supplementary cementitious material in a m3 mixture, which contributes to the compressive strength of concrete.","Compressive strength refers to the capacity of a material, in this case, concrete, to withstand loads that tend to reduce its size, and it is measured in Megapascals (MPa)."
+pair0027, Fly ash, Compressive strength, R,1,0,"Information for pairs0027:
+
+Concrete Compressive Strength 
+
+---------------------------------
+
+Abstract: Concrete is the most important material in civil engineering. The 
+concrete compressive strength is a highly nonlinear function of age and 
+ingredients. These ingredients include cement, blast furnace slag, fly ash, 
+water, superplasticizer, coarse aggregate, and fine aggregate.
+
+---------------------------------
+
+Sources: 
+
+  Original Owner and Donor
+  Prof. I-Cheng Yeh
+  Department of Information Management 
+  Chung-Hua University, 
+  Hsin Chu, Taiwan 30067, R.O.C.
+  e-mail:icyeh@chu.edu.tw
+  TEL:886-3-5186511
+
+  Date Donated: August 3, 2007
+ 
+---------------------------------
+
+Data Characteristics:
+    
+The actual concrete compressive strength (MPa) for a given mixture under a 
+specific age (days) was determined from laboratory. Data is in raw form (not scaled). 
+
+Number of instances (observations): 1030
+---------------------------------
+
+Name  -- Description
+
+Fly Ash -- kg in a m3 mixture 
+Concrete compressive strength -- MPa 
+
+
+x: fly ash
+
+y: compressive strength
+
+
+","Fly ash is a byproduct of coal combustion in power plants, often used as a supplementary cementitious material in the production of concrete due to its pozzolanic properties, enhancing the strength and durability of the mixture.","Compressive strength refers to the capacity of a material, in this case concrete, to withstand loads tending to reduce size, measured in megapascals (MPa), and is a crucial factor in determining the durability and structural integrity of the material."
+pair0028, Water, Compressive strength, R,1,0,"Information for pairs0028:
+
+Concrete Compressive Strength 
+
+---------------------------------
+
+Abstract: Concrete is the most important material in civil engineering. The 
+concrete compressive strength is a highly nonlinear function of age and 
+ingredients. These ingredients include cement, blast furnace slag, fly ash, 
+water, superplasticizer, coarse aggregate, and fine aggregate.
+
+---------------------------------
+
+Sources: 
+
+  Original Owner and Donor
+  Prof. I-Cheng Yeh
+  Department of Information Management 
+  Chung-Hua University, 
+  Hsin Chu, Taiwan 30067, R.O.C.
+  e-mail:icyeh@chu.edu.tw
+  TEL:886-3-5186511
+
+  Date Donated: August 3, 2007
+ 
+---------------------------------
+
+Data Characteristics:
+    
+The actual concrete compressive strength (MPa) for a given mixture under a 
+specific age (days) was determined from laboratory. Data is in raw form (not scaled). 
+
+Number of instances (observations): 1030
+---------------------------------
+
+Name  -- Description
+
+Water -- kg in a m3 mixture 
+Concrete compressive strength -- MPa 
+
+
+x: water
+
+y: compressive strength
+
+
+","In the context of concrete compressive strength, 'Water' refers to the quantity of water, measured in kilograms, used in a cubic meter mixture of concrete, which plays a crucial role in determining the strength and durability of the concrete.","Compressive strength is a key property of concrete, indicating its ability to resist compression forces, and is determined by the mix of ingredients and the age of the concrete, with the strength measured in megapascals (MPa)."
+pair0029, Superplasticizer, Compressive strength, R,1,0,"Information for pairs0029:
+
+Concrete Compressive Strength 
+
+---------------------------------
+
+Abstract: Concrete is the most important material in civil engineering. The 
+concrete compressive strength is a highly nonlinear function of age and 
+ingredients. These ingredients include cement, blast furnace slag, fly ash, 
+water, superplasticizer, coarse aggregate, and fine aggregate.
+
+---------------------------------
+
+Sources: 
+
+  Original Owner and Donor
+  Prof. I-Cheng Yeh
+  Department of Information Management 
+  Chung-Hua University, 
+  Hsin Chu, Taiwan 30067, R.O.C.
+  e-mail:icyeh@chu.edu.tw
+  TEL:886-3-5186511
+
+  Date Donated: August 3, 2007
+ 
+---------------------------------
+
+Data Characteristics:
+    
+The actual concrete compressive strength (MPa) for a given mixture under a 
+specific age (days) was determined from laboratory. Data is in raw form (not scaled). 
+
+Number of instances (observations): 1030
+---------------------------------
+
+Name  -- Description
+
+Superplasticizer -- kg in a m3 mixture
+Concrete compressive strength -- MPa 
+
+
+x: superplasticizer
+
+y: compressive strength
+
+
+","Superplasticizer is a component used in a concrete mixture, measured in kilograms per cubic meter, that enhances the workability of the mixture and allows for a reduction in water content without compromising the concrete's compressive strength.","Compressive strength refers to the capacity of a material, in this case concrete, to withstand loads tending to reduce size, measured in megapascals (MPa), and is determined by testing the material in a laboratory under specific conditions."
+pair0030, Coarse aggregate, Compressive strength, R,1,0,"Information for pairs0030:
+
+Concrete Compressive Strength 
+
+---------------------------------
+
+Abstract: Concrete is the most important material in civil engineering. The 
+concrete compressive strength is a highly nonlinear function of age and 
+ingredients. These ingredients include cement, blast furnace slag, fly ash, 
+water, superplasticizer, coarse aggregate, and fine aggregate.
+
+---------------------------------
+
+Sources: 
+
+  Original Owner and Donor
+  Prof. I-Cheng Yeh
+  Department of Information Management 
+  Chung-Hua University, 
+  Hsin Chu, Taiwan 30067, R.O.C.
+  e-mail:icyeh@chu.edu.tw
+  TEL:886-3-5186511
+
+  Date Donated: August 3, 2007
+ 
+---------------------------------
+
+Data Characteristics:
+    
+The actual concrete compressive strength (MPa) for a given mixture under a 
+specific age (days) was determined from laboratory. Data is in raw form (not scaled). 
+
+Number of instances (observations): 1030
+---------------------------------
+
+Name  -- Description
+
+Coarse Aggregate -- kg in a m3 mixture 
+Concrete compressive strength -- MPa 
+
+
+x: coarse aggregate
+
+y: compressive strength
+
+
+","Coarse aggregate refers to the larger material used in a concrete mixture, typically measured in kilograms per cubic meter, that contributes to the overall compressive strength of the concrete.","Compressive strength refers to the capacity of a material, in this case concrete, to withstand loads tending to reduce size, measured in megapascals (MPa), and is a critical property in civil engineering, influenced by factors such as age and composition of the material."
+pair0031, Fine aggregate, Compressive strength, R,1,0,"Information for pairs0031:
+
+Concrete Compressive Strength 
+
+---------------------------------
+
+Abstract: Concrete is the most important material in civil engineering. The 
+concrete compressive strength is a highly nonlinear function of age and 
+ingredients. These ingredients include cement, blast furnace slag, fly ash, 
+water, superplasticizer, coarse aggregate, and fine aggregate.
+
+---------------------------------
+
+Sources: 
+
+  Original Owner and Donor
+  Prof. I-Cheng Yeh
+  Department of Information Management 
+  Chung-Hua University, 
+  Hsin Chu, Taiwan 30067, R.O.C.
+  e-mail:icyeh@chu.edu.tw
+  TEL:886-3-5186511
+
+  Date Donated: August 3, 2007
+ 
+---------------------------------
+
+Data Characteristics:
+    
+The actual concrete compressive strength (MPa) for a given mixture under a 
+specific age (days) was determined from laboratory. Data is in raw form (not scaled). 
+
+Number of instances (observations): 1030
+---------------------------------
+
+Name  -- Description
+
+Fine Aggregate -- kg in a m3 mixture 
+Concrete compressive strength -- MPa 
+
+
+x: fine aggregate
+
+y: compressive strength
+
+
+","Fine aggregate refers to the smaller, granular materials, often sand or crushed stone, used in a concrete mixture, measured in kilograms per cubic meter (kg/m3), that significantly influence the concrete's compressive strength.","Compressive strength refers to the capacity of a material, such as concrete, to withstand axial compressive loads, and it is measured in megapascals (MPa); it is a crucial property in civil engineering, as it indicates the maximum compressive stress that the material can bear without failure."
+pair0032, Age, Compressive strength, R,1,0,"Information for pairs0032:
+
+Concrete Compressive Strength 
+
+---------------------------------
+
+Abstract: Concrete is the most important material in civil engineering. The 
+concrete compressive strength is a highly nonlinear function of age and 
+ingredients. These ingredients include cement, blast furnace slag, fly ash, 
+water, superplasticizer, coarse aggregate, and fine aggregate.
+
+---------------------------------
+
+Sources: 
+
+  Original Owner and Donor
+  Prof. I-Cheng Yeh
+  Department of Information Management 
+  Chung-Hua University, 
+  Hsin Chu, Taiwan 30067, R.O.C.
+  e-mail:icyeh@chu.edu.tw
+  TEL:886-3-5186511
+
+  Date Donated: August 3, 2007
+ 
+---------------------------------
+
+Data Characteristics:
+    
+The actual concrete compressive strength (MPa) for a given mixture under a 
+specific age (days) was determined from laboratory. Data is in raw form (not scaled). 
+
+Number of instances (observations): 1030
+---------------------------------
+
+Name  -- Description
+
+Age -- Day (1~365)
+Concrete compressive strength -- MPa 
+
+
+x: age
+
+y: compressive strength
+
+
+","In the context of concrete compressive strength, ""Age"" refers to the number of days (ranging from 1 to 365) since the concrete mixture was made, which is a key factor influencing the strength of the concrete over time.","Compressive strength is a key property of concrete, indicating its ability to withstand a certain amount of load or pressure without deformation, and it is a nonlinear function of the concrete's age and its ingredients such as cement, blast furnace slag, fly ash, water, superplasticizer, coarse aggregate, and fine aggregate."
+pair0033, Alcohol consumption, Mean corpuscular volume, R,1,0,"Information for pairs0033:
+
+https://archive.ics.uci.edu/ml/datasets/Liver+Disorders
+
+Title: BUPA liver disorders
+
+2. Source information:
+   -- Creators: BUPA Medical Research Ltd.
+   -- Donor: Richard S. Forsyth
+             8 Grosvenor Avenue
+             Mapperley Park
+             Nottingham NG3 5DX
+             0602-621676
+   -- Date: 5/15/1990
+
+
+4. Relevant information:
+   -- The second variable is a blood test which is thought
+      to be sensitive to liver disorders that might arise from
+      excessive alcohol consumption.  Each line 
+      constitutes the record of a single male individual.
+
+x:    drinks	number of half-pint equivalents of alcoholic beverages
+                drunk per day
+
+
+y:    mcv	mean corpuscular volume
+
+
+","Alcohol consumption refers to the intake of alcoholic beverages, quantified in this context as the number of half-pint equivalents drunk per day.","Mean Corpuscular Volume (MCV) is a measure of the average volume of a red blood cell, typically used in blood tests to help diagnose and monitor certain conditions, including anemia and liver disorders."
+pair0034, Alcohol consumption, Alkaline phosphotase, R,1,0,"Information for pairs0035:
+
+https://archive.ics.uci.edu/ml/datasets/Liver+Disorders
+
+Title: BUPA liver disorders
+
+2. Source information:
+   -- Creators: BUPA Medical Research Ltd.
+   -- Donor: Richard S. Forsyth
+             8 Grosvenor Avenue
+             Mapperley Park
+             Nottingham NG3 5DX
+             0602-621676
+   -- Date: 5/15/1990
+
+4. Relevant information:
+   -- The second variable is a blood test which is thought
+      to be sensitive to liver disorders that might arise from
+      excessive alcohol consumption.  Each line 
+      constitutes the record of a single male individual.
+
+x:    drinks	number of half-pint equivalents of alcoholic beverages
+                drunk per day
+
+
+y:    alkphos	alkaline phosphotase
+
+
+","Alcohol consumption refers to the intake of alcoholic beverages, measured in this context as the number of half-pint equivalents drunk per day, which can potentially lead to liver disorders detectable through sensitive blood tests.","Alkaline phosphatase (alkphos) is an enzyme found in several tissues throughout the body, with high concentrations in the liver, and its levels in the blood can increase in response to liver disorders, often caused by excessive alcohol consumption."
+pair0035, Alcohol consumption, Alanine aminotransferase, R,1,0,"Information for pairs0035:
+
+https://archive.ics.uci.edu/ml/datasets/Liver+Disorders
+
+Title: BUPA liver disorders
+
+2. Source information:
+   -- Creators: BUPA Medical Research Ltd.
+   -- Donor: Richard S. Forsyth
+             8 Grosvenor Avenue
+             Mapperley Park
+             Nottingham NG3 5DX
+             0602-621676
+   -- Date: 5/15/1990
+
+
+4. Relevant information:
+   -- The second variable is a blood test which is thought
+      to be sensitive to liver disorders that might arise from
+      excessive alcohol consumption.  Each line 
+      constitutes the record of a single male individual.
+
+x:    drinks	number of half-pint equivalents of alcoholic beverages
+                drunk per day
+
+
+y:    sgpt 	alanine aminotransferase
+
+
+","Alcohol consumption refers to the intake of alcoholic beverages, measured in this context as the number of half-pint equivalents consumed per day, and is associated with various health outcomes, including potential liver disorders detectable through blood tests like alanine aminotransferase (sgpt).","Alanine aminotransferase (ALT) is a key enzyme involved in protein metabolism, predominantly found in the liver and kidneys, and its elevated blood levels are often indicative of liver damage or disease."
+pair0036, Alcohol consumption, Aspartate aminotransferase, R,1,0,"Information for pairs0036:
+
+https://archive.ics.uci.edu/ml/datasets/Liver+Disorders
+
+Title: BUPA liver disorders
+
+2. Source information:
+   -- Creators: BUPA Medical Research Ltd.
+   -- Donor: Richard S. Forsyth
+             8 Grosvenor Avenue
+             Mapperley Park
+             Nottingham NG3 5DX
+             0602-621676
+   -- Date: 5/15/1990
+
+
+4. Relevant information:
+   -- The second variable is a blood test which is thought
+      to be sensitive to liver disorders that might arise from
+      excessive alcohol consumption.  Each line 
+      constitutes the record of a single male individual.
+
+x:    drinks	number of half-pint equivalents of alcoholic beverages
+                drunk per day
+
+
+y:    sgot  	aspartate aminotransferase
+
+
+","Alcohol consumption refers to the intake of alcoholic beverages, quantified in this dataset by the number of half-pint equivalents drunk per day, which can potentially lead to liver disorders detectable through blood tests such as aspartate aminotransferase (sgot)."," Aspartate aminotransferase (AST) is an enzyme mainly found in the liver and heart, often used as a blood test marker for detecting liver damage or diseases, especially those potentially caused by excessive alcohol intake. "
+pair0037, Alcohol consumption, Gamma-glutamyl transpeptdase, R,1,0,"Information for pairs0037:
+
+https://archive.ics.uci.edu/ml/datasets/Liver+Disorders
+
+Title: BUPA liver disorders
+
+2. Source information:
+   -- Creators: BUPA Medical Research Ltd.
+   -- Donor: Richard S. Forsyth
+             8 Grosvenor Avenue
+             Mapperley Park
+             Nottingham NG3 5DX
+             0602-621676
+   -- Date: 5/15/1990
+
+
+4. Relevant information:
+   -- The second variable is a blood test which is thought
+      to be sensitive to liver disorders that might arise from
+      excessive alcohol consumption.  Each line 
+      constitutes the record of a single male individual.
+
+x:    drinks	number of half-pint equivalents of alcoholic beverages
+                drunk per day
+
+
+y:    gammagt 	gamma-glutamyl transpeptdase
+
+
+","Alcohol consumption refers to the intake of alcoholic beverages, measured in this dataset by the number of half-pint equivalents consumed per day, which can potentially lead to liver disorders detectable through sensitive blood tests like gamma-glutamyl transpeptidase.","Gamma-glutamyl transpeptidase (GGT) is an enzyme that is primarily found in the liver and is involved in the transfer of amino acids across the cellular membrane, often used as a biomarker for liver disease and excessive alcohol consumption."
+pair0038, Age, Body mass index, R,1,0,"Information for pairs0038:
+
+Pima Indians Diabetes Database
+
+1. Sources:
+   (a) Original owners: National Institute of Diabetes and Digestive and
+                        Kidney Diseases
+   (b) Donor of database: Vincent Sigillito (vgs@aplcen.apl.jhu.edu)
+                          Research Center, RMI Group Leader
+                          Applied Physics Laboratory
+                          The Johns Hopkins University
+                          Johns Hopkins Road
+                          Laurel, MD 20707
+                          (301) 953-6231
+   (c) Date received: 9 May 1990
+
+2. Past Usage:
+    1. Smith,~J.~W., Everhart,~J.~E., Dickson,~W.~C., Knowler,~W.~C., \&
+       Johannes,~R.~S. (1988). Using the ADAP learning algorithm to forecast
+       the onset of diabetes mellitus.  In {\it Proceedings of the Symposium
+       on Computer Applications and Medical Care} (pp. 261--265).  IEEE
+       Computer Society Press.
+
+       The diagnostic, binary-valued variable investigated is whether the
+       patient shows signs of diabetes according to World Health Organization
+       criteria (i.e., if the 2 hour post-load plasma glucose was at least 
+       200 mg/dl at any survey  examination or if found during routine medical
+       care).   The population lives near Phoenix, Arizona, USA.
+
+3. Relevant Information:
+      Several constraints were placed on the selection of these instances from
+      a larger database.  In particular, all patients here are females at
+      least 21 years old of Pima Indian heritage.  
+
+4. Number of Instances: 768
+
+x: age
+
+y: body mass index (weight in kg/(height in m)^2)
+
+
+","'Age' in this context refers to the numerical representation of the years a female participant of Pima Indian heritage, who is at least 21 years old, has lived, and it is a variable used in the Pima Indians Diabetes Database to study its correlation with diabetes and body mass index.","Body Mass Index (BMI) is a numerical value derived from a person's weight and height, calculated by dividing the weight in kilograms by the square of height in meters, and it is commonly used to assess if a person has a healthy body weight for a given height."
+pair0039, Age, Serum insulin, R,1,0,"Information for pairs0039:
+
+Pima Indians Diabetes Database
+
+1. Sources:
+   (a) Original owners: National Institute of Diabetes and Digestive and
+                        Kidney Diseases
+   (b) Donor of database: Vincent Sigillito (vgs@aplcen.apl.jhu.edu)
+                          Research Center, RMI Group Leader
+                          Applied Physics Laboratory
+                          The Johns Hopkins University
+                          Johns Hopkins Road
+                          Laurel, MD 20707
+                          (301) 953-6231
+   (c) Date received: 9 May 1990
+
+2. Past Usage:
+    1. Smith,~J.~W., Everhart,~J.~E., Dickson,~W.~C., Knowler,~W.~C., \&
+       Johannes,~R.~S. (1988). Using the ADAP learning algorithm to forecast
+       the onset of diabetes mellitus.  In {\it Proceedings of the Symposium
+       on Computer Applications and Medical Care} (pp. 261--265).  IEEE
+       Computer Society Press.
+
+       The diagnostic, binary-valued variable investigated is whether the
+       patient shows signs of diabetes according to World Health Organization
+       criteria (i.e., if the 2 hour post-load plasma glucose was at least 
+       200 mg/dl at any survey  examination or if found during routine medical
+       care).   The population lives near Phoenix, Arizona, USA.
+
+3. Relevant Information:
+      Several constraints were placed on the selection of these instances from
+      a larger database.  In particular, all patients here are females at
+      least 21 years old of Pima Indian heritage.  
+
+4. Number of Instances: 768
+
+x: age
+
+y: 2-Hour serum insulin (mu U/ml)
+
+
+","Age, in the context of the Pima Indians Diabetes Database, refers to the number of years a female participant of Pima Indian heritage, who is at least 21 years old, has lived.","Serum insulin is a biochemical marker in the blood that measures the level of insulin, a hormone produced by the pancreas that regulates the amount of glucose in the body."
+pair0040, Age, Diastolic blood pressure, R,1,0,"Information for pairs0040:
+
+Pima Indians Diabetes Database
+
+1. Sources:
+   (a) Original owners: National Institute of Diabetes and Digestive and
+                        Kidney Diseases
+   (b) Donor of database: Vincent Sigillito (vgs@aplcen.apl.jhu.edu)
+                          Research Center, RMI Group Leader
+                          Applied Physics Laboratory
+                          The Johns Hopkins University
+                          Johns Hopkins Road
+                          Laurel, MD 20707
+                          (301) 953-6231
+   (c) Date received: 9 May 1990
+
+2. Past Usage:
+    1. Smith,~J.~W., Everhart,~J.~E., Dickson,~W.~C., Knowler,~W.~C., \&
+       Johannes,~R.~S. (1988). Using the ADAP learning algorithm to forecast
+       the onset of diabetes mellitus.  In {\it Proceedings of the Symposium
+       on Computer Applications and Medical Care} (pp. 261--265).  IEEE
+       Computer Society Press.
+
+       The diagnostic, binary-valued variable investigated is whether the
+       patient shows signs of diabetes according to World Health Organization
+       criteria (i.e., if the 2 hour post-load plasma glucose was at least 
+       200 mg/dl at any survey  examination or if found during routine medical
+       care).   The population lives near Phoenix, Arizona, USA.
+
+3. Relevant Information:
+      Several constraints were placed on the selection of these instances from
+      a larger database.  In particular, all patients here are females at
+      least 21 years old of Pima Indian heritage.  
+
+4. Number of Instances: 768
+
+x: age
+
+y: diastolic blood pressure (mm Hg)
+
+
+","Age, in the context of the Pima Indians Diabetes Database, refers to the number of years a female patient of Pima Indian heritage, who is at least 21 years old, has lived.","Diastolic blood pressure is the pressure in the arteries when the heart rests between beats, providing a measure of the minimum blood pressure in the cardiovascular system."
+pair0041, Age, Plasma glucose concentration, R,1,0,"Information for pairs0041:
+
+Pima Indians Diabetes Database
+
+1. Sources:
+   (a) Original owners: National Institute of Diabetes and Digestive and
+                        Kidney Diseases
+   (b) Donor of database: Vincent Sigillito (vgs@aplcen.apl.jhu.edu)
+                          Research Center, RMI Group Leader
+                          Applied Physics Laboratory
+                          The Johns Hopkins University
+                          Johns Hopkins Road
+                          Laurel, MD 20707
+                          (301) 953-6231
+   (c) Date received: 9 May 1990
+
+2. Past Usage:
+    1. Smith,~J.~W., Everhart,~J.~E., Dickson,~W.~C., Knowler,~W.~C., \&
+       Johannes,~R.~S. (1988). Using the ADAP learning algorithm to forecast
+       the onset of diabetes mellitus.  In {\it Proceedings of the Symposium
+       on Computer Applications and Medical Care} (pp. 261--265).  IEEE
+       Computer Society Press.
+
+       The diagnostic, binary-valued variable investigated is whether the
+       patient shows signs of diabetes according to World Health Organization
+       criteria (i.e., if the 2 hour post-load plasma glucose was at least 
+       200 mg/dl at any survey  examination or if found during routine medical
+       care).   The population lives near Phoenix, Arizona, USA.
+
+3. Relevant Information:
+      Several constraints were placed on the selection of these instances from
+      a larger database.  In particular, all patients here are females at
+      least 21 years old of Pima Indian heritage.  
+
+4. Number of Instances: 768
+
+x: age
+
+y: Plasma glucose concentration a 2 hours in an oral glucose tolerance test
+
+
+","Age, in the context of the Pima Indians Diabetes Database, refers to the number of years a female participant of Pima Indian heritage, who is at least 21 years old, has lived, and it serves as an independent variable in the study of diabetes onset.","Plasma glucose concentration refers to the amount of glucose, a type of sugar, present in the blood, typically measured in milligrams per deciliter (mg/dL), and is often assessed in medical tests such as the oral glucose tolerance test to diagnose conditions like diabetes."
+pair0042, Day of the year, Temperature, R,1,0,"Information for pairs0042:
+
+x (int): days of the year
+y (float): mean daily temperature of Furtwangen (Schwarzwald), Germany
+
+time range: 1/1/1979-31/1/2004
+
+data was computed as follows:
+
+(morning temperature + midday temperature + 2 * evening temperature) / 4
+
+source: Bernward Janzing, private archive
+
+","The ""Day of the year"" is a numerical system that assigns a unique value to each day within a year, ranging from 1 to 365 (or 366 in a leap year), used in this context to chronologically track and analyze the mean daily temperature in Furtwangen, Germany over a 25-year period.","Temperature is a quantitative measure of the degree of heat present in a substance or an environment, often expressed in units such as Celsius, Fahrenheit, or Kelvin."
+pair0043, Temperature at t, Temperature at t+1, R,1,0,"Information for pair0043:
+
+Mean Daily Air temperature near surface (.995 sigma level) on a 144x73 grid (2.5 degree) of day 50 and day 51 of year 2000.
+
+x: year 2000, day 50
+y: year 2000, day 51
+
+units: K
+
+Data source:
+http://www.esrl.noaa.gov/psd/data/gridded/data.ncep.reanalysis.surface.html
+
+
+","Temperature at t refers to the mean daily air temperature measured near the surface level (.995 sigma level) on a specific day (t) of a particular year, represented on a 144x73 grid (2.5 degree).","The concept of Temperature at t+1 refers to the mean daily air temperature near the earth's surface on the following day (day 51) in the year 2000, measured on a 144x73 grid (2.5 degree) and expressed in Kelvin (K)."
+pair0044, Pressure at t, Pressure at t+1, R,1,0,"Information for pair0044:
+
+Mean Daily pressure at surface on a 144x73 grid (2.5 degree) of day 50 and day 51 of year 2000.
+
+x: year 2000, day 50
+y: year 2000, day 51
+
+units: Pascal
+
+Data source:
+http://www.esrl.noaa.gov/psd/data/gridded/data.ncep.reanalysis.surface.html
+
+
+","Pressure at t is the quantification of the atmospheric pressure at a specific time point 't', measured in Pascals, on a 144x73 grid (2.5 degree) surface, as provided by the data from the Earth System Research Laboratory.","""Pressure at t+1"" refers to the atmospheric pressure measured in Pascal at the surface level on a 144x73 grid (2.5 degree) for the day following a given day (t), in this case, day 51 of the year 2000."
+pair0045, Sea level pressure at t, Sea level pressure at t+1, R,1,0,"Information for pair0045:
+
+Mean daily sea level pressure on a 144x73 grid (2.5 degree) of day 50 and day 51 of year 2000.
+
+x: year 2000, day 50
+y: year 2000, day 51
+
+units: Pascal
+
+Data source:
+http://www.esrl.noaa.gov/psd/data/gridded/data.ncep.reanalysis.surface.html
+
+
+","Sea level pressure at time 't' is the atmospheric pressure measured at sea level at a specific day (t) in the year 2000, represented on a 144x73 grid with 2.5-degree intervals.","Sea level pressure at t+1 refers to the atmospheric pressure measured at sea level on the following day (day 51) in the year 2000, represented on a 144x73 grid with a 2.5-degree resolution, with the units expressed in Pascal."
+pair0046, Relative humidity at t, Relative humidity at t+1, R,1,0,"Information for pair0046:
+
+Mean daily relative humidity near surface (.995 sigma level) on a 144x73 grid (2.5 degree) of day 50 and day 51 of year 2000.
+
+x: year 2000, day 50
+y: year 2000, day 51
+
+units: %
+
+Data source:
+http://www.esrl.noaa.gov/psd/data/gridded/data.ncep.reanalysis.surface.html
+
+
+","Relative humidity at t refers to the percentage of moisture in the air at a specific time and location, measured near the surface on a 144x73 grid (2.5 degree) for a particular day in the year 2000.","Relative humidity at t+1 refers to the measurement of atmospheric moisture content at a specific grid location, expressed as a percentage, on the day following a given time point (t), in this case, day 50 of the year 2000."
+pair0047, Number of cars, Type of day, L,0,1,"Information for pair0047:
+
+Traffic
+
+x: number of cars per 24h at different counting stations in Oberschwaben, Germany
+y: categorical :
+	1 	 -> Sundays + holidays
+	2	 -> working days 
+
+Data source:
+http://www.b30-oberschwaben.de/html/tabelle.html
+
+","The ""Number of cars"" refers to the total count of vehicles recorded in a 24-hour period at various counting stations in Oberschwaben, Germany.","The ""Type of day"" is a categorical variable in the dataset, which classifies the days into two categories: '1' representing Sundays and holidays, and '2' representing working days, to analyze the traffic volume in Oberschwaben, Germany."
+pair0048, Indoor temperature, Outdoor temperature, L,0,1,"Information for pairs0048:
+
+x: Indoor temperature 
+
+y: Outdoor temperature
+
+source:
+Hipel and Mcleod (1994): 
+Time series modelling of water resources and environmental systems
+www.stats.uwo.ca/faculty/mcleod/epubs/mhsets/readme-mhsets.html.
+
+","Indoor temperature refers to the degree or intensity of heat present within a confined space like a building, which can be influenced by various factors such as outdoor temperature, insulation, and heating or cooling systems.","Outdoor temperature refers to the degree or intensity of heat present in the environment outside of an enclosed space, which can influence various environmental systems and water resources."
+pair0049, Ozone concentration, Temperature, R,1,0,"Information for pairs0049:
+
+Daily mean values of ozone and temperature of year 2009 in Lausanne-CÃ©sar-Roux, Switzerland
+
+x: Ozone (microgram / cubic meter)
+
+y: Temperature (degree celsius)
+
+source:
+Bundesamt fuer Umwelt (BAFU, Switzerland)
+www.bafu.admin.ch/luft/luftbelastung/blick_zurueck/datenabfrage/index.html?lang=de
+
+
+","Ozone concentration, represented here as micrograms per cubic meter, refers to the amount of ozone present in a specific volume of air, which is a key indicator of air quality and can have significant impacts on human health and the environment.","Temperature, denoted as 'y' in this context, refers to the average daily atmospheric heat measured in degrees Celsius for the year 2009 in Lausanne-César-Roux, Switzerland."
+pair0050, Ozone concentration, Temperature, R,1,0,"Information for pairs0050:
+
+Daily mean values of ozone and temperature of year 2009 in Chaumont, Switzerland
+
+x: Ozone (microgram / cubic meter)
+
+y: Temperature (degree celsius)
+
+source:
+Bundesamt fuer Umwelt (BAFU, Switzerland)
+www.bafu.admin.ch/luft/luftbelastung/blick_zurueck/datenabfrage/index.html?lang=de
+
+","Ozone concentration, measured in micrograms per cubic meter, refers to the amount of ozone gas present in a specific volume of air, which is a key indicator of air quality and can have significant impacts on human health and the environment.","Temperature, in this context, refers to the daily average atmospheric temperature in degrees Celsius recorded in Chaumont, Switzerland during the year 2009."
+pair0051, Ozone concentration, Temperature, R,1,0,"Information for pairs0051:
+
+Daily mean values of ozone and temperature of year 2009 in Davos-See, Switzerland
+
+x: Ozone (microgram / cubic meter)
+
+y: Temperature (degree celsius)
+
+source:
+Bundesamt fuer Umwelt (BAFU, Switzerland)
+www.bafu.admin.ch/luft/luftbelastung/blick_zurueck/datenabfrage/index.html?lang=de
+
+","Ozone concentration refers to the amount of ozone present in a specific volume of air, typically measured in micrograms per cubic meter, which can be influenced by various environmental factors such as temperature.","Temperature, in this context, refers to the average daily atmospheric temperature measured in degrees Celsius in Davos-See, Switzerland during the year 2009."
+pair0052, (Temp and Press and SLP and Rh), (Temp and Press and Slp and Rh), L,0,1,"Information for pair0052:
+
+x and y are 4-dimensional variables for day 51 resp. 50 of year 2000 on a 144x73 grid (2.5 degree).  The four dimensions are:
+
+x: year 2000, day 51
+y: year 2000, day 50
+
+1) Mean Daily Air temperature at sigma level 995 
+
+variable type: int16
+skalefactor: 0.00999999977648258
+add offset: 512.809997558594
+units: degK
+
+2) Mean Daily pressure at surface 
+
+variable type: int16
+skalefactor: 10
+add offset: 367650
+units: Pascal
+
+3) Mean Daily sea level pressure 
+
+variable type: int16
+add offset: 119765
+units: Pascal
+
+4) Mean Daily relative humidity at sigma level 995 
+
+variable type: int16
+add offset: 302.649993896484
+scale factor: 0.00999999977648258
+units: %
+
+Data source:
+http://www.esrl.noaa.gov/psd/data/gridded/data.ncep.reanalysis.surface.html
+
+
+","Temp and Press and SLP and Rh are four-dimensional meteorological variables representing Mean Daily Air Temperature, Mean Daily Pressure at Surface, Mean Daily Sea Level Pressure, and Mean Daily Relative Humidity, respectively, for days 50 and 51 of the year 2000, measured on a 144x73 grid with specific scale factors and offsets, as provided by the Earth System Research Laboratory.","Temp, Press, Slp, and Rh are four-dimensional variables representing the Mean Daily Air Temperature at sigma level 995, Mean Daily Pressure at Surface, Mean Daily Sea Level Pressure, and Mean Daily Relative Humidity at sigma level 995, respectively, for days 50 and 51 of the year 2000 on a 144x73 grid, as provided by the Earth System Research Laboratory of the National Oceanic and Atmospheric Administration."
+pair0053, Ozone concentration, (Wind speed and Radiation and Temperature), L,0,1,"Information for pair0053:
+
+Environmental data
+
+x: 	Ozon concentration (microgramm/m^3)
+
+y: 	1) wind speed (m/s)
+	2) global radiation (W/m^2)
+	3) temperature
+
+
+Data source:
+Dietrich Stoyan, Helga Stoyan, and Uwe Jansen (1997): 
+Umwelstatistik: Statistische Verarbeitung und Analyse von Umweltdaten
+http://www.mathe.tu-freiberg.de/Stoyan/umwdat.html#Top
+
+","Ozone concentration, measured in micrograms per cubic meter (µg/m^3), refers to the amount of ozone present in a specific volume of air, which is a key environmental data used to assess air quality and its potential impact on climate and health.","Wind speed, radiation, and temperature are environmental variables that can influence the concentration of ozone in the atmosphere, with wind speed affecting the distribution of ozone, global radiation influencing ozone production, and temperature impacting both ozone formation and decay."
+pair0054, (Displacement and Horsepower and Weight), (Fuel cons and ption and Acceleration), R,1,0,"Information for pairs0054:
+
+Auto-Mpg Data
+
+http://archive.ics.uci.edu/ml/datasets/Auto+MPG
+
+1. Sources:
+   (a) Origin:  This dataset was taken from the StatLib library which is
+                maintained at Carnegie Mellon University. The dataset was 
+                used in the 1983 American Statistical Association Exposition.
+   (c) Date: July 7, 1993
+
+2. Past Usage:
+    -  See 2b (above)
+    -  Quinlan,R. (1993). Combining Instance-Based and Model-Based Learning.
+       In Proceedings on the Tenth International Conference of Machine 
+       Learning, 236-243, University of Massachusetts, Amherst. Morgan
+       Kaufmann.
+
+3. Relevant Information:
+
+   This dataset is a slightly modified version of the dataset provided in
+   the StatLib library.  In line with the use by Ross Quinlan (1993) in
+   predicting the attribute ""mpg"", 8 of the original instances were removed 
+   because they had unknown values for the ""mpg"" attribute.  The original 
+   dataset is available in the file ""auto-mpg.data-original"".
+
+   ""The data concerns city-cycle fuel consumption in miles per gallon,
+    to be predicted in terms of 3 multivalued discrete and 5 continuous
+    attributes."" (Quinlan, 1993)
+
+Attribute information:
+
+mpg:           continuous
+displacement:  continuous
+horsepower:    continuous
+weight:        continuous
+acceleration:  continuous
+
+
+x: (displacement, horsepower, weight)
+
+y: (mpg, acceleration)
+
+","Displacement, horsepower, and weight are continuous attributes in the Auto-MPG dataset, representing the engine's cubic capacity, the measure of the car's power, and the car's mass respectively, used to predict city-cycle fuel consumption in miles per gallon.","Fuel consumption and acceleration are key attributes in the Auto-MPG dataset, where fuel consumption refers to the city-cycle fuel usage measured in miles per gallon, and acceleration represents the vehicle's speed increase rate, both of which are continuous variables used for predicting vehicle performance."
+pair0055, Ozone concentration (16-dim.), Radiation (16-dim.), L,0,1,"Information for pairs0055:
+
+Daily mean values of ozone values and radiation in the last 83 days of 2009 at 16 different places in Switzerland.
+11 days were deleted due to missing data.
+The different places are: 
+1 Bern-Bollwerk	
+2 Magadino-Cadenazzo	
+3 Lausanne-C/'esar-Roux	
+4 Payerne	
+5 Lugano-Universita	
+6 Taenikon	
+7 Zuerich-Kaserne	
+8 Laegeren	
+9 Basel-Binningen	
+10 Chaumont	
+11 Duebendorf	
+12 Rigi-Seebodenalp	
+13 Haerkingen	
+14 Davos-See	
+15 Sion-A/'eroport	
+16 Jungfraujoch
+
+
+x: Ozone (microgram / cubic meter)
+
+y: Temperature (degree celsius)
+
+source:
+Bundesamt fuer Umwelt (BAFU, Switzerland)
+www.bafu.admin.ch/luft/luftbelastung/blick_zurueck/datenabfrage/index.html?lang=de
+
+","The concept of Ozone concentration (16-dim.) refers to the measurement of ozone levels, expressed in micrograms per cubic meter, at 16 different locations in Switzerland over the last 83 days of 2009, with data collected daily, except for 11 days due to missing information.","Radiation (16-dim.) refers to the daily mean values of solar radiation recorded at 16 different locations in Switzerland over the last 83 days of 2009, providing a multi-dimensional perspective on the radiation levels across various geographical points."
+pair0056, Female life expectancy 2000-2005, Latitude, L,0,1,"Information for pair0056:
+
+UNdata from http://data.un.org
+
+
+x:	life expectancy at birth for different countries, female, 2000-2005
+
+y:	latitude of the country's capital
+
+China, Russia and Canada were taken out.
+
+source:
+http://data.un.org/Data.aspx?d=GenderStat&f=inID%3a37
+
+","The concept of Female life expectancy 2000-2005 refers to the average number of years a newborn female is expected to live, assuming that current mortality rates remain constant throughout her life, specifically for the years between 2000 and 2005, excluding data from China, Russia, and Canada.","Latitude is a geographical coordinate that specifies the north-south position of a point on the Earth's surface, measured in degrees from the equator, which is 0 degrees, with the poles at 90 degrees North and South."
+pair0057, Female life expectancy 1995-2000, Latitude, L,0,1,"Information for pair0057:
+
+UNdata from http://data.un.org
+
+
+x:	life expectancy at birth for different countries, female, 1995-2000
+
+y:	latitude of the country's capital
+
+China, Russia and Canada were taken out.
+
+source:
+http://data.un.org/Data.aspx?d=GenderStat&f=inID%3a37
+
+","The concept of Female life expectancy 1995-2000 refers to the average number of years a newborn female is expected to live, assuming that current mortality rates remain constant throughout her life, specifically for the years between 1995 and 2000, excluding data from China, Russia, and Canada.","Latitude is a geographical coordinate that specifies the North-South position of a point on the Earth's surface, measured in degrees from the equator, which is 0 degrees, with the poles at 90 degrees North and South."
+pair0058, Female life expectancy 1990-1995, Latitude, L,0,1,"Information for pair0057:
+
+UNdata from http://data.un.org
+
+
+x:	life expectancy at birth for different countries, female, 1990-1995
+
+y:	latitude of the country's capital
+
+China, Russia and Canada were taken out.
+
+source:
+http://data.un.org/Data.aspx?d=GenderStat&f=inID%3a37
+
+","The concept of Female life expectancy 1990-1995 refers to the average number of years a newborn female could expect to live, assuming that current mortality rates remain constant throughout her life, across different countries during the period from 1990 to 1995, excluding China, Russia, and Canada.","Latitude is a geographical coordinate that specifies the north-south position of a point on the Earth's surface, measured in degrees from the equator, which has a latitude of 0 degrees, with the poles at a latitude of 90 degrees north and south."
+pair0059, Female life expectancy 1985-1990, Latitude, L,0,1,"Information for pair0059:
+
+UNdata from http://data.un.org
+
+
+x:	life expectancy at birth for different countries, female, 1985-1990
+
+y:	latitude of the country's capital
+
+China, Russia and Canada were taken out.
+
+source:
+http://data.un.org/Data.aspx?d=GenderStat&f=inID%3a37
+
+","Female life expectancy 1985-1990 refers to the average number of years a newborn female could expect to live, assuming that current mortality rates remain constant throughout her life, during the period from 1985 to 1990, based on data collected from various countries excluding China, Russia, and Canada.","Latitude is a geographical coordinate that specifies the north-south position of a point on the Earth's surface, measured in degrees from the equator, which is 0 degrees, with the poles at 90 degrees north and south."
+pair0060, Male life expectancy 2000-2005, Latitude, L,0,1,"Information for pair0060:
+
+UNdata from http://data.un.org
+
+
+x:	life expectancy at birth for different countries, male, 2000-2005
+
+y:	latitude of the country's capital
+
+China, Russia and Canada were taken out.
+
+source:
+http://data.un.org/Data.aspx?d=GenderStat&f=inID%3a37
+
+","Male life expectancy from 2000-2005 refers to the average number of years a newborn male could expect to live, assuming that current mortality rates remain constant throughout his life, during the period of 2000-2005, for various countries excluding China, Russia, and Canada.","Latitude is a geographical coordinate that specifies the north-south position of a point on the Earth's surface, measured in degrees from the equator, with positive values indicating locations north of the equator and negative values indicating locations south of the equator."
+pair0061, Male life expectancy 1995-2000, Latitude, L,0,1,"Information for pair0061:
+
+UNdata from http://data.un.org
+
+
+x:	life expectancy at birth for different countries, male, 1995-2000
+
+y:	latitude of the country's capital
+
+China, Russia and Canada were taken out.
+
+source:
+http://data.un.org/Data.aspx?d=GenderStat&f=inID%3a37
+
+","The concept of Male life expectancy 1995-2000 refers to the average number of years a newborn male could expect to live, assuming that current mortality rates remain constant throughout his life, across different countries during the period from 1995 to 2000, excluding China, Russia, and Canada.","Latitude is a geographical coordinate that specifies the north-south position of a point on the Earth's surface, measured in degrees from the equator, which has a latitude of 0 degrees."
+pair0062, Male life expectancy 1990-1995, Latitude, L,0,1,"Information for pair0062:
+
+UNdata from http://data.un.org
+
+
+x:	life expectancy at birth for different countries, male, 1990-1995
+
+y:	latitude of the country's capital
+
+China, Russia and Canada were taken out.
+
+source:
+http://data.un.org/Data.aspx?d=GenderStat&f=inID%3a37
+
+","Male life expectancy 1990-1995 refers to the average number of years a newborn male could expect to live, assuming that current mortality rates remain constant throughout his life, during the period from 1990 to 1995, for different countries excluding China, Russia, and Canada.","Latitude is a geographical coordinate that specifies the north-south position of a point on the Earth's surface, measured in degrees from the equator, with positive values indicating locations north of the equator and negative values indicating locations south of the equator."
+pair0063, Male life expectancy 1985-1990, Latitude, L,0,1,"Information for pair0063:
+
+UNdata from http://data.un.org
+
+
+x:	life expectancy at birth for different countries, male, 1985-1990
+
+y:	latitude of the country's capital
+
+China, Russia and Canada were taken out.
+
+source:
+http://data.un.org/Data.aspx?d=GenderStat&f=inID%3a37
+
+","Male life expectancy from 1985-1990 refers to the average number of years a newborn male could expect to live, assuming that current mortality rates remain constant throughout his life, during the period of 1985-1990, for different countries excluding China, Russia, and Canada.","Latitude is a geographic coordinate that specifies the north-south position of a point on the Earth's surface, measured in degrees from the equator, which has a latitude of 0 degrees, with the poles being at 90 degrees north and south."
+pair0064, Drinking water access, Infant mortality, R,1,0,"Information for pair0064:
+
+UNdata from http://data.un.org
+
+
+x:	Population with sustainable access to improved drinking water sources (%) total, 2006
+
+y:	Infant mortality rate (per 1 000 live births) both sexes, 2006
+
+source:
+http://data.un.org/Data.aspx?d=WHO&f=inID%3aMBD10
+http://data.un.org/Data.aspx?d=WHO&f=inID%3aRF03
+
+","Drinking water access refers to the percentage of a population that has a reliable and safe supply of water suitable for consumption and domestic use, as measured by UNdata in 2006.","Infant mortality refers to the death of infants under one year of age, typically expressed as a rate per 1,000 live births, and is often used as an indicator of a country's health status and quality of healthcare services."
+pair0065, Stock return of Hang Seng Bank, Stock return of HSBC Hldgs, R,1,0,"Information for pair0065:
+
+Financial data:
+
+x:	stock returns of Hang Seng Bank (0011.HK) 
+
+y:	stock return of HSBC Hldgs (0005.HK) 
+
+from Jan. 4, 2000 to Jun. 17, 2005. Data was obtained from the Yahoo finance database. HSBC owns about 60% of Hang Seng Bank.
+
+Remark: We calculated the above returns from the raw data in the following way.
+1. Extract the dividend/split adjusted closing price data from Yahoo Finance http://finance.yahoo.com/.
+2. For the few days when the price is not available, we use simple linear interpolation to estimate the price.  Consequently the two time series are aligned.
+3. For each stock, denote the closing price on day t by P_t, and the corresponding return is calculated by X_t = (P_t-P_{t-1 }) / P_{t-1 }.
+
+","The stock return of Hang Seng Bank (0011.HK) refers to the percentage change in the dividend/split adjusted closing price of the bank's stock from one trading day to the next, between January 4, 2000 and June 17, 2005, as obtained from the Yahoo Finance database, with missing price data estimated via simple linear interpolation.","The stock return of HSBC Holdings (0005.HK) refers to the percentage change in the dividend/split adjusted closing price of HSBC's shares from one trading day to the next, between January 4, 2000 and June 17, 2005, as obtained from the Yahoo Finance database, with missing data points estimated through simple linear interpolation."
+pair0066, Stock return of Hutchison, Stock return of Cheung kong, R,1,0,"Information for pair0066:
+
+Financial data
+
+x:	stock returns of Hutchison (0013.HK)
+
+y:	stock return of Cheung kong (0001.HK)
+
+from Jan. 4, 2000 to Jun. 17, 2005. Data was obtained from the Yahoo finance database. Cheung kong owns about 50% of Hutchison.
+
+Remark: We calculated the above returns from the raw data in the following way.
+1. Extract the dividend/split adjusted closing price data from Yahoo Finance http://finance.yahoo.com/.
+2. For the few days when the price is not available, we use simple linear interpolation to estimate the price.  Consequently the two time series are aligned.
+3. For each stock, denote the closing price on day t by P_t, and the corresponding return is calculated by X_t = (P_t-P_{t-1 }) / P_{t-1 }.
+
+","The stock return of Hutchison (0013.HK) refers to the percentage change in the company's dividend/split adjusted closing price over a specific period, in this case from January 4, 2000 to June 17, 2005, calculated using data extracted from Yahoo Finance and adjusted for any missing values through simple linear interpolation.","The stock return of Cheung Kong (0001.HK) refers to the percentage change in the company's stock price, from one trading day to the next, between January 4, 2000, and June 17, 2005, as calculated from the dividend/split adjusted closing price data obtained from Yahoo Finance, with missing price data estimated through simple linear interpolation."
+pair0067, Stock return of Cheung kong, Stock return of Sun Hung Kai Prop., R,1,0,"Information for pair0067:
+
+Financial data
+
+x:	stock returns of Cheung kong (0001.HK)
+
+y:	stock return of Sun Hung Kai Prop. (0016.HK)
+
+from Jan. 4, 2000 to Jun. 17, 2005. Data was obtained from the Yahoo finance database. Sun Hung Kai Prop. is a typical stock in the Hang Seng Property subindex, and is believed to depend on other majoy stocks.
+
+Remark: We calculated the above returns from the raw data in the following way.
+1. Extract the dividend/split adjusted closing price data from Yahoo Finance http://finance.yahoo.com/.
+2. For the few days when the price is not available, we use simple linear interpolation to estimate the price.  Consequently the two time series are aligned.
+3. For each stock, denote the closing price on day t by P_t, and the corresponding return is calculated by X_t = (P_t-P_{t-1 }) / P_{t-1 }.
+
+
+","The stock return of Cheung Kong (0001.HK) refers to the percentage change in its dividend/split adjusted closing price over a specific period, from January 4, 2000 to June 17, 2005, as calculated from raw data obtained from Yahoo Finance, with missing price data estimated through simple linear interpolation.","The stock return of Sun Hung Kai Properties (0016.HK) refers to the percentage change in its dividend/split adjusted closing price over a given period, from January 4, 2000 to June 17, 2005, as calculated from data obtained from Yahoo Finance and adjusted for instances when price data was not available."
+pair0068, Bytes sent, Open http connections, L,0,1,"Information for pair0068:
+
+Timeseries data - Internet connections and traffic at the MPI for Intelligent Systems.
+
+X(t) - bytes sent at minute t.
+Y(t) - open http connections during that minute 
+
+Measurements are taken every 20 minutes. 
+
+","In the context of timeseries data for Internet connections and traffic at the MPI for Intelligent Systems, 'Bytes sent' refers to the quantity of digital information, measured in bytes, transmitted from the system over the Internet in a specific minute.","Open HTTP connections refer to the active network links established between a client and server over the HTTP protocol during a specific time period, which in this context, is measured every minute."
+pair0069, Inside temperature, Outside temperature, L,0,1,"Information for pair0069:
+
+Timeseries data - Inside (room) and outside temperature
+
+X(t) - inside room temperature in degrees Celsius
+Y(t) - outside temperature in degrees Celsius
+
+Measurements were taken every 5 minutes.
+
+Data provided by Joris M. Mooij.
+
+","The inside temperature, denoted as X(t), refers to the measurement of the thermal condition within a room, expressed in degrees Celsius, and recorded every 5 minutes as part of a timeseries data set provided by Joris M. Mooij.","The outside temperature, denoted as Y(t) in this context, refers to the ambient atmospheric temperature measured in degrees Celsius, recorded every 5 minutes as part of a time series data set provided by Joris M. Mooij."
+pair0070, Parameter, Answer, R,1,0,"Information for pair0070:
+
+data taken from
+R. Armann and I.Buelthoff, 2010,
+in preparation
+MPI for Biological Cybernetics, Tuebingen, Germany
+ 
+
+Discrete data:
+
+Artificial faces were shown and varied between male and female.
+People had to say if it is male or female.
+
+The variables are:
+
+X = par (between 0 and 14, 0 -> very female, 14 -> very male)
+
+Y = sex_guess (0: female or 1: male, the subject's guess)
+
+","A parameter, in the context of this study, refers to a quantifiable characteristic or feature of a system or experiment, such as the perceived gender of an artificial face, which can be manipulated or measured to observe its effect on the outcome.","The concept of 'Answer' in this context refers to the participant's response or guess about the gender of the shown artificial face, which is represented as '0' for female and '1' for male."
+pair0071, Symptoms (6-dim.), Classification of disease (2-dim.), R,1,0,"Information for pair0071:
+
+Data was taken from the UCI repository
+http://archive.ics.uci.edu/ml/datasets/Acute+Inflammations
+
+Jacek Czerniak, Ph.D., Assistant Professor
+Systems Research Institute
+Polish Academy of Sciences
+Laboratory of Intelligent Systems
+ul. Newelska 6, Room 218
+01-447 Warszawa, Poland
+e-mail: jacek.czerniak '@' ibspan.waw.pl or jczerniak '@' ukw.edu.pl 
+ 
+Acute inflammation of urinary bladder is characterised
+by sudden occurrence of pains in the abdomen region and the urination in form of
+constant urine pushing, micturition pains and sometimes lack of urine keeping.
+Temperature of the body is rising, however most often not above 38C. The excreted
+urine is turbid and sometimes bloody. At proper treatment, symptoms decay usually
+within several days. However, there is inclination to returns. At persons with acute
+inflammation of urinary bladder, we should expect that the illness will turn into
+protracted form.
+
+Acute nephritis of renal pelvis origin occurs considerably more often at women than at
+men. It begins with sudden fever, which reaches, and sometimes exceeds 40C. The fever
+is accompanied by shivers and one- or both-side lumbar pains, which are sometimes very
+strong. Symptoms of acute inflammation of urinary bladder appear very often. Quite not
+infrequently there are nausea and vomiting and spread pains of whole abdomen.
+
+The data was created by a medical expert as a data set to test the expert system, which
+will perform the presumptive diagnosis of two diseases of urinary system. 
+Each instance represents an potential patient. 
+
+Discrete and logical data:
+1 = yes, 2 = no
+
+X is 6-dimensional
+1 	Temperature of patient { 35C-42C } 
+2 	Occurrence of nausea 
+3 	Lumbar pain
+4 	Urine pushing (continuous need for urination)
+5 	Micturition pains
+6 	Burning of urethra, itch, swelling of urethra outlet
+
+Y is 2-dimensional
+7	decision: Inflammation of urinary bladder
+8 	decision: Nephritis of renal pelvis origin 
+
+
+","The 6-dimensional symptoms in this context refer to the six key indicators used in the data set to diagnose urinary system diseases, namely: patient's temperature, occurrence of nausea, lumbar pain, continuous need for urination (urine pushing), micturition pains, and burning, itching, or swelling of the urethra outlet.","The concept of Classification of disease (2-dim.) in this context refers to the process of categorizing potential patients into two specific urinary system diseases, namely Inflammation of urinary bladder and Nephritis of renal pelvis origin, based on a set of six symptoms and conditions."
+pair0072, Sunspots, Global mean temperature, R,1,0,"Information for pair0072:
+
+sunspot data - timeseries with monthly values
+from 5/1874 - 4/2010 = 1632 values
+
+
+temperature data taken from 
+http://www.cru.uea.ac.uk/cru/data/temperature/
+
+sunspot data taken from
+http://solarscience.msfc.nasa.gov/SunspotCycle.shtml
+
+X = sunspot area
+
+Y = global mean temperature anomalies (deviations from 1961-1990) in °C
+
+","Sunspots are temporary phenomena on the Sun's photosphere that appear as spots darker than the surrounding areas due to lower temperatures, often used in research for their correlation with global temperature anomalies.","The Global mean temperature is a measure of the average temperature of the Earth's surface, calculated from temperature readings taken worldwide and averaged over time, often used to assess climate trends and anomalies."
+pair0073, CO2 emissions, Energy use, L,0,1,"Information for pair0073:
+
+Energy - emission data from 152 countries  between 1960 and 2005
+
+from UNdata (http://data.un.org)
+
+
+x: CO2 emissions for different countries in different years
+
+y: Energy use (kg of oil equivalent per capita) for different countries in different years
+
+
+
+","CO2 emissions refer to the release of carbon dioxide, a greenhouse gas, into the atmosphere, primarily through the burning of fossil fuels for energy, which is quantified on a country-by-country basis and tracked over time to assess environmental impact and energy efficiency.","Energy use, in this context, refers to the amount of energy consumed per person in a given country, measured in kilograms of oil equivalent per year."
+pair0074, GNI per capita, Life expectancy, R,1,0,"Information for pair0074:
+
+UNdata from http://data.un.org
+
+Gross national income (GNI) and life expectancy. 
+One can see the GNI per capita as an index how rich a country is. 
+The wealth of a country influences the qualtity of the health care system and thus indirectly the life expectancy of its citizens.
+
+x: GNI (Gross national income) per capita for different countries (in US$)
+
+y: life expectancy at birth for different countries
+
+
+","GNI per capita is a measure of a country's economic output per person, calculated by dividing the gross national income by the total population, and is often used as an indicator of a nation's wealth and living standards.","Life expectancy is a statistical measure indicating the average number of years a newborn is expected to live, given current age-specific mortality rates in a particular country."
+pair0075, Under-5 mortality rate, GNI per capita, L,0,1,"Information for pair0075:
+
+UNdata from http://data.un.org
+
+Gross national income (GNI) and life expectancy. 
+One can see the GNI per capita as an index how rich a country is. 
+The wealth of a country influences the qualtity of the health care system and thus indirectly the mortality rate of its children.
+
+
+x: under 5 mortality rate for different countries (deaths per 1000 live births)
+
+y: GNI (Gross national income) per capita for different countries (in US$)
+
+","The Under-5 mortality rate is a statistical measure representing the number of deaths of children under five years of age per 1000 live births, often used as an indicator of a country's overall health and well-being.","GNI per capita is a measure of a country's economic wealth per person, calculated by dividing the gross national income by the total population."
+pair0076, Population growth, Food consumption growth, R,1,0,"Information for pair0076
+ 
+population growth and food consumption 
+ 
+data for 174 countries or areas, during the period from 1990-92 to 1995-97 (former 174 data points) and that from 1995-97 to 2000-02 (latter 174 points).  
+ 
+The data were taken from food security statistics provided by Food and Agriculture Organization of the United Nations (http://www.docstoc.com/docs/102679223/Food-consumption-and-population-growth---FAO);
+see http://www.fao.org/economic/ess/ess-fs/en/ .
+ 
+x (first column): the average annual rate of change of population;
+y (second column): the average annual rate of change of total dietary consumption for total population (kcal/day).
+
+Their difference (y-x) can be interpreted as the average annual rate of change of dietary energy consumption (kcal/person/day).
+
+","Population growth refers to the increase in the number of individuals in a population over a specific period of time, often expressed as an average annual rate of change.","Food consumption growth refers to the average annual rate of change in total dietary energy intake for the entire population, measured in kilocalories per day, and it reflects changes in dietary habits and food availability over time."
+pair0077, Temperature, Solar radiation, L,0,1,"Information for pair0077:
+
+Note: X and Y are actually time series with time step 1 day 
+
+Y is the solar radiation in W/m^2 measured in Furtwangen, Black Forest, Germany, by Bernward Janzing.
+Each value is the daily average of one day between January 1, 1985 and December 31, 2008.
+
+X is the daily average temperature of the air measured at the same location and the same days.
+
+The data are taken from a larger data set containing solar radiation averages from November 24, 1985 to December 31, 2008
+and temperature values from January 1, 1979 to  December 31, 2008.
+The original files have been provided by Bernward Janzing and processed by Dominik Janzing to extract the common time interval.
+
+","Temperature is a quantitative measure of the degree of heat present in a substance or object, often measured in degrees Celsius, Fahrenheit, or Kelvin, and in this context, it refers to the daily average air temperature recorded in Furtwangen, Black Forest, Germany, from January 1, 1985, to December 31, 2008.","Solar radiation refers to the electromagnetic energy emitted by the sun, measured in watts per square meter (W/m^2), which is crucial for various natural processes on Earth, including weather patterns and photosynthesis."
+pair0078, PPFD, Net Ecosystem Productivity, R,1,0,"Information for pair0078:
+
+Light Response Data
+
+Taken at a flux tower at site DE-Hai
+latitude: 51.08?N
+longitude: 10.45?E
+
+The filtered version of the data is taken from:
+
+Moffat A.M. (2012): Assessing competing semi-empirical equations:
+Light response curve (Chapter 7). In: /A new methodology to interpret
+high resolution measurements of net carbon fluxes between terrestrial
+ecosystems and the atmosphere/. pp. 68-80. Doctoral thesis, Friedrich
+Schiller University, Jena.
+
+- Response of NEP on total PPFD
+
+First column (x): PPFD (Photosynthetic Photon Flux Density)
+- a measure of light intensity in terms of photons, that are available for photosynthesis
+- i.e. the number of photons falling on a 1 meter square area per second
+- only the photons with a wavelength of 400-700nm (visible light) are available for photosynthesis
+- unit [?mol/(m?s)]
+PPFD(total) = PPFDdif + PPFDdir
+
+
+Second column (y): NEP (Net Ecosystem Productivity)
+- a measure of the carbon flux
+- calculated by photosynthetic uptake MINUS release by respiration
+- is known to be driven by PPFD
+- unit: [?mol/(m?s)]
+
+
+","PPFD, or Photosynthetic Photon Flux Density, is a measure of the intensity of light, specifically the number of photons within the visible light spectrum (400-700nm) that fall on a one square meter area per second, which are available for photosynthesis.","Net Ecosystem Productivity (NEP) is a measure of the carbon flux in an ecosystem, calculated by subtracting the carbon released by respiration from the carbon absorbed through photosynthesis, and is influenced by the Photosynthetic Photon Flux Density (PPFD)."
+pair0079, Net Ecosystem Productivity, Diffuse PPFDdif, L,0,1,"Information for pair0079:
+
+Light Response Data
+
+Taken at a flux tower at site DE-Hai
+latitude: 51.08?N
+longitude: 10.45?E
+
+The filtered version of the data is taken from:
+
+Moffat A.M. (2012) Assessing competing semi-empirical equations:
+Light response curve (Chapter 7). In: /A new methodology to interpret
+high resolution measurements of net carbon fluxes between terrestrial
+ecosystems and the atmosphere/. pp. 68-80. Doctoral thesis, Friedrich
+Schiller University, Jena.
+
+- Response of NEP on PPFDdif
+
+First column (x): NEP (Net Ecosystem Productivity)
+- a measure of the carbon flux
+- calculated by photosynthetic uptake MINUS release by respiration
+- is known to be driven by PPFDdif and PPFDdir
+- unit: [?mol/(m?s)]
+
+Second column (y): PPFDdif (Photosynthetic Photon Flux Density, diffusive)
+- a measure of light intensity in terms of diffusive photons, that are available for photosynthesis
+- i.e. the number of diffusive photons falling on a 1 meter square area per second
+- only the photons with a wavelength of 400-700nm (visible light) are available for photosynthesis
+- unit [?mol/(m?s)]
+PPFD(total) = PPFDdif + PPFDdir
+
+
+","Net Ecosystem Productivity (NEP) is a measure of the carbon flux within an ecosystem, calculated by subtracting the carbon released through respiration from the carbon absorbed through photosynthesis, which is influenced by factors such as light intensity.","Diffuse PPFDdif refers to the measure of light intensity in terms of diffusive photons, specifically those with a wavelength of 400-700nm (visible light), that are available for photosynthesis, quantified as the number of these photons falling on a one square meter area per second."
+pair0080, Net Ecosystem Productivity, Direct PPFDdir, L,0,1,"Information for pair0080:
+
+Light Response Data
+
+Taken at a flux tower at site DE-Hai
+latitude: 51.08?N
+longitude: 10.45?E
+
+The filtered version of the data is taken from:
+
+Moffat A.M. (2012) Assessing competing semi-empirical equations:
+Light response curve (Chapter 7). In: /A new methodology to interpret
+high resolution measurements of net carbon fluxes between terrestrial
+ecosystems and the atmosphere/. pp. 68-80. Doctoral thesis, Friedrich
+Schiller University, Jena.
+
+- Response of NEP on PPFDdir
+
+First column (x): NEP (Net Ecosystem Productivity)
+- a measure of the carbon flux
+- calculated by photosynthetic uptake MINUS release by respiration
+- is known to be driven by PPFDdif and PPFDdir
+- unit: [?mol/(m?s)]
+
+Second column (y): PPFDdir (Photosynthetic Photon Flux Density, direct)
+- a measure of direct solar light intensity in terms of photons, that are available for photosynthesis
+- i.e. the number of direct photons falling on a 1 meter square area per second
+- only the photons with a wavelength of 400-700nm (visible light) are available for photosynthesis
+- unit [?mol/(m?s)]
+PPFD(total) = PPFDdif + PPFDdir
+
+
+","Net Ecosystem Productivity (NEP) is a measure of the carbon flux within an ecosystem, calculated by subtracting the carbon release due to respiration from the carbon uptake through photosynthesis.","Direct PPFDdir refers to the measure of direct solar light intensity in terms of photons, specifically those within the 400-700nm wavelength (visible light) that are available for photosynthesis, falling on a one-meter square area per second."
+pair0081, Temperature, Local CO2 flux, R,1,0,"Information for pair0081:
+
+Fluxnet data
+
+The folder contains flux data where fluxes are net CO2 exchanges aggregated
+over night, and the temperature accordingly (from http://fluxnet.ornl.gov). 
+
+The site id is BE-Bra
+Belgium, Brasschaat
+
+You have 365 values per site (one year).
+
+The night time CO2 is ""respiration"" the flux from the ecosystem to the
+atmosphere but no assumptions on flux partitioning!!! The price is high noise
+levels.
+
+x: Temperature in degree Celsius
+
+y: CO2 flux at night
+
+Pleases note that column 3 contains either NaN  if the data were filled,
+or 1 for credible values. 
+
+
+","Temperature, represented as 'x' in the dataset, refers to the atmospheric condition measured in degrees Celsius, which is used in the study of net CO2 exchanges during nighttime.","Local CO2 flux refers to the net exchange of carbon dioxide between a specific ecosystem and the atmosphere, typically measured at night to capture ecosystem respiration, with data often subject to high noise levels due to environmental variability."
+pair0082, Temperature, Local CO2 flux, R,1,0,"Information for pair0082:
+
+Fluxnet data
+
+The folder contains flux data where fluxes are net CO2 exchanges aggregated
+over night, and the temperature accordingly (from http://fluxnet.ornl.gov). 
+
+The site id is DE-Har
+Germany, Hartheim
+
+You have 365 values per site (one year).
+
+The night time CO2 is ""respiration"" the flux from the ecosystem to the
+atmosphere but no assumptions on flux partitioning!!! The price is high noise
+levels.
+
+x: Temperature in degree Celsius
+
+y: CO2 flux at night
+
+Pleases note that column 3 contains either NaN  if the data were filled,
+or 1 for credible values. 
+
+
+","Temperature, in the given context, refers to the ambient atmospheric temperature measured in degrees Celsius, which is used in correlation with the CO2 flux at night to study net CO2 exchanges in the ecosystem.","Local CO2 flux refers to the net exchange of carbon dioxide between a specific ecosystem and the atmosphere, typically measured over a specific period such as nightly, and can be influenced by factors such as temperature."
+pair0083, Temperature, Local CO2 flux, R,1,0,"Information for pair0083:
+
+Fluxnet data
+
+The folder contains flux data where fluxes are net CO2 exchanges aggregated
+over night, and the temperature accordingly (from http://fluxnet.ornl.gov). 
+
+The site id is US-PFa
+US, Park Falls
+
+You have 365 values per site (one year).
+
+The night time CO2 is ""respiration"" the flux from the ecosystem to the
+atmosphere but no assumptions on flux partitioning!!! The price is high noise
+levels.
+
+x: Temperature in degree Celsius
+
+y: CO2 flux at night
+
+Pleases note that column 3 contains either NaN  if the data were filled,
+or 1 for credible values. 
+
+
+","Temperature, in this context, refers to the ambient atmospheric temperature measured in degrees Celsius, which is used to study its correlation with the net CO2 flux at night from the ecosystem to the atmosphere.","Local CO2 flux refers to the net exchange of carbon dioxide between a specific ecosystem and the atmosphere, typically measured at night to capture the ecosystem's respiration without the influence of photosynthesis."
+pair0084, Employment, Population, L,0,1,"Information for pair 98
+ 
+natural logarithm of employment and natural logarithm of population 
+ 
+data for 3102 counties in US in 1980.  
+ 
+The data were taken from US county-level growth data set from Journal of Applied Econometrics web site.  Currently available at
+http://www.spatial-econometrics.com/data/contents.html .
+ 
+x (first column): the natural logarithm of employment in 1980 in 3102 counties in US;
+y (second column): the natural logorithm of the corresponding population.
+
+It seems reanable that the total population causes the employment, not vice versa. The difference (x-y) can be considered as the natural logarithm of the propotion of the emloyment.
+
+","Employment refers to the state of having a paid job or occupation, and in the context of this data, it is represented by the natural logarithm of the total number of individuals employed in 3102 counties in the US in 1980.","Population refers to the total number of inhabitants residing in a specific geographical area, such as a county, at a given time, in this case, 1980."
+pair0085, Time of measurement, Protein content of milk, R,1,0,"Description of pair0085:
+
+This data set is extracted from that for the milk protein trial used by Verbyla and Cullis (1990).  The original data set consists of assayed protein content of milk samples taken weekly from each of 79 cows.  The cows were randomly allocated to one of three diets: barley, mixed barley-lupins, and lupins, with 25, 27, and 27 cows in the three groups, respectively.  Measurements were taken for up to 19 weeks, but there were 38 drop-outs from week 15 onwards, corresponding to cows who stopped producing milk before the end of the experiment.
+
+We removed the missing values (drop-outs) in the data set: we did not consider the measurements from week 15 onwards, which contain many drop-outs, and we discarded the cows with drop-outs before week 15.  Finally, the data set contains 71 cows and 14 weeks.  Furthermore, we re-organized the data set to see the relationship between the milk protein and the time to take the measurement:
+
+X : time to take weekly measurements (from 1 to 14).
+
+Y : protein content of the milk produced by each cow at time X.
+
+
+Group truth: 
+
+X -> Y.
+
+
+Remark:
+
+Here we do not consider the effect of the diets on the protein content.  Note that rigorously speaking, X, together with the diets, causes Y.
+
+The original data set is available at
+http://www.maths.lancs.ac.uk/Software/Oswald/
+
+
+Reference:
+A. P. Verbyla and B. R. CullisSource, ""Modelling in Repeated Measures Experiments"", Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 39, No. 3(1990), pp. 341-356.
+","The ""Time of Measurement"" refers to the specific point or period during the study when data is collected, in this case, the weekly intervals at which the protein content of milk produced by each cow was measured over a span of 14 weeks.","The protein content of milk refers to the concentration of essential amino acids present in the milk, which is a key factor in determining its nutritional value and quality, and can be influenced by various factors such as the cow's diet and lactation period."
+pair0086, Size of apartment, Monthly rent, R,1,0,"First column:  size in m^2 of appartment/room
+Second column: monthly rent in EUR
+
+Data from kamernet.nl, gathered by Joris Mooij in 2007
+
+UPDATE v1.0: We removed two instances, with respectively size == 0 and rent == 1
+","The size of an apartment, measured in square meters (m^2), refers to the total floor area within the apartment's interior perimeter, including all rooms and interior spaces.","Monthly rent refers to the regular payment, expressed in Euros, made by a tenant to a landlord for the use of a specific apartment or room, as per the data collected from kamernet.nl by Joris Mooij in 2007."
+pair0087, Temperature, Total snow, L,0,1,"Whistler Daily Snowfall (from http://www.mldata.org/repository/data/viewslug/whistler-daily-snowfall/)
+
+Historical daily snowfall data in Whistler, BC, Canada over the period July 1 1972 to December 31 2009. Measured at top of Whistler Gondola: Latitude: 50Â°04'04.000"" N Longitude: 122Â°56'50.000"" W Elevation: 1835.00 m 
+
+Two attributes were selected: 
+X = MeanTemp (deg Celsius)
+Y = TotalSnow (cm)
+
+Common sense tells us that X causes Y (with maybe very small feedback of Y on X). Confounders are present (e.g., day of the year).
+
+X-->Y
+","Temperature is a physical quantity that expresses the degree of heat or cold in a body or environment, often measured in degrees Celsius, Fahrenheit, or Kelvin.","Total Snow is the cumulative measurement of snowfall in centimeters recorded at the top of Whistler Gondola, Whistler, BC, Canada, during a specified time period."
+pair0088, Age, Relative spinal bone mineral density, R,1,0,"x = age
+y = Relative Spinal bone mineral density
+
+Source:
+
+""bone"" data set from http://cran.r-project.org/web/packages/ElemStatLearn/ElemStatLearn.pdf
+
+We obtained and preprocessed the data using the following R commands:
+
+install.packages('ElemStatLearn')
+library(ElemStatLearn)
+boneuniq = bone[1,]
+for( i in 2:dim(bone)[1] ) { 
+  if( bone[i,1] != bone[i-1,1] ) { 
+    boneuniq <- rbind(boneuniq,bone[i,])
+  } 
+}
+write.table(boneuniq[,c(2,4)],file='/tmp/bone.csv',row.names=FALSE,col.names=FALSE)
+remove.packages('ElemStatLearn')
+
+For the preprocessing, we only take the first measurement for each child, and 
+selected only the columns ""age"" and ""spnbmd"" (Relative Change in Spinal BMD).
+
+","Age is a numerical variable representing the length of time a person has lived, often measured in years, and is commonly used in biomedical research to study its effects on various health parameters, such as bone mineral density.","Relative spinal bone mineral density (spnbmd) is a measure of the amount of mineral content in the spinal bone relative to its size, which can indicate bone strength and the risk of osteoporosis or fractures."
+pair0089, root decomposition Oct (grassl), root decomposition Oct (grassl), L,0,1,"x = Mass loss OCTOBER 2012 in %
+y = Mass loss APRIL 2012 in %
+
+Fine root decomposition data. 150 Litterbags containing fine roots were put underground to
+study decomposition rates in different ecosystems. This data set contains all experiments done in forests.
+y denotes the mass loss 6 months after the start of the experiment.
+y denotes the mass loss 1 year after the start of the experiment.
+Plots with missing data were excluded.
+
+Data taken from
+Solly et al (2014). Factors controlling decomposition rates of fine root litter in temperate forests and grasslands. Plant and Soil, 382(1-2), 203-218.
+
+Common sense tells us that at a certain point in time the total material decomposed depends on the amount decomposed at an earlier point in time.
+
+y --> x
+","Root decomposition Oct (grassl) refers to the percentage of mass loss in fine root litter observed in grassland ecosystems in October, six months after the start of the decomposition experiment.","Root decomposition Oct (grassl) refers to the percentage of mass loss in fine root litter observed in grassland ecosystems in October, six months after the start of the decomposition experiment."
+pair0090, root decomposition Oct (forest), root decomposition Oct (forest), L,0,1,"x = Mass loss OCTOBER 2012 in %
+y = Mass loss APRIL 2012 in %
+
+Fine root decomposition data. 150 Litterbags containing fine roots were put underground to
+study decomposition rates in different ecosystems. This data set contains all experiments done in grasslands.
+y denotes the mass loss 6 months after the start of the experiment.
+y denotes the mass loss 1 year after the start of the experiment.
+Plots with missing data were excluded.
+
+Data taken from
+Solly et al (2014). Factors controlling decomposition rates of fine root litter in temperate forests and grasslands. Plant and Soil, 382(1-2), 203-218.
+
+Common sense tells us that at a certain point in time the total material decomposed depends on the amount decomposed at an earlier point in time.
+
+y --> x
+","Root decomposition in October (forest) refers to the percentage of mass loss from fine root litter in forest ecosystems, measured one year after the start of the decomposition experiment.","Root decomposition in October (forest) refers to the percentage of mass loss from fine root litter in forest ecosystems, measured one year after the start of the decomposition experiment."
+pair0091, clay cont. in soil (forest), soil moisture, R,1,0,"x = Clay content in soil (in gram per g/kg)
+y = Soil moisture at 10cm depth (in %)
+
+Data taken from 150 forest plots. Plots with missing data were excluded.
+
+The clay content in a soil is one determinant of how much water a soil can hold.
+
+Reference:
+Solly et al (2014). Factors controlling decomposition rates of fine root litter in temperate forests and grasslands. Plant and Soil, 382(1-2), 203-218.
+
+x --> y
+","The clay content in forest soil, quantified in grams per kilogram, is a key factor influencing the soil's moisture retention capacity at a depth of 10cm, as evidenced in a study of 150 forest plots.","Soil moisture refers to the percentage of water contained within the soil, typically measured at a specific depth, which in this case is 10cm, and is influenced by various factors including the clay content of the soil."
+pair0092, organic carbon in soil (forest), clay cont. in soil (forest), L,0,1,"x = Organic C content in soil (in g Carbon/kg)
+y = Clay content (in g/kg)
+
+Data taken from 150 forest plots. Plots with missing data were excluded.
+
+The clay content in a soil is one determinant of how much carbon can be accumulated in a soil.
+
+Reference:
+Solly et al (2014). Factors controlling decomposition rates of fine root litter in temperate forests and grasslands. Plant and Soil, 382(1-2), 203-218.
+
+y --> x
+","Organic carbon in forest soil is the carbon component of soil organic matter, influenced by various factors including clay content, and is integral to processes like decomposition and nutrient cycling.","Clay content in forest soil is a quantifiable measure, expressed in grams per kilogram (g/kg), which influences the soil's capacity to accumulate organic carbon, thereby playing a crucial role in soil fertility and ecosystem functioning."
+pair0093, precipitation, runoff, R,1,0,"x = average precipitation over 1948 to 2004 in mm/day
+y = average runoff in over 1948 to 2004 mm/day
+
+Precipitation and runoff data over 438 river catchments in the US. We deleted 6 catchments where runoff data had missing values. 
+Daily values were downloaded and averaged over the whole available time period (1948-2004).
+
+Source:
+
+""MOPEX"" data set (http://www.nws.noaa.gov/ohd/mopex/mo_datasets.htm)
+
+Data can be downloaded from ftp://hydrology.nws.noaa.gov/pub/gcip/mopex/US_Data/Us_438_Daily/
+
+
+Common sense tells us that precipitation is the largest driver of runoff with some confounders such as catchment characteristics.
+ 
+x --> y","Precipitation is a key hydrological process involving the fall of water, in various forms, from the atmosphere to the Earth's surface, significantly influencing the amount of runoff in a given area.","Runoff is the movement of water, primarily resulting from precipitation, that flows over the land surface, infiltrates into the ground, or is stored in water bodies, influencing the water cycle and catchment hydrology."
+pair0094, hour of day, temperature, R,1,0,"Information for pair0094:
+
+x = hour of the day
+y = temperature in degree celsius
+
+Source:
+
+The data come from a regional energy distributor in Turkey and was obtained from S. Armagan Tarim and Steve Prestwich on June 11 2015.
+
+Common sense tells us that temperature depends on the hour of the day.
+ 
+x --> y 
+","The ""hour of the day"" is a time measurement unit that divides a single day into 24 equal parts, each representing a specific period within a 24-hour cycle, and is often used to analyze patterns or changes in various phenomena over the course of a day.","Temperature, in this context, refers to the measure of heat intensity in the environment, expressed in degrees Celsius, which varies according to the hour of the day."
+pair0095, hour of day, electricity load, R,1,0,"Information for pair0095:
+
+x = hour of the day
+y = load: the total electricity consumption in a region of Turkey in ""MWh""
+
+Source:
+
+The data come from a regional energy distributor in Turkey and was obtained from S. Armagan Tarim and Steve Prestwich on June 11 2015.
+
+The hour of the day defines what people usually do, if they are sleeping, cooking, watching TV etc. Hence the energy consumption is driven by the hour of the day.
+ 
+x --> y 
+","The 'hour of the day' is a time unit representing a specific hour within a 24-hour day, which significantly influences human activities and consequently affects the energy consumption in a given region.","Electricity load refers to the total amount of electrical power consumed in a specific region at a given time, in this case, measured in Megawatt hours (MWh) in a region of Turkey, with the consumption patterns largely influenced by the hour of the day and associated human activities."
+pair0096, temperature, electricity load, R,1,0,"Information for pair0096:
+
+x = temperature in degree celsius
+y = load: the total electricity consumption in a region of Turkey in ""MWh""
+
+Source:
+
+The data come from a regional energy distributor in Turkey and was obtained from S. Armagan Tarim and Steve Prestwich on June 11 2015.
+
+Cold temperatures let people turn on the heating while hot temperatures might trigger them to turn on a fan or air conditioning. 
+Generally, temperature affects the use of electricity of humans, while energy consumptions does not directly influence temperature in a region.
+ 
+x --> y 
+","Temperature, measured in degrees Celsius in this context, is a quantitative representation of the degree of hotness or coldness in a region, which influences human behaviors such as the use of heating or cooling appliances, thereby affecting the total electricity consumption.","Electricity load refers to the total amount of electrical power consumed in a specific region at a given time, which in this context is influenced by the temperature as changes in weather conditions can affect the use of heating or cooling appliances, thereby impacting energy consumption."
+pair0097, speed at the beginning, speed at the end, R,1,0,"Information for pair0097
+
+initial and final speed of a ball on a ball track for children
+
+The data has been recorded by Dominik Janzing using a ball track that has been equipped with two pairs of light barriers. The first pair measures the initial speed
+ and the second pair the speed of a ball at some later position of the track. The units of the speeds are arbitrary and differ for both measurements (X and Y) since they are obtained by
+inverting the time the ball needed to pass the distance between two light barriers of one pair. 
+ 
+ The initial part of the track 
+has large slope. The initial speed is strongly determined by the exact position where the ball is put on the track. For part of the runs, the position of the ball has been chosen by D. Janzing, the other part by a 4-year old child. This should avoid that the variation of the initial position is done in a too systematic way. 
+
+","The speed at the beginning, or initial speed, refers to the velocity of the ball when it is first placed on the track, which is largely influenced by the exact position where the ball is put and the slope of the track.","The final speed of the ball on the track is the velocity measured at a later position on the track, determined by the time it takes for the ball to pass between the second pair of light barriers, with the units being arbitrary and different from the initial speed measurement."
+pair0098, speed at the beginning, speed at the end, R,1,0,"Information for pair0098
+
+initial and final speed of a ball on a ball track for children
+
+The data has been recorded by Dominik Janzing using a ball track that has been equipped with two pairs of light barriers. The first pair measures the initial speed
+ and the second pair the speed of a ball at some later position of the track. The units of the speeds are arbitrary and differ for both measurements (X and Y) since they are obtained by
+inverting the time the ball needed to pass the distance between two light barriers of one pair. 
+ 
+ The initial part of the track (""acceleration zone"")
+has large slope. The initial speed is strongly determined by the exact position where the ball is put on the acceleration zone. For part of the runs, the position of the ball has been chosen by D. Janzing, the other part by a 4-year old child. This should avoid that the variation of the initial position is done in a too systematic way. 
+The setup is actually the same as for pair0097, but for pair0098 the ball track had a longer acceleration zone, which allows for larger deviations of the initial speed. 
+
+","The speed at the beginning, or initial speed, in this context refers to the velocity of a ball at the start of its journey on a ball track, which is primarily influenced by the exact position where the ball is placed on the track's acceleration zone.","The speed at the end refers to the final velocity of a ball on a track, measured at a later position on the track using a pair of light barriers, with the units being arbitrary and obtained by inverting the time taken for the ball to pass the distance between the two barriers."
+pair0099, language test score, social-economic status family, L,0,1,"Dataset 'nlschools' from the R MASS package. 
+
+According to the description in the documentation of the package 
+(https://cran.r-project.org/web/packages/MASS/MASS.pdf ):
+
+""Snijders and Bosker (1999) use as a running example a study of 2287 eighth-grade pupils (aged
+about 11) in 132 classes in 131 schools in the Netherlands.
+
+Source:
+Snijders, T.A.B. and Bosker, R.J. (1999)
+'Multilevel Analysis. An Introduction to Basic and Advanced Multilevel Modelling.'
+London: Sage.""
+
+We converted the data to a text file by the following R commands:
+
+library('MASS')
+write.matrix(nlschools,file='/tmp/nlschools.txt')
+
+X = the first column ('lang', language test score) 
+Y = the fifth column ('SES', social-economic status of pupil's family) column. 
+
+We consider SES to be one of the causes of lang, but note that selection bias may be
+present (via the choice of the classes and schools).
+
+","The language test score ('lang') in the 'nlschools' dataset from the R MASS package represents the performance of eighth-grade pupils on a language proficiency test in the Netherlands, which is potentially influenced by factors such as the socio-economic status of the pupil's family.","Social-economic status of a family (SES) is a comprehensive measure that assesses a family's societal standing based on various factors including income, education level, and occupation."
+pair0100, cycle time of CPU, performance, R,1,0,"Dataset 'cpus' from the R MASS package. 
+
+According to the description in the documentation of the package 
+(https://cran.r-project.org/web/packages/MASS/MASS.pdf ):
+
+""A relative performance measure and characteristics of 209 CPUs.
+
+Source:
+P. Ein-Dor and J. Feldmesser (1987) 
+'Attributes of the performance of central processing units: a relative performance prediction model.'
+Comm. ACM. 30, 308â€“317""
+
+We converted the data to a text file by the following R commands:
+
+library('MASS')
+write.matrix(cpus,file='/tmp/cpus.txt',sep=',')
+
+X = logarithm of the second column ('syct', cycle time in nanoseconds)
+Y = logarithm of the seventh column ('perf', published performance on a benchmark mix relative to an IBM 370/158-3)
+
+We consider syct to be one of the causes of perf.
+
+","The cycle time of a CPU, represented as 'syct' in the 'cpus' dataset from the R MASS package, refers to the duration taken by a CPU to execute a single instruction cycle, measured in nanoseconds, which can influence the overall performance of the CPU.","Performance, in the context of central processing units (CPUs), refers to the efficiency and speed at which a CPU can execute tasks, often measured relative to a benchmark, such as the IBM 370/158-3 in this dataset."
+pair0101, grey value of a pixel, brightness of the screen, R,1,0,"Information for pair0101:
+
+Brightness of screen
+
+This is from an experiment that has been performed to generate an example of a cause-effect relation
+that is clearly unconfounded.
+
+First column (x): grey value of a pixel that is chosen randomly from a fixed image. The grey value
+is displayed by the color of a square on a computer screen
+
+Second column (y): light intensity seen by a photo diode placed several centimeters away from the screen.  
+
+More precisely, the light intensity is measured by the 
+Adafruit TSL2591 High Dynamic Range Digital Light Sensor connected to an Arduino microcontroler. 
+https://learn.adafruit.com/adafruit-tsl2591/wiring-and-test
+
+The measurement has been performed by D. Janzing in August 2016.
+
+","The grey value of a pixel refers to the intensity of a pixel in a grayscale image, where higher values indicate brighter shades and lower values represent darker shades.","The brightness of the screen refers to the light intensity emitted by a pixel on a computer screen, which can be quantified using tools like the Adafruit TSL2591 High Dynamic Range Digital Light Sensor."
+pair0102, position of a ball, time for passing a track segment, R,1,0,"Information for pair0102:
+
+position vs. passing time
+
+pair0102, pair0103, pair0104 are taken from the same run of an experiment at a ball track for children at which some sensors have been mounted to measure the following parameters:
+
+variable 1: position on the ball track where the ball starts
+variable 2: time interval between passing the first and the second light barrier.
+variable 3: time interval between passing the third and the fourth light barrier.
+
+The initial part of the track (""acceleration zone"")
+has large slope, therefore the initial position is decisive for the speed the ball  gets when it rolls downwards. Therefore and because of the order of the light barriers we have the following causal chain:
+
+variable 1 ---> variable 2 --> variable 3 
+
+here we have x= variable 1, y= variable 2
+
+The data has been measured by D. Janzing in August 2016. 
+
+
+","The position of a ball, in this context, refers to the initial location on the ball track from where the ball begins its descent, which significantly influences the speed it attains while rolling downwards due to the track's steep slope.","Time for passing a track segment refers to the measured duration it takes for a ball to traverse between two designated points, or light barriers, on a ball track, which can be influenced by the ball's initial position and subsequent acceleration."
+pair0103, position of a ball, time for passing a track segment, R,1,0,"Information for pair0102:
+
+position vs. passing time
+
+pair0102, pair0103, pair0104 are taken from the same run of an experiment at a ball track for children at which some sensors have been mounted to measure the following parameters:
+
+variable 1: position on the ball track where the ball starts
+variable 2: time interval between passing the first and the second light barrier.
+variable 3: time interval between passing the third and the fourth light barrier.
+
+The initial part of the track (""acceleration zone"")
+has large slope, therefore the initial position is decisive for the speed the ball  gets when it rolls downwards. Therefore and because of the order of the light barriers we have the following causal chain:
+
+variable 1 ---> variable 2 --> variable 3 
+
+here we have x= variable 1, y= variable 3
+
+The data has been measured by D. Janzing in August 2016. 
+
+
+","The position of a ball, in this context, refers to the initial location on the ball track from where the ball begins its descent, a factor that significantly influences the speed the ball gains as it rolls downwards due to the track's steep slope.","The concept of time for passing a track segment refers to the measured duration it takes for a ball to traverse between two designated points (light barriers) on a ball track, which is influenced by the initial position and resultant speed of the ball."
+pair0104, time for passing 1. segment, time for passing 2. segment, R,1,0,"Information for pair0102:
+
+position vs. passing time
+
+pair0102, pair0103, pair0104 are taken from the same run of an experiment at a ball track for children at which some sensors have been mounted to measure the following parameters:
+
+variable 1: position on the ball track where the ball starts
+variable 2: time interval between passing the first and the second light barrier.
+variable 3: time interval between passing the third and the fourth light barrier.
+
+The initial part of the track (""acceleration zone"")
+has large slope, therefore the initial position is decisive for the speed the ball  gets when it rolls downwards. Therefore and because of the order of the light barriers we have the following causal chain:
+
+variable 1 ---> variable 2 --> variable 3 
+
+here we have x= variable 2, y= variable 3
+
+There is an important difference to pair0097 and pair0098 where the variables where given by the
+inverse of the time (i.e. the speed) to pass a pair of light barriers. Here we report the time itself.
+
+
+The data has been measured by D. Janzing in August 2016. 
+
+
+","The time for passing the 1st segment, denoted as variable 2, refers to the measured time interval between when the ball passes the first and second light barriers on the ball track, which is influenced by the initial position of the ball due to the track's large slope.","The time for passing the 2nd segment, denoted as variable 3, refers to the time interval measured between the ball passing the third and fourth light barriers on the ball track during the experiment."
+pair0105, pixel vector of a patch, total brightness at the screen, R,1,0,"Information for pair0105:
+
+Brightness of screen
+
+This is from an experiment that has been performed to generate an example of a cause-effect relation
+that is clearly unconfounded. Patches of size 3x3 pixel are randomly drawn from a fixed black and white image. The patch is then displayed
+as an image of size about several centimeter. A photo diode is placed several centimeter away from the screen at a position where the light intensity is dominated by the patch. 
+(More precisely, the light intensity is measured by the 
+Adafruit TSL2591 High Dynamic Range Digital Light Sensor connected to an Arduino microcontroler. 
+https://learn.adafruit.com/adafruit-tsl2591/wiring-and-test).
+pair0101 is based on the same experimental setting, but there the `patches' have size 1 x 1 pixel. 
+
+First column (x): pixel vector of grey values of the patch.
+
+Second column (y): light intensity seen by a photo diode placed several centimeters away from the screen.  
+
+
+The measurement has been performed by D. Janzing in August 2016.
+
+","A pixel vector of a patch refers to the array of grey values assigned to each pixel within a selected 3x3 area of an image, representing the brightness level of each pixel.","The total brightness at the screen refers to the cumulative light intensity emitted from a displayed image patch, measured in terms of grey values of the patch, and detected by a photo diode placed at a certain distance from the screen."
+pair0106, time required for one round, voltage, L,0,1,"Information for pair0106:
+
+Speed of an electric toy locomotive
+
+
+This is from an experiment where an electric toy locomotive (Maerklin) passes one round at different speeds, controlled by varyring voltage.
+The time required by the locomotive has been measured by a pair of light barriers.  The voltage has been varied by manually changing the control knob
+of a transformer and measured by the analog input of an Arduino after sending the electric AC voltage through a rectifier.  
+
+First column (x): time required for passing one round   
+
+Second column (y): electric voltage 
+
+
+The measurement has been performed by D. Janzing in February 2017.
+
+","The time required for one round refers to the duration it takes for the electric toy locomotive to complete a single circuit, with this duration being influenced by the varying voltage levels applied to the locomotive.","Voltage, in this context, refers to the electric potential difference measured in volts, which was manually adjusted using a transformer to control the speed of an electric toy locomotive in an experiment conducted by D. Janzing in February 2017."
+pair0107, strength of contrast, answer correct or not, R,1,0,"Information for pair0107:
+
+Direction of Gabor patches
+
+The data set is from a psychophysics experiments with human subjects. A screen shows tilted Gabor patches (which are patterns of stripes
+frequently used as stimuli in psychological experiments), either tilted to the left or to the right. The subject are asked to infer the direction, while the patches are shown with stronger or weaker contrast. The variable X describes the contrast values ranging from 0.0150 to 0.0500 in steps of 0.0025. The variable Y is a binary indicating whether the direction has been identified correctly (Y=1) or not (Y=0). For low values of the contrast the fraction of correct decisions approaches chance level (50%).
+
+
+First column (x): contrast
+
+Second column (y): answer correct or not
+
+The data set has been recorded by Heiko SchÃ¼tt in 2014. 
+
+
+","The strength of contrast refers to the difference in visual properties that makes an object distinguishable from other objects and the background, often measured in terms of light and dark values, and in the context of this data set, it is quantified in values ranging from 0.0150 to 0.0500, influencing the visibility of the Gabor patches and the subject's ability to correctly identify their direction.","""Answer correct or not"" is a binary variable (Y) in the dataset, indicating whether the human subjects in the psychophysics experiment correctly identified the tilt direction of Gabor patches (Y=1) or not (Y=0), with the performance accuracy potentially influenced by the contrast value of the patches."
+pair0108, time for 1/6 rotation, temperature, L,0,1,"Information for pair 108:
+
+This pair shows the dependence of the inverse velocity and the temperature of the heat bath of a Striling engine. The engine is
+driven by a cup of hot water that is put underneath.
+The inverse velocity is measured by the time needed for the engine's wheel for 1/6 rotation (because the wheel has 6 radius arms). 
+The temperature is measured by a sensor that was put into the cup. 
+
+
+
+First column (x): time for 1/6 rotation
+
+Second column (y): temperature in Degree Celsius
+
+The data set has been recorded by Dominik Janzing in 2017
+
+
+","The time for 1/6 rotation refers to the duration required for the wheel of a Stirling engine to complete one-sixth of a full rotation, serving as a measure of the engine's inverse velocity.","Temperature is a quantitative measure of heat or coldness of a body or an environment, expressed in degrees, and it influences physical properties and behaviors such as the rate of chemical reactions or the efficiency of a Stirling engine."
