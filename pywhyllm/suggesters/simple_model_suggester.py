@@ -100,7 +100,7 @@ class SimpleModelSuggester:
         return relationships
 
     # new ver
-    def suggest_confounders(self, variables: list[str], treatment: str, outcome: str) -> list[str]:
+    def suggest_confounders(self, variables: List[str], treatment: str, outcome: str) -> List[str]:
 
         """
             Suggests potential confounding factors that might influence the relationship between the treatment and outcome variables.
