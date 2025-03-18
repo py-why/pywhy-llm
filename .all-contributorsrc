@@ -1,6 +1,6 @@
 {
   "files": [
-    "README.md"
+    "CONTRIBUTING.md"
   ],
   "imageSize": 100,
   "commit": false,
@@ -30,6 +30,6 @@
   "skipCi": true,
   "repoType": "github",
   "repoHost": "https://github.com",
-  "projectName": "pywhy-llm",
+  "projectName": "pywhyllm",
   "projectOwner": "py-why"
 }
